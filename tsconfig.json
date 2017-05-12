@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "target": "es5",
+    "lib": ["es6"],
     "declaration": true,
     "module": "commonjs",
     "moduleResolution": "node",
@@ -9,7 +11,9 @@
     "removeComments": true,
     "typeRoots": [
       "./node_modules/@types"
-    ]
+    ],
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
   "include": [
     "src/**/*"
