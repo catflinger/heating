@@ -11,7 +11,7 @@ const expect = chai.expect;
 
 const environment: IEnvironment = container.get<IEnvironment>(TYPES.IEnvironment);
 const settings: IControllerSettings = container.get<IControllerSettings>(TYPES.IControllerSettings);
-const program: IProgram = container.get<IControllerSettings>(TYPES.IControllerSettings);
+const program: IProgram = container.get<IProgram>(TYPES.IProgram);
 
 describe("controller", () => {
 
