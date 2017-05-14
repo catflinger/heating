@@ -5,12 +5,18 @@ import { EnvironmentSnapshot, IEnvironment, IControllerSettings, IProgram, ISwit
 
 @injectable()
 export class MockEnvironment implements IEnvironment {
+    private hwTemp: number = 30;
+
     public getSnapshot(): EnvironmentSnapshot {
         const result: EnvironmentSnapshot = new EnvironmentSnapshot();
-        result.hwTemperature = 31;
+        result.hwTemperature = this.hwTemp;
+
         return result;
     }
 
+    public setHWTemperature(temp: number) {
+        this.hwTemp = temp;
+    }
 }
 
 @injectable()
