@@ -1,28 +1,47 @@
-import { IEnvironment, IControllerSettings, IProgram, Sensors, TYPES } from "../../src/controller/types";
+import { IController, IEnvironment, IControllerSettings, IProgram, ISwitchable, Sensors, Snapshot, INJECTABLES } from "../../src/controller/types";
 import { Controller } from "../../src/controller/controller";
-//import { MockEnvironment, MockProgram, MockControllerSettings } from "./mocks";
-
-import { container } from "../inversify.config";
+import { container } from "../inversify.config.test";
 
 import * as chai from "chai";
 import "mocha";
 
 const expect = chai.expect;
 
-const environment: IEnvironment = container.get<IEnvironment>(TYPES.IEnvironment);
-const settings: IControllerSettings = container.get<IControllerSettings>(TYPES.IControllerSettings);
-const program: IProgram = container.get<IProgram>(TYPES.IProgram);
+let controller: IController;
 
 describe("controller", () => {
 
+    before(() => {
+        controller = container.get<IController>(INJECTABLES.Controller);
+    });
+
     it("should construct", () => {
-        const controller = new Controller(settings, environment, program)
+        expect(controller).to.be.not.null;
     });
 
     it("should return summary info", () => {
-        const controller = new Controller(settings, environment, program);
-        const summary = controller.getSummary();
+        const summary: Snapshot = controller.getSnapshot();
 
-        expect(summary).to.be.not.null;
+        expect(summary.control.boiler).to.be.false;
+        expect(summary.control.hwPump).to.be.false;
+        expect(summary.control.chPump).to.be.false;
+
     });
+
+    it("should refresh the current control state", () => {
+        let summary: Snapshot = controller.getSnapshot();
+
+        expect(summary.control.boiler).to.be.false;
+        expect(summary.control.hwPump).to.be.false;
+        expect(summary.control.chPump).to.be.false;
+
+        controller.refresh();
+
+        summary = controller.getSnapshot();
+
+        expect(summary.control.boiler).to.be.true;
+        expect(summary.control.hwPump).to.be.true;
+        expect(summary.control.chPump).to.be.true;
+    });
+
 });

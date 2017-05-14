@@ -9,42 +9,61 @@ import {
     IControllerSettings,
     IControlStrategy,
     IEnvironment,
+    INJECTABLES,
     IProgram,
     ISwitchable,
-    TYPES } from "./types";
+    Snapshot,
+} from "./types";
 
-export class Controller {
-    private boiler: ISwitchable;
+@injectable()
+export class Controller implements IController {
     private strategy: IControlStrategy;
 
-    constructor(
-        @inject(TYPES.IControllerSettings) private settings: IControllerSettings,
-        @inject(TYPES.IEnvironment) private environment: IEnvironment,
-        @inject(TYPES.IProgram) private program: IProgram) {
+    @inject(INJECTABLES.ControllerSettings)
+    private settings: IControllerSettings;
 
-            // TO DO: inject this
-            this.strategy = new BasicControlStrategy();
+    @inject(INJECTABLES.Environment)
+    private environment: IEnvironment;
+
+    @inject(INJECTABLES.Program)
+    private program: IProgram;
+
+    @inject(INJECTABLES.Boiler)
+    private boiler: ISwitchable;
+
+    @inject(INJECTABLES.HWPump)
+    private hwPump: ISwitchable;
+
+    @inject(INJECTABLES.CHPump)
+    private chPump: ISwitchable;
+
+    constructor() {
+
+        // TO DO: should we inject thisor not?
+        this.strategy = new BasicControlStrategy();
     }
 
-    public getSummary(): any {
-        return {};
+    public getSnapshot(): Snapshot {
+        return new Snapshot(
+            this.getControlState(),
+            this.environment.getSnapshot());
     }
 
     public refresh(): void {
-        // get snaphot of the control state
-        const currentState: ControlStateSnapshot = this.getControlState();
-
-        // get snapshot of the environment
-        const env: EnvironmentSnapshot = this.environment.getSnapshot();
 
         // get the new control state
-        const newState: ControlStateSnapshot = this.strategy.calculateControlState(this.program, currentState, env);
+        const newState: ControlStateSnapshot = this.strategy.calculateControlState(this.program, this.getSnapshot());
 
         // apply the new control state
-        // TO DO:
+        this.boiler.switch(newState.boiler);
+        this.hwPump.switch(newState.hwPump);
+        this.chPump.switch(newState.chPump);
     }
 
     private getControlState(): ControlStateSnapshot {
-        return new ControlStateSnapshot();
+        return new ControlStateSnapshot(
+            this.boiler.state,
+            this.hwPump.state,
+            this.chPump.state);
     }
 }

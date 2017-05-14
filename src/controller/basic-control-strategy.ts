@@ -2,14 +2,16 @@ import {
     ControlStateSnapshot,
     EnvironmentSnapshot,
     IControlStrategy,
-    IProgram } from "./types";
+    IProgram,
+    Snapshot,
+} from "./types";
 
 export class BasicControlStrategy implements IControlStrategy {
     public calculateControlState(
         program: IProgram,
-        currentControlState: ControlStateSnapshot,
-        env: EnvironmentSnapshot): ControlStateSnapshot {
+        currentControlState: Snapshot): ControlStateSnapshot {
 
-        throw new Error("Method not implemented.");
+        // turn everything on
+        return new ControlStateSnapshot(true, true, true);
     }
 }
