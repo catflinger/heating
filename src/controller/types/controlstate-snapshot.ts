@@ -3,25 +3,26 @@
  * data class to encapsulate control state
  */
 export class ControlStateSnapshot {
-    private _boiler: boolean;
-    private _hwPump: boolean;
-    private _chPump: boolean;
+    private _heating: boolean;
+    private _hotWater: boolean;
 
-    constructor(boiler: boolean, hwPump: boolean, chPump: boolean) {
-        this._boiler = boiler;
-        this._hwPump = hwPump;
-        this._chPump = chPump;
+    constructor(heating: boolean, hotWater: boolean) {
+        this._heating = heating;
+        this._hotWater = hotWater;
     }
 
-    public get boiler(): boolean {
-        return this._boiler;
+    public get heating(): boolean {
+        return this._heating;
     }
 
-    public get hwPump(): boolean {
-        return this._hwPump;
+    public get hotWater(): boolean {
+        return this._hotWater;
     }
 
-    public get chPump(): boolean {
-        return this._chPump;
+    public clone(): ControlStateSnapshot {
+        return new ControlStateSnapshot(
+            this._heating,
+            this._hotWater);
+
     }
 }
