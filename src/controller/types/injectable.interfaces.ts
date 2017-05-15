@@ -37,12 +37,22 @@ export interface IControllerSettings {
 
 /**
  *  an importable program that defines heating and hw settings for times of the day
+ *  program value true = heating ON
+ *  program value false = heating OFF
  */
 export interface IProgram {
+    slotsPerDay: number;
 
     // the minimum acceptable HW temperature
     minHWTemp: number;
     maxHWTemp: number;
+
+    // gets the program value for a slot number, slot numbering starts at zero
+    getValue(slot: number): boolean;
+
+    // set the program value for slot numbers in the range
+    // range values are inclusive
+    setRange(state: boolean, from: number, to: number): void;
 }
 
 /**

@@ -29,8 +29,27 @@ export class MockControllerSettings implements IControllerSettings {
 
 @injectable()
 export class MockProgram implements IProgram {
-    minHWTemp: number = 40;
-    maxHWTemp: number = 50;
+
+    setRange(state: boolean, from: number, to: number): void {
+        throw new Error("Method not implemented.");
+    }
+
+    //constant for number of programmable time slots in the day
+    public get slotsPerDay(): number {
+        throw new Error("Method not implemented.");
+    }
+
+    public getValue(slot: number): boolean {
+        throw new Error("Method not implemented.");
+    }
+
+    public get minHWTemp(): number{
+        return 40;
+    }
+
+    public get maxHWTemp(): number{
+        return 50;
+    }
 }
 
 @injectable()

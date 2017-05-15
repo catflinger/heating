@@ -1,9 +1,9 @@
 import { Container } from "inversify";
 
-import { Controller } from "../src/controller/controller";
-import { IController, IControllerSettings, IEnvironment, IProgram, ISwitchable, INJECTABLES } from "../src/controller/types";
+import { Controller } from "../../src/controller/controller";
+import { IController, IControllerSettings, IEnvironment, IProgram, ISwitchable, INJECTABLES } from "../../src/controller/types";
 
-import { MockDevice, MockControllerSettings, MockEnvironment, MockProgram } from "./controller/mocks";
+import { MockDevice, MockControllerSettings, MockEnvironment, MockProgram } from "./mocks";
 
 export const container = new Container();
 

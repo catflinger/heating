@@ -1,6 +1,6 @@
 import { IController, IEnvironment, IControllerSettings, IProgram, ISwitchable, Sensors, Snapshot, INJECTABLES } from "../../src/controller/types";
 import { Controller } from "../../src/controller/controller";
-import { container } from "../inversify.config.test";
+import { container } from "./inversify.config.test";
 import { MockEnvironment } from "./mocks";
 
 import * as chai from "chai";
