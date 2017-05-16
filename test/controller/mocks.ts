@@ -30,7 +30,7 @@ export class MockControllerSettings implements IControllerSettings {
 @injectable()
 export class MockProgram implements IProgram {
 
-    setRange(state: boolean, from: number, to: number): void {
+    setRange(state: boolean[], from: number, to: number): void {
         throw new Error("Method not implemented.");
     }
 

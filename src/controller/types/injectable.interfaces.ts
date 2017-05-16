@@ -52,7 +52,7 @@ export interface IProgram {
 
     // set the program value for slot numbers in the range
     // range values are inclusive
-    setRange(state: boolean, from: number, to: number): void;
+    setRange(state: boolean[], from: number, to: number): void;
 }
 
 /**
