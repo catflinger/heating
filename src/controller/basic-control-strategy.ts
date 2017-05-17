@@ -20,6 +20,10 @@ export class BasicControlStrategy implements IControlStrategy {
             (currentState.environment.hwTemperature < program.maxHWTemp && currentState.control.hotWater)) {
             water = true;
         }
+
+        // TO DO: set the heating from the program and time of day...
+        // write some tests for this module first
+
         return new ControlStateSnapshot(heating, water);
     }
 }

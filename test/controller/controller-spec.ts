@@ -128,4 +128,8 @@ describe("controller", () => {
             compareState(testDataA, summary);    
         });
     });
+
+    describe("when controlling heating", () => {
+        it.skip("will turn heating on");
+    });
 });
