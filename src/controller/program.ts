@@ -1,26 +1,26 @@
-import { injectable } from "inversify";
-import { IProgram } from "./types";
+import { inject, injectable } from "inversify";
+import { IControllerSettings, INJECTABLES, IProgram } from "./types";
 
 @injectable()
 export class Program implements IProgram {
-    private readonly _slotsPerDay = 12 * 24;
 
     // array to hold the heating program: true=heating ON, false = heating off
     private slots: boolean[] = [];
 
     // threshold value for hot water
-    private _minHwTemp: number = 40;
-    private _maxHwTemp: number = 50;
+    private _minHwTemp: number;
+    private _maxHwTemp: number;
 
-    constructor() {
-        for (let i = 0; i < this._slotsPerDay; i++) {
+    constructor(@inject(INJECTABLES.ControllerSettings) private settings: IControllerSettings) {
+
+        // set default values for hot water
+        this._maxHwTemp = 50;
+        this._minHwTemp = 40;
+
+        // set defaults for heating
+        for (let i = 0; i < this.settings.slotsPerDay; i++) {
             this.slots.push(false);
         }
-    }
-
-    // constant for number of programmable time slots in the day
-    public get slotsPerDay(): number {
-        return this._slotsPerDay;
     }
 
     public getValue(slotNumber: number): boolean {
@@ -36,6 +36,15 @@ export class Program implements IProgram {
         return this._maxHwTemp;
     }
 
+    public setHWTemps(min: number, max: number) {
+        if (min > 10 && max > 10 && min < 60 && max < 60 && max - min > 5) {
+            this._minHwTemp = min;
+            this._maxHwTemp = max;
+        } else {
+            throw new Error("HW temperature value out of range");
+        }
+    }
+
     public setRange(state: boolean[], from: number, to: number): void {
 
         this.validateSlotNumber(from, to);
@@ -49,11 +58,55 @@ export class Program implements IProgram {
         }
     }
 
+    public toJson(): string {
+        return JSON.stringify({
+            hwmax: this._maxHwTemp,
+            hwmin: this._minHwTemp,
+            slots: this.slots,
+        });
+    }
+
+    public loadJson(json: string): void {
+        let valid: boolean = true;
+        const src: any = JSON.parse(json);
+
+        // validate the input string
+        if (!src ||
+            (typeof src.hwmax !== "number") ||
+            (typeof src.hwmin !== "number") ||
+            !Array.isArray(src.slots) ||
+            src.slots.length !== this.settings.slotsPerDay) {
+
+            // reject the data
+            valid = false;
+
+        } else {
+            // test each slot is boolean
+            for (const slot of src.slots)  {
+                if (typeof slot !== "boolean") {
+                    valid = false;
+                    break;
+                }
+            }
+        }
+
+        if (valid) {
+            this.setHWTemps(src.hwmin, src.hwmax);
+
+            for (let i: number = 0; i < src.slots.length; i++)  {
+                this.slots[i] = src.slots[i];
+            }
+        } else {
+            throw new Error("Invalid or missing values in json.");
+        }
+    }
+
     private validateSlotNumber(...args: number[]) {
         args.forEach((arg: number) => {
-            if (isNaN(arg) || arg < 0 || arg >= this._slotsPerDay) {
+            if (isNaN(arg) || arg < 0 || arg >= this.settings.slotsPerDay) {
                 throw new Error("Slots per day out of range");
             }
         });
     }
+
 }

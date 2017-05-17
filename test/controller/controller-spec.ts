@@ -66,7 +66,7 @@ describe("controller", () => {
     });
 
     it("should construct", () => {
-        expect(controller).to.be.not.null;
+        expect(controller).not.to.be.undefined;
     });
 
     it("should return summary info", () => {

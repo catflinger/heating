@@ -21,14 +21,23 @@ export class MockEnvironment implements IEnvironment {
 
 @injectable()
 export class MockControllerSettings implements IControllerSettings {
-    placeholder() {
-        throw new Error("Method not implemented.");
+    public get slotsPerDay(): number {
+        return 12 * 24;
     }
 
 }
 
 @injectable()
 export class MockProgram implements IProgram {
+    setHWTemps(min: number, max: number): void {
+        throw new Error("Method not implemented.");
+    }
+    toJson(): string {
+        throw new Error("Method not implemented.");
+    }
+    loadJson(json: string): void {
+        throw new Error("Method not implemented.");
+    }
 
     setRange(state: boolean[], from: number, to: number): void {
         throw new Error("Method not implemented.");

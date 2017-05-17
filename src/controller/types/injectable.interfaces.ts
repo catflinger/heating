@@ -32,7 +32,7 @@ export interface IController {
  * rather than program settings (eg hw threshold)
  */
 export interface IControllerSettings {
-    placeholder(): any;
+    slotsPerDay: number;
 }
 
 /**
@@ -41,18 +41,25 @@ export interface IControllerSettings {
  *  program value false = heating OFF
  */
 export interface IProgram {
-    slotsPerDay: number;
 
-    // the minimum acceptable HW temperature
+    // the minimum acceptable HW temperature (to be implemented as get properties only)
     minHWTemp: number;
     maxHWTemp: number;
+
+    // set the min and max water temperatures as a pair
+    setHWTemps(min: number, max: number): void;
 
     // gets the program value for a slot number, slot numbering starts at zero
     getValue(slot: number): boolean;
 
-    // set the program value for slot numbers in the range
-    // range values are inclusive
+    // set the program value for slot numbers in the range.  from and to are are inclusive
     setRange(state: boolean[], from: number, to: number): void;
+
+    // serialise the program to json
+    toJson(): string;
+
+    // deserialise from json
+    loadJson(json: string): void;
 }
 
 /**
