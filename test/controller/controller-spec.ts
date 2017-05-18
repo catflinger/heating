@@ -1,7 +1,7 @@
 import { IController, IEnvironment, IControllerSettings, IProgram, ISwitchable, Sensors, Snapshot, INJECTABLES } from "../../src/controller/types";
 import { Controller } from "../../src/controller/controller";
 import { container } from "./inversify.config.test";
-import { MockEnvironment } from "./mocks";
+import { MockEnvironment, MockControlStrategy } from "./mocks";
 
 import * as chai from "chai";
 import "mocha";
@@ -9,6 +9,7 @@ import "mocha";
 const expect = chai.expect;
 
 let controller: IController;
+let mockStrategy: MockControlStrategy = container.get<MockControlStrategy>(INJECTABLES.ControlStrategy);
 
 const hwTempBelowThreshold = 30;
 const hwTempInsideThreshold = 45;
@@ -20,34 +21,6 @@ const testDataDefault: any = {
     control: { heating: false, hotWater: false },
     device: { boiler: false, hwPump: false, chPump: false },
     environment: { hwTemperature: hwTempBelowThreshold }
-}
-
-// hot water cool
-const testDataA: any = {
-    control: { heating: false, hotWater: true },
-    device: { boiler: true, hwPump: true, chPump: false },
-    environment: { hwTemperature: hwTempBelowThreshold }
-}
-
-// hot water being heated
-const testDataB: any = {
-    control: { heating: false, hotWater: true },
-    device: { boiler: true, hwPump: true, chPump: false },
-    environment: { hwTemperature: hwTempInsideThreshold }
-}
-
-// hot water fully heated
-const testDataC: any = {
-    control: { heating: false, hotWater: false },
-    device: { boiler: false, hwPump: false, chPump: false },
-    environment: { hwTemperature: hwTempAboveThreshold }
-}
-
-// hot water cooling
-const testDataD: any = {
-    control: { heating: false, hotWater: false },
-    device: { boiler: false, hwPump: false, chPump: false },
-    environment: { hwTemperature: hwTempInsideThreshold }
 }
 
 function compareState(expected: any, actual: Snapshot) {
@@ -74,62 +47,48 @@ describe("controller", () => {
         compareState(testDataDefault, summary);
     });
 
-    describe("when controlling hot water", () => {
-        let env: MockEnvironment = container.get<MockEnvironment>(INJECTABLES.Environment);
+    it("should correctlt map control state to device state", () => {
         let summary: Snapshot;
-
-        it("should heat the water when cool", () => {
-
-            env.setHWTemperature(hwTempBelowThreshold);
-            controller.refresh();
-            summary = controller.getSnapshot();
-
-            // temp is too low so boiler should be on
-            compareState(testDataA, summary);
-
-        });
-
-        it("should heat the water when already warm", () => {
-            env.setHWTemperature(hwTempInsideThreshold);
-            controller.refresh();
-            summary = controller.getSnapshot();
-
-            // temp is between thresholds on the way up so boiler should be on
-            compareState(testDataB, summary);
-        });
         
-        it("should not heat the water when already hot", () => {
+        //off
+        mockStrategy.water = false;
+        mockStrategy.heating = false;
+        controller.refresh();
+        summary = controller.getSnapshot();
 
-            env.setHWTemperature(hwTempAboveThreshold);
-            controller.refresh();
-            summary = controller.getSnapshot();
+        expect(summary.device.boiler).to.be.false;
+        expect(summary.device.hwPump).to.be.false;
+        expect(summary.device.chPump).to.be.false;
 
-            // temp is high so boiler should be off
-            compareState(testDataC, summary);
-        });
-        
-        it("should not heat the water when warm but cooling fom hot", () => {
+        //hot water only
+        mockStrategy.water = true;
+        mockStrategy.heating = false;
+        controller.refresh();
+        summary = controller.getSnapshot();
 
-            env.setHWTemperature(hwTempInsideThreshold);
-            controller.refresh();
-            summary = controller.getSnapshot();
+        expect(summary.device.boiler).to.be.true;
+        expect(summary.device.hwPump).to.be.true;
+        expect(summary.device.chPump).to.be.false;
 
-            // temp is between thresholds on the way down so boiler should be off
-            compareState(testDataD, summary);
-        });
-        
-        it("should heat the water when cool again", () => {
+        //heating only
+        mockStrategy.water = false;
+        mockStrategy.heating = true;
+        controller.refresh();
+        summary = controller.getSnapshot();
 
-            env.setHWTemperature(hwTempBelowThreshold);
-            controller.refresh();
-            summary = controller.getSnapshot();
+        expect(summary.device.boiler).to.be.true;
+        expect(summary.device.hwPump).to.be.false;
+        expect(summary.device.chPump).to.be.true;
 
-            // temp is low again so boiler should be back on
-            compareState(testDataA, summary);    
-        });
+        //both
+        mockStrategy.water = true;
+        mockStrategy.heating = true;
+        controller.refresh();
+        summary = controller.getSnapshot();
+
+        expect(summary.device.boiler).to.be.true;
+        expect(summary.device.hwPump).to.be.true;
+        expect(summary.device.chPump).to.be.true;
     });
 
-    describe("when controlling heating", () => {
-        it.skip("will turn heating on");
-    });
 });

@@ -1,7 +1,28 @@
 import { injectable, inject } from "inversify";
 import "reflect-metadata";
 
-import { EnvironmentSnapshot, IEnvironment, IControllerSettings, IProgram, ISwitchable, Sensors } from "../../src/controller/types";
+import { 
+    EnvironmentSnapshot, 
+    IEnvironment, 
+    IControllerSettings, 
+    IControlStrategy, 
+    IProgram, 
+    ISwitchable, 
+    Sensors, 
+    Snapshot, 
+    ControlStateSnapshot, 
+    DeviceStateSnapshot } from "../../src/controller/types";
+
+@injectable()
+export class MockControlStrategy implements IControlStrategy {
+    public water: boolean = false; //mock result, to be set by tests
+    public heating: boolean = false; //mock result, to be set by tests
+
+    // returns whatever the test has set in the water and heating members
+    calculateControlState(program: IProgram, currentState: Snapshot): ControlStateSnapshot {
+        return new ControlStateSnapshot(this.heating, this.water);
+    }  
+}
 
 @injectable()
 export class MockEnvironment implements IEnvironment {
@@ -81,5 +102,4 @@ export class MockDevice implements ISwitchable {
     switch(state: boolean): void {
         this._state = state;
     }
-
 }

@@ -7,6 +7,8 @@ import { Snapshot } from "./snapshot";
 export const INJECTABLES = {
     Boiler: Symbol("Boiler"),
     CHPump: Symbol("CHPump"),
+    Clock: Symbol("Clock"),
+    ControlStrategy: Symbol("ControlStrategy"),
     Controller: Symbol("Controller"),
     ControllerSettings: Symbol("ControllerSettings"),
     Environment: Symbol("Environment"),
@@ -33,6 +35,13 @@ export interface IController {
  */
 export interface IControllerSettings {
     slotsPerDay: number;
+}
+
+/**
+ * Gets the system time in 5 minute intervals, aka slot numbers
+ */
+export interface IClock {
+    currentSlot: number;
 }
 
 /**

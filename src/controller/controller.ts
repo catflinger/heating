@@ -19,8 +19,10 @@ import {
 @injectable()
 export class Controller implements IController {
 
-    private strategy: IControlStrategy;
     private currentControlState: ControlStateSnapshot;
+
+    @inject(INJECTABLES.ControlStrategy)
+    private strategy: IControlStrategy;
 
     @inject(INJECTABLES.ControllerSettings)
     private settings: IControllerSettings;
@@ -42,8 +44,6 @@ export class Controller implements IController {
 
     constructor() {
 
-        // TO DO: should we inject this?  Will there ever be omore than one type of control strategy?
-        this.strategy = new BasicControlStrategy();
         this.currentControlState = new ControlStateSnapshot(false, false);
     }
 
