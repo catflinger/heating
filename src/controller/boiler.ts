@@ -9,10 +9,12 @@ class Boiler implements ISwitchable {
     }
 
     public get state(): boolean {
+        // TO DO:
         return true;
     }
 
     public toggle(): boolean {
+        // TO DO:
         return true;
     }
 

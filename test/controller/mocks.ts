@@ -45,7 +45,6 @@ export class MockControllerSettings implements IControllerSettings {
     public get slotsPerDay(): number {
         return 12 * 24;
     }
-
 }
 
 @injectable()

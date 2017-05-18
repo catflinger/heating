@@ -1,3 +1,4 @@
+import { ControlStateSnapshot } from "./controlstate-snapshot";
 import { EnvironmentSnapshot } from "./environment-snapshot";
 import { Snapshot } from "./snapshot";
 
@@ -16,6 +17,15 @@ export const INJECTABLES = {
     HWPump: Symbol("HWPump"),
     Program: Symbol("Program"),
 };
+
+/**
+ * interface for control strategies
+ */
+export interface IControlStrategy {
+    calculateControlState(
+        program: IProgram,
+        currentState: Snapshot): ControlStateSnapshot;
+}
 
 /**
  * Entry point and public interface for the heating control
@@ -94,5 +104,4 @@ export interface IEnvironment {
  */
 export interface IEnvironmentSettings {
     oneWireDirectory: string;
-
 }
