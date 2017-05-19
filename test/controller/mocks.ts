@@ -42,6 +42,10 @@ export class MockEnvironment implements IEnvironment {
 
 @injectable()
 export class MockControllerSettings implements IControllerSettings {
+    boilerPin: number;
+    hwPumpPin: number;
+    chPumpPin: number;
+
     public get slotsPerDay(): number {
         return 12 * 24;
     }
@@ -85,6 +89,9 @@ export class MockProgram implements IProgram {
 export class MockDevice implements ISwitchable {
     private _name: string = "un-named device";
     private _state: boolean = false;
+
+    public init(): void {
+    }
 
     public get name(): string {
         return this._name;

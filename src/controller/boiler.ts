@@ -1,24 +1,12 @@
 import { inject, injectable } from "inversify";
 import "reflect-metadata";
-import { ISwitchable } from "./types";
+
+import { Switchable } from "./switchable";
+import { IControllerSettings, INJECTABLES } from "./types";
 
 @injectable()
-class Boiler implements ISwitchable {
-    public get name(): string {
-        return "boiler";
-    }
-
-    public get state(): boolean {
-        // TO DO:
-        return true;
-    }
-
-    public toggle(): boolean {
-        // TO DO:
-        return true;
-    }
-
-    public switch(state: boolean): void {
-        // TO DO:
+export class Boiler extends Switchable {
+    constructor(@inject(INJECTABLES.ControllerSettings) private settings: IControllerSettings) {
+        super("boiler", settings.boilerPin);
     }
 }

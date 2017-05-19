@@ -12,6 +12,7 @@ export const INJECTABLES = {
     ControlStrategy: Symbol("ControlStrategy"),
     Controller: Symbol("Controller"),
     ControllerSettings: Symbol("ControllerSettings"),
+    DigitalOutput: Symbol("DigitalOutput"),
     Environment: Symbol("Environment"),
     EnvironmentSettings: Symbol("EnvironmentSettings"),
     HWPump: Symbol("HWPump"),
@@ -45,6 +46,9 @@ export interface IController {
  */
 export interface IControllerSettings {
     slotsPerDay: number;
+    boilerPin: number;
+    hwPumpPin: number;
+    chPumpPin: number;
 }
 
 /**
@@ -54,6 +58,14 @@ export interface IClock {
     currentSlot: number;
 }
 
+/**
+ * facade for digital-output interaction with the underlying General Purpose Input/Output pins
+ */
+export interface IDigitalOutput {
+    use(pin: number): void; // enable a pin for digital output
+    read(pin: number): boolean; // read the state of a pin, true is ON, false is OFF
+    write(pin: number, state: boolean): void; // set the state of a pin
+}
 /**
  *  an importable program that defines heating and hw settings for times of the day
  *  program value true = heating ON
@@ -87,6 +99,7 @@ export interface IProgram {
 export interface ISwitchable {
     name: string;
     state: boolean;
+    init(): void;
     toggle(): void;
     switch(state: boolean): void;
 }

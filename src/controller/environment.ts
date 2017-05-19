@@ -18,8 +18,16 @@ export class Environment implements IEnvironment {
     }
 
     private readSensor(deviceId: string): number {
-        const data: string = readFileSync(this.settings.oneWireDirectory + "/" + deviceId, "utf8");
-        return Number.parseInt(data);
-    }
+        let result: number;
 
+        try {
+            const data: string = readFileSync(this.settings.oneWireDirectory + "/" + deviceId, "utf8");
+            result = Number.parseInt(data);
+
+        } catch (exp) {
+            result = NaN;
+        }
+
+        return result;
+    }
 }
