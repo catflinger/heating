@@ -1,7 +1,7 @@
 {
-  "name": "heating",
+  "name": "heating-controller",
   "version": "0.0.0",
-  "description": "heating",
+  "description": "heating controller model",
   "license": "MIT",
   "repository": "",
   "author": "",
