@@ -8,10 +8,10 @@ import {
     INJECTABLES,
     IProgram,
     Snapshot,
-} from "../../src/controller/types";
+} from "../../src/types";
 
 import { container } from "./inversify.config.test";
-import { BasicControlStrategy } from "../../src/controller/basic-control-strategy";
+import { BasicControlStrategy } from "../../src/basic-control-strategy";
 import { MockClock } from "./mocks";
 
 import * as chai from "chai";

@@ -1,5 +1,5 @@
-import { IController, IEnvironment, IControllerSettings, IProgram, ISwitchable, Sensors, Snapshot, INJECTABLES } from "../../src/controller/types";
-import { Controller } from "../../src/controller/controller";
+import { IController, IEnvironment, IControllerSettings, IProgram, ISwitchable, Sensors, Snapshot, INJECTABLES } from "../../src/types";
+import { Controller } from "../../src/controller";
 import { container } from "./inversify.config.test";
 import { MockEnvironment, MockControlStrategy } from "./mocks";
 

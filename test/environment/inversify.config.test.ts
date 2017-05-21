@@ -1,7 +1,7 @@
 import { Container } from "inversify";
 //import "reflect-metadata";
-import { IEnvironmentSettings, IEnvironment, INJECTABLES } from "../../src/controller/types";
-import { Environment } from "../../src/controller/environment";
+import { IEnvironmentSettings, IEnvironment, INJECTABLES } from "../../src/types";
+import { Environment } from "../../src/environment";
 import { MockEnvironmentSettings } from "./mocks";
 
 export const container = new Container();

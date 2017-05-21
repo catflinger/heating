@@ -20,16 +20,7 @@ export const INJECTABLES = {
 };
 
 /**
- * interface for control strategies
- */
-export interface IControlStrategy {
-    calculateControlState(
-        program: IProgram,
-        currentState: Snapshot): ControlStateSnapshot;
-}
-
-/**
- * Entry point and public interface for the heating control
+ * Main entry point and public interface for the heating control
  */
 export interface IController {
 
@@ -38,6 +29,15 @@ export interface IController {
 
     // provides raw data on state of the heating system and environment
     getSnapshot(): Snapshot;
+}
+
+/**
+ * interface for control strategies
+ */
+export interface IControlStrategy {
+    calculateControlState(
+        program: IProgram,
+        currentState: Snapshot): ControlStateSnapshot;
 }
 
 /**

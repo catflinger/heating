@@ -2,9 +2,9 @@ import {
     EnvironmentSnapshot,
     IEnvironment,
     INJECTABLES,
-} from "../../src/controller/types";
+} from "../../src/types";
 
-import { Environment } from "../../src/controller/environment";
+import { Environment } from "../../src/environment";
 
 import { container } from "./inversify.config.test";
 

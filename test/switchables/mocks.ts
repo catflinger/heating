@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import {IControllerSettings, IDigitalOutput, INJECTABLES } from "../../src/controller/types";
+import {IControllerSettings, IDigitalOutput, INJECTABLES } from "../../src/types";
 
 @injectable()
 export class MockControllerSettings implements IControllerSettings {

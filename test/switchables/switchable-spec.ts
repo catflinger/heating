@@ -1,5 +1,5 @@
-import { IControllerSettings, ISwitchable, INJECTABLES } from "../../src/controller/types";
-import { Switchable } from "../../src/controller/switchable";
+import { IControllerSettings, ISwitchable, INJECTABLES } from "../../src/types";
+import { Switchable } from "../../src/switchable";
 import { container } from "./inversify.config.test";
 
 import * as chai from "chai";

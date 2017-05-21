@@ -1,9 +1,9 @@
 import { Container } from "inversify";
 
-import { IControllerSettings, IDigitalOutput, ISwitchable, INJECTABLES } from "../../src/controller/types";
-import { Boiler } from "../../src/controller/boiler"; 
-import { CHPump } from "../../src/controller/ch-pump"; 
-import { HWPump } from "../../src/controller/hw-pump"; 
+import { IControllerSettings, IDigitalOutput, ISwitchable, INJECTABLES } from "../../src/types";
+import { Boiler } from "../../src/boiler"; 
+import { CHPump } from "../../src/ch-pump"; 
+import { HWPump } from "../../src/hw-pump"; 
 import { MockControllerSettings } from "./mocks";
 import { MockDigitalOutput } from "./mocks";
 
