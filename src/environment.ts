@@ -10,11 +10,7 @@ export class Environment implements IEnvironment {
     private settings: IEnvironmentSettings;
 
     public getSnapshot(): EnvironmentSnapshot {
-        const result: EnvironmentSnapshot = new EnvironmentSnapshot();
-
-        result.hwTemperature = this.readSensor("DS18B20-1");
-
-        return result;
+        return new EnvironmentSnapshot(this.readSensor("DS18B20-1"));
     }
 
     private readSensor(deviceId: string): number {

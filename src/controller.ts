@@ -13,6 +13,7 @@ import {
     INJECTABLES,
     IProgram,
     ISwitchable,
+    OverrideSnapshot,
     Snapshot,
 } from "./types";
 
@@ -20,6 +21,7 @@ import {
 export class Controller implements IController {
 
     private currentControlState: ControlStateSnapshot;
+    private chOverride: OverrideSnapshot = null;
 
     @inject(INJECTABLES.ControlStrategy)
     private strategy: IControlStrategy;
@@ -49,9 +51,10 @@ export class Controller implements IController {
 
     public getSnapshot(): Snapshot {
         return new Snapshot(
-            this.getControlState(),
+            this.currentControlState.clone(),
             this.environment.getSnapshot(),
-            this.getDevicelState());
+            this.getDevicelState(),
+            this.chOverride ? this.chOverride.clone() : null);
     }
 
     public refresh(): void {
@@ -63,6 +66,22 @@ export class Controller implements IController {
         this.applyControlState(newState);
     }
 
+    public setOverride(start: number, duration: number, state: boolean): void {
+
+        if (isNaN(start) || !isFinite(start) || start < 0 || start >= this.settings.slotsPerDay ||
+            isNaN(duration) || !isFinite(duration) || duration < 0 || start + duration >= this.settings.slotsPerDay) {
+
+            throw new Error("value out of range in Controller:setOverride");
+        }
+
+        this.chOverride = new OverrideSnapshot(start, duration, state);
+    }
+
+    public clearOverride(): void {
+        this.chOverride = null;
+    }
+    /************************************** PRIVATE MEMBERS AREA ****************************************/
+
     private getDevicelState(): DeviceStateSnapshot {
 
         // return a snapshot of the device states (boiler on, pump off etc)
@@ -70,12 +89,6 @@ export class Controller implements IController {
             this.boiler.state,
             this.hwPump.state,
             this.chPump.state);
-    }
-
-    private getControlState(): ControlStateSnapshot {
-
-        // return a snapshot of the current control state (hetaing off, hot water on etc)
-        return this.currentControlState.clone();
     }
 
     private applyControlState(state: ControlStateSnapshot) {

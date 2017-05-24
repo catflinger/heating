@@ -29,10 +29,7 @@ export class MockEnvironment implements IEnvironment {
     private hwTemp: number = 30;
 
     public getSnapshot(): EnvironmentSnapshot {
-        const result: EnvironmentSnapshot = new EnvironmentSnapshot();
-        result.hwTemperature = this.hwTemp;
-
-        return result;
+        return new EnvironmentSnapshot( this.hwTemp);
     }
 
     public setHWTemperature(temp: number) {

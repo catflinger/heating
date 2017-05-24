@@ -19,6 +19,7 @@ export class BasicControlStrategy implements IControlStrategy {
     public calculateControlState(program: IProgram, currentState: Snapshot): ControlStateSnapshot {
         let heating: boolean = false;
         let water: boolean = false;
+        const currentSlot: number = this.clock.currentSlot;
 
         // First set the hot water.
         // If the temp is too low, keep trying to raise the temmperature.   If the temperature is over the minimum
@@ -30,7 +31,14 @@ export class BasicControlStrategy implements IControlStrategy {
         }
 
         // now set the heating, simple and straightforward
-        heating = program.getValue(this.clock.currentSlot);
+        heating = program.getValue(currentSlot);
+
+        // if there is an override apply it
+        const ov = currentState.override;
+
+        if (ov && currentSlot >= ov.start && currentSlot < ov.start + ov.duration) {
+            heating = ov.state;
+        }
 
         return new ControlStateSnapshot(heating, water);
     }

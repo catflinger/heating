@@ -47,7 +47,37 @@ describe("controller", () => {
         compareState(testDataDefault, summary);
     });
 
-    it("should correctlt map control state to device state", () => {
+    it("should set and clear an override", () => {
+        let summary: Snapshot = controller.getSnapshot();
+        expect(summary.override).to.be.null;
+        
+        controller.setOverride(2,3,true);
+        summary = controller.getSnapshot();
+
+        expect(summary.override.start).to.equal(2);
+        expect(summary.override.duration).to.equal(3);
+        expect(summary.override.state).to.equal(true);
+
+        controller.clearOverride();
+        summary = controller.getSnapshot();
+
+        expect(summary.override).to.be.null;
+    });
+
+    it("should not set an override with bad data", () => {       
+        expect( () => controller.setOverride(undefined, 3, true)).to.throw;
+        expect( () => controller.setOverride(NaN, 3, true)).to.throw;
+        expect( () => controller.setOverride(-1, 3, true)).to.throw;
+        expect( () => controller.setOverride(10, 3, true)).to.throw;
+
+        expect( () => controller.setOverride(1, undefined, true)).to.throw;
+        expect( () => controller.setOverride(1, NaN ,true)).to.throw;
+        expect( () => controller.setOverride(1, -1, true)).to.throw;
+        expect( () => controller.setOverride(1, 9, true)).to.throw;
+        expect( () => controller.setOverride(1, 10, true)).to.throw;
+    });
+
+    it("should correctly map control state to device state", () => {
         let summary: Snapshot;
         
         //off

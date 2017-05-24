@@ -1,6 +1,6 @@
-import { ControlStateSnapshot } from "./controlstate-snapshot";
-import { EnvironmentSnapshot } from "./environment-snapshot";
-import { Snapshot } from "./snapshot";
+import { ControlStateSnapshot } from "../snapshots/controlstate-snapshot";
+import { EnvironmentSnapshot } from "../snapshots/environment-snapshot";
+import { Snapshot } from "../snapshots/snapshot";
 
 /**
  * Symbolic names for types to be used in IoC injection
@@ -29,6 +29,12 @@ export interface IController {
 
     // provides raw data on state of the heating system and environment
     getSnapshot(): Snapshot;
+
+    // set an override for the heating, overrides the current program for a while
+    setOverride(start: number, duration: number, state: boolean): void;
+
+    // clear any override for the heating
+    clearOverride(): void;
 }
 
 /**

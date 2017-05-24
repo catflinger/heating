@@ -1,17 +1,23 @@
 import { ControlStateSnapshot } from "./controlstate-snapshot";
 import { DeviceStateSnapshot } from "./devicestate-snapshot";
 import { EnvironmentSnapshot } from "./environment-snapshot";
+import { OverrideSnapshot } from "./override-snapshot";
 
 export class Snapshot {
     private _control: ControlStateSnapshot;
     private _environment: EnvironmentSnapshot;
     private _device: DeviceStateSnapshot;
+    private _override: OverrideSnapshot;
 
-    constructor(control: ControlStateSnapshot, environment: EnvironmentSnapshot, device: DeviceStateSnapshot) {
+    constructor(control: ControlStateSnapshot,
+                environment: EnvironmentSnapshot,
+                device: DeviceStateSnapshot,
+                override: OverrideSnapshot) {
+
         this._control = control;
         this._environment = environment;
         this._device = device;
-
+        this._override = override;
     }
 
     public get control(): ControlStateSnapshot {
@@ -24,5 +30,9 @@ export class Snapshot {
 
     public get device(): DeviceStateSnapshot {
         return this._device;
+    }
+
+    public get override(): OverrideSnapshot {
+        return this._override;
     }
 }
