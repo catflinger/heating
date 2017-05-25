@@ -1,6 +1,6 @@
 import { injectable } from "inversify";
 
-import {IControllerSettings, IClock } from "../../src/types";
+import {IControllerSettings, IClock } from "../../src/controller/types";
 
 @injectable()
 export class MockControllerSettings implements IControllerSettings {

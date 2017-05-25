@@ -11,7 +11,7 @@ import {
     Sensors, 
     Snapshot, 
     ControlStateSnapshot, 
-    DeviceStateSnapshot } from "../../src/types";
+    DeviceStateSnapshot } from "../../src/controller/types";
 
 @injectable()
 export class MockControlStrategy implements IControlStrategy {

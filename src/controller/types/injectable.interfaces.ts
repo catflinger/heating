@@ -24,6 +24,9 @@ export const INJECTABLES = {
  */
 export interface IController {
 
+    // initialses devices and begins polling the environment
+    start(): void;
+
     // re-reads environment and applies current program settings to devices
     refresh(): void;
 

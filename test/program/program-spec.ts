@@ -1,5 +1,5 @@
-import { IControllerSettings, IProgram, INJECTABLES } from "../../src/types";
-import { Program } from "../../src/program";
+import { IControllerSettings, IProgram, INJECTABLES } from "../../src/controller/types";
+import { Program } from "../../src/controller/program";
 import { container } from "./inversify.config.test";
 
 import * as chai from "chai";

@@ -1,5 +1,5 @@
-import { IController, IEnvironment, IControllerSettings, IProgram, ISwitchable, Sensors, Snapshot, INJECTABLES } from "../../src/types";
-import { Controller } from "../../src/controller";
+import { IController, IEnvironment, IControllerSettings, IProgram, ISwitchable, Sensors, Snapshot, INJECTABLES } from "../../src/controller/types";
+import { Controller } from "../../src/controller/controller";
 import { container } from "./inversify.config.test";
 import { MockEnvironment, MockControlStrategy } from "./mocks";
 
@@ -39,6 +39,10 @@ describe("controller", () => {
     });
 
     it("should construct", () => {
+        expect(() => controller.start()).not.to.throw;
+    });
+
+    it("should initialise", () => {
         expect(controller).not.to.be.undefined;
     });
 

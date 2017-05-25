@@ -49,12 +49,12 @@ export class Controller implements IController {
         this.currentControlState = new ControlStateSnapshot(false, false);
     }
 
-    public getSnapshot(): Snapshot {
-        return new Snapshot(
-            this.currentControlState.clone(),
-            this.environment.getSnapshot(),
-            this.getDevicelState(),
-            this.chOverride ? this.chOverride.clone() : null);
+    public start(): void {
+        this.boiler.init();
+        this.chPump.init();
+        this.hwPump.init();
+
+        // TO DO: start the environment polling...
     }
 
     public refresh(): void {
@@ -64,6 +64,14 @@ export class Controller implements IController {
 
         // apply it to the system
         this.applyControlState(newState);
+    }
+
+    public getSnapshot(): Snapshot {
+        return new Snapshot(
+            this.currentControlState.clone(),
+            this.environment.getSnapshot(),
+            this.getDevicelState(),
+            this.chOverride ? this.chOverride.clone() : null);
     }
 
     public setOverride(start: number, duration: number, state: boolean): void {
@@ -80,6 +88,7 @@ export class Controller implements IController {
     public clearOverride(): void {
         this.chOverride = null;
     }
+
     /************************************** PRIVATE MEMBERS AREA ****************************************/
 
     private getDevicelState(): DeviceStateSnapshot {

@@ -1,7 +1,7 @@
 import { Container } from "inversify";
 import "reflect-metadata";
-import { Controller } from "../../src/controller";
-import { IControlStrategy, IController, IControllerSettings, IEnvironment, IProgram, ISwitchable, INJECTABLES } from "../../src/types";
+import { Controller } from "../../src/controller/controller";
+import { IControlStrategy, IController, IControllerSettings, IEnvironment, IProgram, ISwitchable, INJECTABLES } from "../../src/controller/types";
 
 import { MockControlStrategy, MockDevice, MockControllerSettings, MockEnvironment, MockProgram } from "./mocks";
 
