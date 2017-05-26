@@ -1,5 +1,6 @@
 import { ControlStateSnapshot } from "../snapshots/controlstate-snapshot";
 import { EnvironmentSnapshot } from "../snapshots/environment-snapshot";
+import { ProgramSnapshot } from "../snapshots/program-snapshot";
 import { Snapshot } from "../snapshots/snapshot";
 
 /**
@@ -44,9 +45,7 @@ export interface IController {
  * interface for control strategies
  */
 export interface IControlStrategy {
-    calculateControlState(
-        program: IProgram,
-        currentState: Snapshot): ControlStateSnapshot;
+    calculateControlState(currentState: Snapshot): ControlStateSnapshot;
 }
 
 /**
@@ -89,8 +88,8 @@ export interface IProgram {
     // set the min and max water temperatures as a pair
     setHWTemps(min: number, max: number): void;
 
-    // gets the program value for a slot number, slot numbering starts at zero
-    getValue(slot: number): boolean;
+    // returns a read-only copy of this program
+    getSnapshot(): ProgramSnapshot;
 
     // set the program value for slot numbers in the range.  from and to are are inclusive
     setRange(state: boolean[], from: number, to: number): void;

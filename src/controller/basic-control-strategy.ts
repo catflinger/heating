@@ -16,7 +16,7 @@ export class BasicControlStrategy implements IControlStrategy {
     @inject(INJECTABLES.Clock)
     private clock: IClock;
 
-    public calculateControlState(program: IProgram, currentState: Snapshot): ControlStateSnapshot {
+    public calculateControlState(currentState: Snapshot): ControlStateSnapshot {
         let heating: boolean = false;
         let water: boolean = false;
         const currentSlot: number = this.clock.currentSlot;
@@ -25,13 +25,14 @@ export class BasicControlStrategy implements IControlStrategy {
         // If the temp is too low, keep trying to raise the temmperature.   If the temperature is over the minimum
         // already then keep the boiler on until it is over the maximum.  This hysteresis avoids cycling on/offf around
         // the minimum temp
-        if (currentState.environment.hwTemperature < program.minHWTemp ||
-            (currentState.environment.hwTemperature < program.maxHWTemp && currentState.control.hotWater)) {
+        if (currentState.environment.hwTemperature < currentState.program.minHwTemp ||
+            (currentState.environment.hwTemperature < currentState.program.maxHwTemp &&
+             currentState.control.hotWater)) {
             water = true;
         }
 
         // now set the heating, simple and straightforward
-        heating = program.getValue(currentSlot);
+        heating = currentState.program.slots[currentSlot];
 
         // if there is an override apply it
         const ov = currentState.override;

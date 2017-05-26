@@ -12,6 +12,7 @@ import {
     Snapshot, 
     ControlStateSnapshot, 
     DeviceStateSnapshot } from "../../src/controller/types";
+import { ProgramSnapshot } from "../../src/controller/snapshots/program-snapshot";
 
 @injectable()
 export class MockControlStrategy implements IControlStrategy {
@@ -19,7 +20,7 @@ export class MockControlStrategy implements IControlStrategy {
     public heating: boolean = false; //mock result, to be set by tests
 
     // returns whatever the test has set in the water and heating members
-    calculateControlState(program: IProgram, currentState: Snapshot): ControlStateSnapshot {
+    calculateControlState(currentState: Snapshot): ControlStateSnapshot {
         return new ControlStateSnapshot(this.heating, this.water);
     }  
 }
@@ -50,6 +51,9 @@ export class MockControllerSettings implements IControllerSettings {
 
 @injectable()
 export class MockProgram implements IProgram {
+    getSnapshot(): ProgramSnapshot {
+        throw new Error("Method not implemented.");
+    }
     setHWTemps(min: number, max: number): void {
         throw new Error("Method not implemented.");
     }
@@ -66,10 +70,6 @@ export class MockProgram implements IProgram {
 
     //constant for number of programmable time slots in the day
     public get slotsPerDay(): number {
-        throw new Error("Method not implemented.");
-    }
-
-    public getValue(slot: number): boolean {
         throw new Error("Method not implemented.");
     }
 

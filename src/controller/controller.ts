@@ -60,7 +60,7 @@ export class Controller implements IController {
     public refresh(): void {
 
         // get the new control state
-        const newState: ControlStateSnapshot = this.strategy.calculateControlState(this.program, this.getSnapshot());
+        const newState: ControlStateSnapshot = this.strategy.calculateControlState(this.getSnapshot());
 
         // apply it to the system
         this.applyControlState(newState);
@@ -71,7 +71,8 @@ export class Controller implements IController {
             this.currentControlState.clone(),
             this.environment.getSnapshot(),
             this.getDevicelState(),
-            this.chOverride ? this.chOverride.clone() : null);
+            this.chOverride ? this.chOverride.clone() : null,
+            this.program.getSnapshot());
     }
 
     public setOverride(start: number, duration: number, state: boolean): void {

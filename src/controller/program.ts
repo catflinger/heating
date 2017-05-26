@@ -1,4 +1,6 @@
 import { inject, injectable } from "inversify";
+
+import { ProgramSnapshot } from "./snapshots/program-snapshot";
 import { IControllerSettings, INJECTABLES, IProgram } from "./types";
 
 @injectable()
@@ -23,10 +25,14 @@ export class Program implements IProgram {
         }
     }
 
-    public getValue(slotNumber: number): boolean {
-        this.validateSlotNumber(slotNumber);
-        return this.slots[slotNumber];
+    public getSnapshot(): ProgramSnapshot {
+        return new ProgramSnapshot(this._minHwTemp, this._maxHwTemp, this.slots);
     }
+
+    // public getValue(slotNumber: number): boolean {
+    //     this.validateSlotNumber(slotNumber);
+    //     return this.slots[slotNumber];
+    // }
 
     public get minHWTemp(): number {
         return this._minHwTemp;
