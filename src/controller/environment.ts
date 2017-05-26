@@ -17,7 +17,9 @@ export class Environment implements IEnvironment {
         let result: number;
 
         try {
-            const data: string = readFileSync(this.settings.oneWireDirectory + "/" + deviceId, "utf8");
+            const path: string = this.settings.oneWireDirectory + "/" + deviceId;
+                    console.log("1-wire path is " + path);
+            const data: string = readFileSync(path, "utf8");
             result = Number.parseInt(data);
 
         } catch (exp) {
