@@ -21,7 +21,7 @@
     "coverage": "nyc --include='src/**/*.ts' --reporter=text --reporter=html --reporter=lcov mocha --compilers ts:ts-node/register --recursive \"test/**/*.test.ts\"",
     "watch": "npm run build -- --watch",
     "watch:test": "npm run test -- --watch",
-    "start" : "npm run build && node lib/src/index.js"
+    "start": "npm run build && set DEBUG=app && node lib/src/index.js"
   },
   "dependencies": {
     "express": "^4.15.3",
@@ -30,12 +30,14 @@
   },
   "devDependencies": {
     "@types/chai": "^3.0.0",
+    "@types/debug": "0.0.29",
     "@types/expect.js": "^0.3.29",
     "@types/express": "^4.0.35",
     "@types/mocha": "^2.0.0",
     "@types/node": "^7.0.0",
     "chai": "^3.0.0",
     "coveralls": "^2.0.0",
+    "debug": "^2.6.8",
     "expect.js": "^0.3.1",
     "mocha": "^3.0.0",
     "nyc": "^10.0.0",

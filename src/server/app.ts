@@ -1,50 +1,30 @@
 import * as express from "express";
+import { inject } from "inversify";
 
-import { IController, IControllerSettings, INJECTABLES } from "../controller/index";
+import { IClock, IController, IControllerSettings, INJECTABLES } from "../controller/index";
 import { Snapshot } from "../controller/snapshots/snapshot";
+import { ControlApi } from "./api/control-api";
+import { StatusApi } from "./api/status-api";
 import { container } from "./inversify.config";
 
 class App {
     public express: express.Application;
-    private controller: IController;
-    private settings: IControllerSettings;
 
-    constructor() {
+    public start(): express.Application {
         // save a copy of express as a class member for convenience
         this.express = express();
 
-        // inject the controller to use
-        this.controller = container.get<IController>(INJECTABLES.Controller);
-        this.settings = container.get<IControllerSettings>(INJECTABLES.ControllerSettings);
-
         // get the router and add the API implementation
-        const router = express.Router();
+        const router: express.Router = express.Router();
+        const controller: IController = container.get<IController>(INJECTABLES.Controller);
+        const controllerSettings: IControllerSettings = container.get<IControllerSettings>(INJECTABLES.ControllerSettings);
+        const clock: IClock = container.get<IClock>(INJECTABLES.Clock);
 
-        router.get("/status", (req, res, next) => {
-            const snapshot: Snapshot = this.controller.getSnapshot();
-
-            // define of API response
-            const result: any = {
-                control: {
-                    heating: snapshot.control.heating,
-                    water: snapshot.control.hotWater,
-                },
-                env: {
-                    hwTemp: snapshot.environment.hwTemperature,
-                },
-                program: {
-                    hwmax: snapshot.program.maxHwTemp,
-                    hwmin: snapshot.program.minHwTemp,
-                    slots: snapshot.program.slots,
-                    slotsPerDay: this.settings.slotsPerDay,
-                },
-            };
-
-            res.json(result);
-        });
+        StatusApi.addRoutes(router, controller, controllerSettings, clock);
+        ControlApi.addRoutes(router, controller, controllerSettings, clock);
 
         // start the controller: this initialises digital outputpins and starts the environment polling
-        this.controller.start();
+        controller.start();
 
         this.express.use((req, res, next) => {
             res.header("Access-Control-Allow-Origin", "*");
@@ -57,8 +37,10 @@ class App {
 
         // tell express to use the wwwroot folder for serving staic files
         this.express.use(express.static("wwwroot"));
+
+        return this.express;
     }
 }
 
 // create the app and export it
-export default new App().express;
+export default new App().start();

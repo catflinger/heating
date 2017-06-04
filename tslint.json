@@ -1,11 +1,12 @@
 {
-  "extends": "tslint:latest",
-  "rules": {
-    "variable-name": [
-      true,
-      "check-format",
-      "allow-leading-underscore",
-      "ban-keywords"
-    ]
-  }
+    "extends": "tslint:latest",
+    "rules": {
+        "max-line-length": 150,
+        "variable-name": [
+            true,
+            "check-format",
+            "allow-leading-underscore",
+            "ban-keywords"
+        ]
+    }
 }

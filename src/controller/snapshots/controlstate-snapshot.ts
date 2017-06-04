@@ -23,6 +23,5 @@ export class ControlStateSnapshot {
         return new ControlStateSnapshot(
             this._heating,
             this._hotWater);
-
     }
 }
