@@ -11,7 +11,7 @@ export class OverrideSnapshot {
         this._date = new Date();
     }
 
-    public clone() {
+    public clone(): OverrideSnapshot {
         const result: OverrideSnapshot = new OverrideSnapshot(this._startSlot, this._duration, this._state);
         result._date = this.date;
 

@@ -1,11 +1,20 @@
 import { Router } from "@types/express";
+import * as Debug from "debug";
 
 import { IClock, IController, IControllerSettings, Snapshot } from "../../controller/types";
+
+const debug = Debug("app");
 
 export class StatusApi {
 
     public static addRoutes(router: Router, controller: IController, settings: IControllerSettings, clock: IClock): void {
+
         router.get("/status", (req, res, next) => {
+            debug("GET: system status");
+
+            res.header("Cache-Control", "private, no-cache, no-store, must-revalidate");
+            res.header("Expires", "-1");
+            res.header("Pragma", "no-cache");
 
             try {
                 const snapshot: Snapshot = controller.getSnapshot();
@@ -19,6 +28,12 @@ export class StatusApi {
                     env: {
                         hwTemp: snapshot.environment.hwTemperature,
                     },
+                    override: snapshot.override ? {
+                        date: snapshot.override.date,
+                        duration: snapshot.override.duration,
+                        start: snapshot.override.start,
+                        state: snapshot.override.state,
+                    } : null,
                     program: {
                         hwmax: snapshot.program.maxHwTemp,
                         hwmin: snapshot.program.minHwTemp,
@@ -31,7 +46,6 @@ export class StatusApi {
             } catch (e) {
                 res.status(500).send("could not process this request " + e);
             }
-
         });
     }
 }

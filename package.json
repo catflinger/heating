@@ -24,11 +24,13 @@
     "start": "npm run build && set DEBUG=app && node lib/src/index.js"
   },
   "dependencies": {
+    "body-parser": "^1.17.2",
     "express": "^4.15.3",
     "inversify": "^4.1.0",
     "reflect-metadata": "^0.1.10"
   },
   "devDependencies": {
+    "@types/body-parser": "^1.16.3",
     "@types/chai": "^3.0.0",
     "@types/debug": "0.0.29",
     "@types/expect.js": "^0.3.29",

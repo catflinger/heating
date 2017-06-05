@@ -1,3 +1,4 @@
+import * as bodyParser from "body-parser";
 import * as express from "express";
 import { inject } from "inversify";
 
@@ -31,6 +32,10 @@ class App {
             res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
             next();
         });
+
+        this.express.use(bodyParser.json({
+            limit: 100,
+        }));
 
         // tell express to use the router for the API
         this.express.use("/api/", router);

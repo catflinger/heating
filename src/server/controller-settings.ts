@@ -5,7 +5,7 @@ import { IControllerSettings } from "../controller/index";
 export class ControllerSettings implements IControllerSettings {
 
     public get slotsPerDay(): number {
-        return 10;
+        return 6 * 24;
     }
 
     public get boilerPin(): number {

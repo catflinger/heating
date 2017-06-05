@@ -84,10 +84,14 @@ export class Controller implements IController {
         }
 
         this.chOverride = new OverrideSnapshot(start, duration, state);
+
+        this.refresh();
     }
 
     public clearOverride(): void {
         this.chOverride = null;
+
+        this.refresh();
     }
 
     /************************************** PRIVATE MEMBERS AREA ****************************************/
