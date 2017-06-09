@@ -6,7 +6,7 @@ export class ProgramSnapshot {
     private _minHwTemp: number;
     private _maxHwTemp: number;
 
-    constructor(minHwTemp: number, maxHwTemp: number, slots: boolean[]) {
+    constructor(minHwTemp: number, maxHwTemp: number, slots: boolean[], slotsPerDay: number) {
         this._maxHwTemp = maxHwTemp;
         this._minHwTemp = minHwTemp;
         slots.forEach((slot) => this._slots.push(slot));
@@ -22,5 +22,9 @@ export class ProgramSnapshot {
 
     public get slots(): boolean[] {
         return this._slots;
+    }
+
+    public get slotsPerDay(): number {
+        return this.slotsPerDay;
     }
 }

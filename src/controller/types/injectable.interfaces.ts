@@ -1,7 +1,9 @@
 import { ControlStateSnapshot } from "../snapshots/controlstate-snapshot";
 import { EnvironmentSnapshot } from "../snapshots/environment-snapshot";
+import { OverrideSnapshot } from "../snapshots/override-snapshot";
 import { ProgramSnapshot } from "../snapshots/program-snapshot";
 import { Snapshot } from "../snapshots/snapshot";
+import { DeviceStateSnapshot } from "../types";
 
 /**
  * Symbolic names for types to be used in IoC injection
@@ -11,13 +13,14 @@ export const INJECTABLES = {
     CHPump: Symbol("CHPump"),
     Clock: Symbol("Clock"),
     ControlStrategy: Symbol("ControlStrategy"),
-    Controller: Symbol("Controller"),
     ControllerSettings: Symbol("ControllerSettings"),
     DigitalOutput: Symbol("DigitalOutput"),
     Environment: Symbol("Environment"),
     EnvironmentSettings: Symbol("EnvironmentSettings"),
     HWPump: Symbol("HWPump"),
+    Override: Symbol("Override"),
     Program: Symbol("Program"),
+    System: Symbol("System"),
 };
 
 /**
@@ -28,17 +31,23 @@ export interface IController {
     // initialses devices and begins polling the environment
     start(): void;
 
-    // re-reads environment and applies current program settings to devices
-    refresh(): void;
-
     // provides raw data on state of the heating system and environment
     getSnapshot(): Snapshot;
 
-    // set an override for the heating, overrides the current program for a while
-    setOverride(start: number, duration: number, state: boolean): void;
+    // creates a new override or extends an existing override
+    setOverride(duration: number): void;
 
-    // clear any override for the heating
+    // removes any override
     clearOverride(): void;
+}
+
+/**
+ * interface for control strategies
+ */
+export interface IControllable {
+    start(): void;
+    applyControlState(state: ControlStateSnapshot): void;
+    getDevicelState(): DeviceStateSnapshot;
 }
 
 /**
@@ -54,16 +63,22 @@ export interface IControlStrategy {
  */
 export interface IControllerSettings {
     slotsPerDay: number;
+    maxOverrideDuration: number;
     boilerPin: number;
     hwPumpPin: number;
     chPumpPin: number;
 }
 
 /**
- * Gets the system time in 5 minute intervals, aka slot numbers
+ * Gets the system time in 5 minute intervals, aka slot numbers.
+ * The time on the clock remains constant until nudged along by calling the tick() function
  */
 export interface IClock {
     currentSlot: number;
+    tick(): void;
+    isToday(date: Date): boolean;
+    isYesterday(date: Date): boolean;
+    getDate(): Date;
 }
 
 /**
@@ -91,6 +106,9 @@ export interface IProgram {
     // returns a read-only copy of this program
     getSnapshot(): ProgramSnapshot;
 
+    // gets the value for a slot number
+    getValue(slot: number): boolean;
+
     // set the program value for slot numbers in the range.  from and to are are inclusive
     setRange(state: boolean[], from: number, to: number): void;
 
@@ -99,6 +117,23 @@ export interface IProgram {
 
     // deserialise from json
     loadJson(json: string): void;
+}
+
+/**
+ *  interface for setting overrides
+ */
+export interface IOverride {
+    // removes any expired overrides
+    refresh(): void;
+
+    // return the current override state
+    getSnapshot(): OverrideSnapshot;
+
+    // creates a new override or extends an existing override
+    setOverride(duration: number): void;
+
+    // removes any override
+    clearOverride(): void;
 }
 
 /**

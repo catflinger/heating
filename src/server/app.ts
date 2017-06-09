@@ -1,12 +1,11 @@
 import * as bodyParser from "body-parser";
 import * as express from "express";
-import { inject } from "inversify";
 
-import { IClock, IController, IControllerSettings, INJECTABLES } from "../controller/index";
+import { Controller } from "../controller/controller";
 import { Snapshot } from "../controller/snapshots/snapshot";
+import { IController } from "../controller/types";
 import { ControlApi } from "./api/control-api";
 import { StatusApi } from "./api/status-api";
-import { container } from "./inversify.config";
 
 class App {
     public express: express.Application;
@@ -17,12 +16,10 @@ class App {
 
         // get the router and add the API implementation
         const router: express.Router = express.Router();
-        const controller: IController = container.get<IController>(INJECTABLES.Controller);
-        const controllerSettings: IControllerSettings = container.get<IControllerSettings>(INJECTABLES.ControllerSettings);
-        const clock: IClock = container.get<IClock>(INJECTABLES.Clock);
 
-        StatusApi.addRoutes(router, controller, controllerSettings, clock);
-        ControlApi.addRoutes(router, controller, controllerSettings, clock);
+        const controller: IController = new Controller();
+        StatusApi.addRoutes(router, controller);
+        ControlApi.addRoutes(router, controller);
 
         // start the controller: this initialises digital outputpins and starts the environment polling
         controller.start();

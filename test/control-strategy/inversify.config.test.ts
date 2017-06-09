@@ -2,7 +2,8 @@ import { Container } from "inversify";
 import "reflect-metadata";
 import { IClock, IControlStrategy, IControllerSettings, IProgram, INJECTABLES } from "../../src/controller/types";
 import { Program } from "../../src/controller/program";
-import { MockClock, MockControllerSettings } from "./mocks";
+import { MockControllerSettings } from "./mocks";
+import { MockClock } from "../common/mock-clock";
 import { BasicControlStrategy } from "../../src/controller/basic-control-strategy";
 
 export const container = new Container();

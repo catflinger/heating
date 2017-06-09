@@ -1,0 +1,22 @@
+import { injectable } from "inversify";
+import * as moment from "moment";
+
+import { IControllerSettings } from "../../src/controller/types";
+import { Clock } from "../../src/controller/clock";
+
+@injectable()
+export class MockClock extends Clock {
+    
+    public setSlotNumber(slot: number) {
+        this.now = moment(this.now)
+            .startOf("day")
+            .add(slot * 24 * 60 / this.settings.slotsPerDay, "minutes")
+            .toDate();
+    }
+
+    public addSlots(duration: number) {
+        this.now = moment(this.now)
+            .add(duration * 24 * 60 / this.settings.slotsPerDay, "minutes")
+            .toDate();
+    }
+}

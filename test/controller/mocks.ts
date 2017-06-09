@@ -45,12 +45,19 @@ export class MockControllerSettings implements IControllerSettings {
     chPumpPin: number;
 
     public get slotsPerDay(): number {
-        return 12 * 24;
+        return 10;
+    }
+        
+    public get maxOverrideDuration(): number {
+        return 10;    
     }
 }
 
 @injectable()
 export class MockProgram implements IProgram {
+    getValue(slot: number): boolean {
+        throw new Error("Method not implemented.");
+    }
     getSnapshot(): ProgramSnapshot {
         throw new Error("Method not implemented.");
     }

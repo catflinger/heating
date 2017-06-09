@@ -1,124 +1,86 @@
-import { inject, injectable } from "inversify";
+import { Container, inject } from "inversify";
 import "reflect-metadata";
 
+import { container } from "./inversify.config";
+
 import { BasicControlStrategy } from "./basic-control-strategy";
+
 import {
     ControlStateSnapshot,
-    DeviceStateSnapshot,
-    EnvironmentSnapshot,
+    IClock,
+    IControllable,
     IController,
     IControllerSettings,
     IControlStrategy,
     IEnvironment,
     INJECTABLES,
+    IOverride,
     IProgram,
-    ISwitchable,
-    OverrideSnapshot,
     Snapshot,
 } from "./types";
 
-@injectable()
 export class Controller implements IController {
 
+    // stores the control state: eg heating OFF hot water ON
     private currentControlState: ControlStateSnapshot;
-    private chOverride: OverrideSnapshot = null;
-
-    @inject(INJECTABLES.ControlStrategy)
     private strategy: IControlStrategy;
-
-    @inject(INJECTABLES.ControllerSettings)
     private settings: IControllerSettings;
-
-    @inject(INJECTABLES.Environment)
     private environment: IEnvironment;
-
-    @inject(INJECTABLES.Program)
     private program: IProgram;
-
-    @inject(INJECTABLES.Boiler)
-    private boiler: ISwitchable;
-
-    @inject(INJECTABLES.HWPump)
-    private hwPump: ISwitchable;
-
-    @inject(INJECTABLES.CHPump)
-    private chPump: ISwitchable;
+    private clock: IClock;
+    private override: IOverride;
+    private system: IControllable;
 
     constructor() {
-
         this.currentControlState = new ControlStateSnapshot(false, false);
+
+        this.strategy = container.get<IControlStrategy>(INJECTABLES.ControlStrategy);
+        this.settings = container.get<IControllerSettings>(INJECTABLES.ControllerSettings);
+        this.environment = container.get<IEnvironment>(INJECTABLES.Environment);
+        this.program = container.get<IProgram>(INJECTABLES.Program);
+        this.clock = container.get<IClock>(INJECTABLES.Clock);
+        this.override = container.get<IOverride>(INJECTABLES.Override);
+        this.system = container.get<IControllable>(INJECTABLES.System);
     }
 
     public start(): void {
-        this.boiler.init();
-        this.chPump.init();
-        this.hwPump.init();
+        this.system.start();
 
         // TO DO: start the environment polling...
-    }
-
-    public refresh(): void {
-
-        // get the new control state
-        const newState: ControlStateSnapshot = this.strategy.calculateControlState(this.getSnapshot());
-
-        // apply it to the system
-        this.applyControlState(newState);
     }
 
     public getSnapshot(): Snapshot {
         return new Snapshot(
             this.currentControlState.clone(),
             this.environment.getSnapshot(),
-            this.getDevicelState(),
-            this.chOverride ? this.chOverride.clone() : null,
+            this.system.getDevicelState(),
+            this.override.getSnapshot(),
             this.program.getSnapshot());
     }
 
-    public setOverride(start: number, duration: number, state: boolean): void {
-
-        if (isNaN(start) || !isFinite(start) || start < 0 || start >= this.settings.slotsPerDay ||
-            isNaN(duration) || !isFinite(duration) || duration < 0 || start + duration >= this.settings.slotsPerDay) {
-
-            throw new Error("value out of range in Controller:setOverride");
-        }
-
-        this.chOverride = new OverrideSnapshot(start, duration, state);
-
-        this.refresh();
+    // reveal for setOveride
+    public setOverride(duration: number): void {
+        this.override.setOverride(duration);
     }
 
+    // reveal for clearOveride
     public clearOverride(): void {
-        this.chOverride = null;
-
-        this.refresh();
+        this.override.clearOverride();
     }
 
-    /************************************** PRIVATE MEMBERS AREA ****************************************/
+    // TO DO TODO : make this private
+    public refresh(): void {
 
-    private getDevicelState(): DeviceStateSnapshot {
+        // move the clock on
+        this.clock.tick();
 
-        // return a snapshot of the device states (boiler on, pump off etc)
-        return new DeviceStateSnapshot(
-            this.boiler.state,
-            this.hwPump.state,
-            this.chPump.state);
-    }
+        // remove any expired overrides
+        this.override.refresh();
 
-    private applyControlState(state: ControlStateSnapshot) {
+        // get the new control stat
+        this.currentControlState = this.strategy.calculateControlState(this.getSnapshot());
 
-        // map the control state to individual device states
-        const boilerState: boolean = (state.heating || state.hotWater);
-        const hwPumpState: boolean = state.hotWater;
-        const chPumpState = state.heating;
-
-        // switch the devices
-        this.boiler.switch(boilerState);
-        this.hwPump.switch(hwPumpState);
-        this.chPump.switch(chPumpState);
-
-        // remember the new control state
-        this.currentControlState = state.clone();
-
+        // apply it to the system
+        this.system.applyControlState(this.currentControlState.clone());
     }
 }

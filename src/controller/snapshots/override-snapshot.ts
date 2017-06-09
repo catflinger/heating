@@ -4,15 +4,15 @@ export class OverrideSnapshot {
     private _state: boolean;     // required state true=ON, false=OFF
     private _date: Date;         // date this snapshot was created
 
-    constructor(start: number, duration: number, state: boolean) {
+    constructor(start: number, duration: number, state: boolean, date: Date) {
         this._startSlot = Math.floor(start);
         this._duration = Math.floor(duration);
         this._state = state;
-        this._date = new Date();
+        this._date = new Date(date); // Date is a reference type so make a clone
     }
 
     public clone(): OverrideSnapshot {
-        const result: OverrideSnapshot = new OverrideSnapshot(this._startSlot, this._duration, this._state);
+        const result: OverrideSnapshot = new OverrideSnapshot(this._startSlot, this._duration, this._state, this.date);
         result._date = this.date;
 
         return result;

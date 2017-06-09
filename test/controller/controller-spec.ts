@@ -2,14 +2,17 @@ import { IController, IEnvironment, IControllerSettings, IProgram, ISwitchable, 
 import { Controller } from "../../src/controller/controller";
 import { container } from "./inversify.config.test";
 import { MockEnvironment, MockControlStrategy } from "./mocks";
+import { MockClock } from "../common/mock-clock";
 
 import * as chai from "chai";
 import "mocha";
 
+
 const expect = chai.expect;
 
-let controller: IController;
+let controller: Controller = new Controller(container);
 let mockStrategy: MockControlStrategy = container.get<MockControlStrategy>(INJECTABLES.ControlStrategy);
+let clock: MockClock = container.get<MockClock>(INJECTABLES.Clock);
 
 const hwTempBelowThreshold = 30;
 const hwTempInsideThreshold = 45;
@@ -34,10 +37,6 @@ function compareState(expected: any, actual: Snapshot) {
 
 describe("controller", () => {
 
-    before(() => {
-        controller = container.get<IController>(INJECTABLES.Controller);
-    });
-
     it("should construct", () => {
         expect(() => controller.start()).not.to.throw;
     });
@@ -51,34 +50,49 @@ describe("controller", () => {
         compareState(testDataDefault, summary);
     });
 
-    it("should set and clear an override", () => {
-        let summary: Snapshot = controller.getSnapshot();
-        expect(summary.override).to.be.null;
+    describe ("override", () => {
+        before(() => {
+            clock.setSlotNumber(2);
+        });
+
+        it("should start off with no override", () => {
+            let summary: Snapshot = controller.getSnapshot();
+            expect(summary.override).to.be.null;
+        });
         
-        controller.setOverride(2,3,true);
-        summary = controller.getSnapshot();
+        it("should set an override", () => {
+            // set one for 3 slots
+            controller.setOverride(3);
+            let summary: Snapshot = controller.getSnapshot();
 
-        expect(summary.override.start).to.equal(2);
-        expect(summary.override.duration).to.equal(3);
-        expect(summary.override.state).to.equal(true);
+            expect(summary.override.start).to.equal(2);
+            expect(summary.override.duration).to.equal(3);
+            expect(summary.override.state).to.equal(true);
+        });
 
-        controller.clearOverride();
-        summary = controller.getSnapshot();
+        it("should increase by one slot", () => {
+            controller.setOverride(1);
+            let summary: Snapshot = controller.getSnapshot();
 
-        expect(summary.override).to.be.null;
+            expect(summary.override.start).to.equal(2);
+            expect(summary.override.duration).to.equal(4);
+            expect(summary.override.state).to.equal(true);
+        });
+
+        it("should clear an override", () => {
+
+            // clear the override
+            controller.clearOverride();
+            let summary: Snapshot = controller.getSnapshot();
+
+            expect(summary.override).to.be.null;
+        });
     });
 
     it("should not set an override with bad data", () => {       
-        expect( () => controller.setOverride(undefined, 3, true)).to.throw;
-        expect( () => controller.setOverride(NaN, 3, true)).to.throw;
-        expect( () => controller.setOverride(-1, 3, true)).to.throw;
-        expect( () => controller.setOverride(10, 3, true)).to.throw;
-
-        expect( () => controller.setOverride(1, undefined, true)).to.throw;
-        expect( () => controller.setOverride(1, NaN ,true)).to.throw;
-        expect( () => controller.setOverride(1, -1, true)).to.throw;
-        expect( () => controller.setOverride(1, 9, true)).to.throw;
-        expect( () => controller.setOverride(1, 10, true)).to.throw;
+        expect( () => controller.setOverride(undefined)).to.throw;
+        expect( () => controller.setOverride(NaN)).to.throw;
+        expect( () => controller.setOverride(-1)).to.throw;
     });
 
     it("should correctly map control state to device state", () => {

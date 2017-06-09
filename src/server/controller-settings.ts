@@ -19,4 +19,8 @@ export class ControllerSettings implements IControllerSettings {
     public get chPumpPin(): number {
         return 23;
     }
+
+    public get maxOverrideDuration(): number {
+        return 10;
+    }
 }

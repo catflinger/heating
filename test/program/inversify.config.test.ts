@@ -2,7 +2,7 @@ import { Container } from "inversify";
 
 import { IControllerSettings, IProgram, INJECTABLES } from "../../src/controller/types";
 import { Program } from "../../src/controller/program"; 
-import { MockControllerSettings } from "./mocks";
+import { MockControllerSettings } from "../common/mock-controller-settings";
 
 export const container = new Container();
 

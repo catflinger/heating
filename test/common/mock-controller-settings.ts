@@ -8,4 +8,8 @@ export class MockControllerSettings implements IControllerSettings {
     chPumpPin: number;
 
     public slotsPerDay: number = 10;
+        
+    public get maxOverrideDuration(): number {
+        return 10;    
+    }
 }

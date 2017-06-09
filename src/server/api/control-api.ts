@@ -2,21 +2,24 @@ import { Router } from "@types/express";
 import * as Debug from "debug";
 
 import { Validate } from "../../common/validate";
-import { IClock, IController, IControllerSettings, Snapshot } from "../../controller/types";
+import { IController } from "../../controller/types";
 
 const debug = Debug("app");
 
 export class ControlApi {
 
-    public static addRoutes(router: Router, controller: IController, settings: IControllerSettings, clock: IClock): void {
+    public static addRoutes(router: Router, controller: IController): void {
 
-        router.post("/control/override/set", (req, res, next) => {
-            debug("POST: override set");
+        router.post("/control/boost", (req, res, next) => {
+            debug("POST: boost set");
 
-            const state: boolean = Validate.isBoolean(req.body.state, "Invalid data for override state");
-            const duration: number = Validate.isNumber(req.body.duration, "Invalid data for override state");
+            const duration: number = Validate.isNumber(req.body.duration, "Invalid data for heating boost duration");
 
-            controller.setOverride(clock.currentSlot, duration, state);
+            if ( isNaN(duration) || !isFinite(duration) || duration < 0 ) {
+                throw new Error("value out of range for override duration");
+            }
+
+            controller.setOverride(duration);
 
             // define of API response
             const result: any = { result: "OK"};

@@ -31,10 +31,11 @@ import {
 } from "../controller/index";
 
 import { MockDigitalOutput } from "../../test/switchables/mocks";
+import { System } from "../controller/system";
+import { IControllable } from "../controller/types";
 
 export const container = new Container();
 
-container.bind<IController>(INJECTABLES.Controller).to(Controller).inSingletonScope();
 container.bind<IControlStrategy>(INJECTABLES.ControlStrategy).to(BasicControlStrategy).inSingletonScope();
 container.bind<IControllerSettings>(INJECTABLES.ControllerSettings).to(ControllerSettings).inSingletonScope();
 container.bind<IEnvironment>(INJECTABLES.Environment).to(Environment).inSingletonScope();
@@ -45,3 +46,4 @@ container.bind<ISwitchable>(INJECTABLES.HWPump).to(HWPump).inSingletonScope();
 container.bind<ISwitchable>(INJECTABLES.CHPump).to(CHPump).inSingletonScope();
 container.bind<IClock>(INJECTABLES.Clock).to(Clock).inSingletonScope();
 container.bind<IDigitalOutput>(INJECTABLES.DigitalOutput).to(MockDigitalOutput).inSingletonScope();
+container.bind<IControllable>(INJECTABLES.System).to(System);

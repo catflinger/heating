@@ -1,5 +1,6 @@
 import { inject, injectable } from "inversify";
 
+import { Validate } from "../common/validate";
 import { ProgramSnapshot } from "./snapshots/program-snapshot";
 import { IControllerSettings, INJECTABLES, IProgram } from "./types";
 
@@ -25,8 +26,18 @@ export class Program implements IProgram {
         }
     }
 
+    public getValue(slot: number): boolean {
+        Validate.isInteger(slot, "slot number not numeric");
+
+        if (slot < 0 || slot >= this.settings.slotsPerDay) {
+            throw new Error("Method not implemented.");
+        }
+
+        return this.slots[slot];
+    }
+
     public getSnapshot(): ProgramSnapshot {
-        return new ProgramSnapshot(this._minHwTemp, this._maxHwTemp, this.slots);
+        return new ProgramSnapshot(this._minHwTemp, this._maxHwTemp, this.slots, this.settings.slotsPerDay);
     }
 
     // public getValue(slotNumber: number): boolean {

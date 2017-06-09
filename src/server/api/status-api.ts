@@ -1,13 +1,13 @@
 import { Router } from "@types/express";
 import * as Debug from "debug";
 
-import { IClock, IController, IControllerSettings, Snapshot } from "../../controller/types";
+import { IController, Snapshot } from "../../controller/types";
 
 const debug = Debug("app");
 
 export class StatusApi {
 
-    public static addRoutes(router: Router, controller: IController, settings: IControllerSettings, clock: IClock): void {
+    public static addRoutes(router: Router, controller: IController): void {
 
         router.get("/status", (req, res, next) => {
             debug("GET: system status");
@@ -38,7 +38,7 @@ export class StatusApi {
                         hwmax: snapshot.program.maxHwTemp,
                         hwmin: snapshot.program.minHwTemp,
                         slots: snapshot.program.slots,
-                        slotsPerDay: settings.slotsPerDay,
+                        slotsPerDay: snapshot.program.slotsPerDay,
                     },
                 };
                 res.json(result);
