@@ -2,11 +2,12 @@ import { Container } from "inversify";
 import "reflect-metadata";
 import { IControlStrategy, IController, IControllerSettings, IEnvironment, IOverride, IProgram, ISwitchable, INJECTABLES, IControllable } from "../../src/controller/types";
 
-import { MockControlStrategy, MockDevice, MockControllerSettings, MockEnvironment } from "./mocks";
+import { MockControlStrategy, MockDevice,MockEnvironment } from "./mocks";
 import { MockClock } from "../common/mock-clock";
 import { Program } from "../../src/controller/program";
 import { Override } from "../../src/controller/override";
 import { System } from "../../src/controller/system";
+import { MockControllerSettings } from "../common/mock-controller-settings";
 
 export const container = new Container();
 

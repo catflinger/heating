@@ -3,6 +3,9 @@ import { IControllerSettings } from "../controller/index";
 
 @injectable()
 export class ControllerSettings implements IControllerSettings {
+    public get programFile(): string {
+        return __dirname + "/data/program.json";
+    }
 
     public get slotsPerDay(): number {
         return 6 * 24;

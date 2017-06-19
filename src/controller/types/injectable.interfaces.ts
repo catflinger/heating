@@ -20,6 +20,7 @@ export const INJECTABLES = {
     HWPump: Symbol("HWPump"),
     Override: Symbol("Override"),
     Program: Symbol("Program"),
+    Store: Symbol("Store"),
     System: Symbol("System"),
 };
 
@@ -67,6 +68,7 @@ export interface IControllerSettings {
     boilerPin: number;
     hwPumpPin: number;
     chPumpPin: number;
+    programFile: string;
 }
 
 /**
@@ -111,6 +113,9 @@ export interface IProgram {
 
     // set the program value for slot numbers in the range.  from and to are are inclusive
     setRange(state: boolean[], from: number, to: number): void;
+
+    // save the current program
+    save(): void;
 
     // serialise the program to json
     toJson(): string;

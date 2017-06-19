@@ -4,8 +4,8 @@ import { IControllerSettings, IDigitalOutput, ISwitchable, INJECTABLES } from ".
 import { Boiler } from "../../src/controller/boiler"; 
 import { CHPump } from "../../src/controller/ch-pump"; 
 import { HWPump } from "../../src/controller/hw-pump"; 
-import { MockControllerSettings } from "./mocks";
 import { MockDigitalOutput } from "./mocks";
+import { MockControllerSettings } from "../common/mock-controller-settings";
 
 export const container = new Container();
 

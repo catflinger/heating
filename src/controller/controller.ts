@@ -1,8 +1,6 @@
 import { Container, inject } from "inversify";
 import "reflect-metadata";
 
-import { container } from "./inversify.config";
-
 import { BasicControlStrategy } from "./basic-control-strategy";
 
 import {
@@ -31,7 +29,7 @@ export class Controller implements IController {
     private override: IOverride;
     private system: IControllable;
 
-    constructor() {
+    constructor(container: Container) {
         this.currentControlState = new ControlStateSnapshot(false, false);
 
         this.strategy = container.get<IControlStrategy>(INJECTABLES.ControlStrategy);

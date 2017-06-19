@@ -1,8 +1,8 @@
 import { Container } from "inversify";
 import "reflect-metadata";
 
-import { ControllerSettings } from "./controller-settings";
-import { EnvironmentSettings } from "./environment-settings";
+import { ControllerSettings } from "../server/controller-settings";
+import { EnvironmentSettings } from "../server/environment-settings";
 
 import {
     // the injectable interfaces

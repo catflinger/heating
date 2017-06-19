@@ -2,19 +2,6 @@ import { injectable } from "inversify";
 import {IControllerSettings, IDigitalOutput, INJECTABLES } from "../../src/controller/types";
 
 @injectable()
-export class MockControllerSettings implements IControllerSettings {
-    boilerPin: number = 21;
-    hwPumpPin: number = 22;
-    chPumpPin: number = 23;
-
-    public slotsPerDay: number = 10;
-        
-    public get maxOverrideDuration(): number {
-        return 10;    
-    }
-}
-
-@injectable()
 export class MockDigitalOutput implements IDigitalOutput {
     private pins: boolean[] = [];
 

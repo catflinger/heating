@@ -1,6 +1,7 @@
 import { IControllerSettings, IProgram, INJECTABLES } from "../../src/controller/types";
 import { Program } from "../../src/controller/program";
 import { container } from "./inversify.config.test";
+import * as fs from "fs";
 
 import * as chai from "chai";
 import "mocha";
@@ -19,14 +20,28 @@ describe("program", () => {
 
     before(() => {
         settings = container.get<IControllerSettings>(INJECTABLES.ControllerSettings);
+
+        const json: string = '{"hwmax":50,"hwmin":40,"slots":[true,false,true,false,true,false,false,false,false,false]}';
+        fs.writeFileSync(settings.programFile, json);
+
         program = container.get<IProgram>(INJECTABLES.Program);
 
         min = 0;
         max = settings.slotsPerDay - 1;
+
     });
 
     it("should construct", () => {
         expect(program).not.to.be.undefined;
+    });
+
+    it("shoud have loaded from valid JSON", () => {
+
+        expect(program.minHWTemp).to.equal(40, "wrong value for minHWTemp");
+        expect(program.maxHWTemp).to.equal(50, "wrong value for maxHWTemp");
+        expect(program.getValue(0)).to.equal(true, "wrong value for slot 0");
+        expect(program.getValue(1)).to.equal(false, "wrong value for slot 1");
+        expect(program.getValue(9)).to.equal(false, "wrong value for slot 9");
     });
 
     it("should return hot water thresholds", () => {
@@ -34,13 +49,13 @@ describe("program", () => {
         expect(program.maxHWTemp).to.equal(maxHWTemp, "wrong value for max hw teperature");
     });
 
-    
+
     it("shoud set hot water thresholds", () => {
         program.setHWTemps(33, 43);
 
         expect(program.minHWTemp).to.equal(33, "wrong value for min hw teperature");
         expect(program.maxHWTemp).to.equal(43, "wrong value for max hw teperature");
-        
+
         // reset the values back for subsequent tests
         program.setHWTemps(minHWTemp, maxHWTemp);
     });
@@ -61,10 +76,10 @@ describe("program", () => {
         // hwmin and max wrong order
         expect(() => program.setHWTemps(50, 40)).to.throw;
     });
-    
+
     it("should return a heating slot value in range", () => {
         // lower bound for index
-        expect(program.getValue(min)).to.equal(false, "wrong value for min slot number");
+        expect(program.getValue(min)).to.equal(true, "wrong value for min slot number");
         // in-range index
         expect(program.getValue(min + 3)).to.equal(false, "wrong value for mid slot number");
         // upper bound for index
@@ -79,7 +94,7 @@ describe("program", () => {
 
     it("should set a range of values", () => {
         program.setRange([true, true, false, true, true], 1, 5);
-        expect(program.getValue(0)).to.equal(false, "slot 0 set unexpctedly");
+        expect(program.getValue(0)).to.equal(true, "slot 0 set unexpctedly");
         expect(program.getValue(1)).to.equal(true, "slot 1 not set");
         expect(program.getValue(2)).to.equal(true, "slot 2 not set");
         expect(program.getValue(3)).to.equal(false, "slot 3 not set");
@@ -113,7 +128,7 @@ describe("program", () => {
     it("shoud serialise to JSON", () => {
         // set some program values
         program.setRange([true, false], 1, 2);
-        
+
         //serialse the program
         const json: string = program.toJson();
 
@@ -131,32 +146,20 @@ describe("program", () => {
         expect(obj.slots[2]).to.equal(false, "wrong value for slot 2");
     });
 
-    it("shoud load from valid JSON", () => {
-        const json: string = '{"hwmax":55,"hwmin":45,"slots":[true,false,true,false,true,false,false,false,false,false]}';
-
-        program.loadJson(json);
-
-        expect(program.minHWTemp).to.equal(45, "wrong value for minHWTemp");
-        expect(program.maxHWTemp).to.equal(55, "wrong value for maxHWTemp");
-        expect(program.getValue(0)).to.equal(true, "wrong value for slot 0");
-        expect(program.getValue(1)).to.equal(false, "wrong value for slot 1");
-        expect(program.getValue(9)).to.equal(false, "wrong value for slot 9");
-    });
-
     it("shoud refuse to load from invalid JSON", () => {
         // slot array missing
-        let json: string = '{"hwmax":55,"hwmin":45}';       
+        let json: string = '{"hwmax":55,"hwmin":45}';
         expect(() => program.loadJson(json)).to.throw();
         // slot array not an array
-        json = '{"hwmax":55,"hwmin":45,"slots": "foo"}';       
+        json = '{"hwmax":55,"hwmin":45,"slots": "foo"}';
         expect(() => program.loadJson(json)).to.throw();
         // array too short
-        json = '{"hwmax":55,"hwmin":45,"slots":[true, false]}';       
+        json = '{"hwmax":55,"hwmin":45,"slots":[true, false]}';
         expect(() => program.loadJson(json)).to.throw();
         // array contains invalid fields
-        json = '{"hwmax":55,"hwmin":45,"slots":[1,0,true,false,true,false,false,false,false,false]}';       
+        json = '{"hwmax":55,"hwmin":45,"slots":[1,0,true,false,true,false,false,false,false,false]}';
         expect(() => program.loadJson(json)).to.throw();
-        
+
         // hwmin missing
         json = '{"hwmax":45,"slots":[true,false,true,false,true,false,false,false,false,false]}';
         expect(() => program.loadJson(json)).to.throw();
@@ -169,7 +172,7 @@ describe("program", () => {
         // hwmin too low
         json = '{"hwmax":55,"hwmin":61,"slots":[true,false,true,false,true,false,false,false,false,false]}';
         expect(() => program.loadJson(json)).to.throw();
-        
+
         // hwmax missing
         json = '{"hwmin":45,"slots":[true,false,true,false,true,false,false,false,false,false]}';
         expect(() => program.loadJson(json)).to.throw();
@@ -194,5 +197,15 @@ describe("program", () => {
         expect(() => program.loadJson(json)).to.throw();
     });
 
+    it("should save", () => {
+        const file: string = settings.programFile;
 
+        if (fs.existsSync(file)) {
+            fs.unlinkSync(file);
+        }
+        expect(fs.existsSync(file)).to.be.false;
+
+        program.save();
+        expect(fs.existsSync(file)).to.be.true;
+    });
 });

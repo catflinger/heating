@@ -1,3 +1,4 @@
+import * as fs from "fs";
 import { inject, injectable } from "inversify";
 
 import { Validate } from "../common/validate";
@@ -17,13 +18,23 @@ export class Program implements IProgram {
     constructor(@inject(INJECTABLES.ControllerSettings) private settings: IControllerSettings) {
 
         // set default values for hot water
-        this._maxHwTemp = 50;
-        this._minHwTemp = 40;
+        this._maxHwTemp = 0;
+        this._minHwTemp = 0;
 
         // set defaults for heating
         for (let i = 0; i < this.settings.slotsPerDay; i++) {
             this.slots.push(false);
         }
+
+        // now see if we have a stored program to load
+        if (fs.existsSync(this.settings.programFile)) {
+            const json: string = fs.readFileSync(this.settings.programFile, "utf8");
+            this.loadJson(json);
+        }
+    }
+
+    public save(): void {
+        fs.writeFileSync(this.settings.programFile, this.toJson(), { encoding: "utf8"});
     }
 
     public getValue(slot: number): boolean {
@@ -40,11 +51,6 @@ export class Program implements IProgram {
         return new ProgramSnapshot(this._minHwTemp, this._maxHwTemp, this.slots, this.settings.slotsPerDay);
     }
 
-    // public getValue(slotNumber: number): boolean {
-    //     this.validateSlotNumber(slotNumber);
-    //     return this.slots[slotNumber];
-    // }
-
     public get minHWTemp(): number {
         return this._minHwTemp;
     }
@@ -57,6 +63,7 @@ export class Program implements IProgram {
         if (min > 10 && max > 10 && min < 60 && max < 60 && max - min > 5) {
             this._minHwTemp = min;
             this._maxHwTemp = max;
+            this.save();
         } else {
             throw new Error("HW temperature value out of range");
         }
@@ -73,6 +80,7 @@ export class Program implements IProgram {
         for (let i = 0; i <= to - from; i++) {
             this.slots[from + i] = state[i];
         }
+        this.save();
     }
 
     public toJson(): string {
@@ -99,7 +107,7 @@ export class Program implements IProgram {
 
         } else {
             // test each slot is boolean
-            for (const slot of src.slots)  {
+            for (const slot of src.slots) {
                 if (typeof slot !== "boolean") {
                     valid = false;
                     break;
@@ -110,7 +118,7 @@ export class Program implements IProgram {
         if (valid) {
             this.setHWTemps(src.hwmin, src.hwmax);
 
-            for (let i: number = 0; i < src.slots.length; i++)  {
+            for (let i: number = 0; i < src.slots.length; i++) {
                 this.slots[i] = src.slots[i];
             }
         } else {

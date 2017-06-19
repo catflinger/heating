@@ -39,22 +39,10 @@ export class MockEnvironment implements IEnvironment {
 }
 
 @injectable()
-export class MockControllerSettings implements IControllerSettings {
-    boilerPin: number;
-    hwPumpPin: number;
-    chPumpPin: number;
-
-    public get slotsPerDay(): number {
-        return 10;
-    }
-        
-    public get maxOverrideDuration(): number {
-        return 10;    
-    }
-}
-
-@injectable()
 export class MockProgram implements IProgram {
+    save(): void {
+        throw new Error("Method not implemented.");
+    }
     getValue(slot: number): boolean {
         throw new Error("Method not implemented.");
     }

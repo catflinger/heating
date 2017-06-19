@@ -1,10 +1,13 @@
 import * as bodyParser from "body-parser";
 import * as express from "express";
 
+import { container } from "./inversify.config";
+
 import { Controller } from "../controller/controller";
 import { Snapshot } from "../controller/snapshots/snapshot";
 import { IController } from "../controller/types";
 import { ControlApi } from "./api/control-api";
+import { ProgramApi } from "./api/program-api";
 import { StatusApi } from "./api/status-api";
 
 class App {
@@ -17,9 +20,10 @@ class App {
         // get the router and add the API implementation
         const router: express.Router = express.Router();
 
-        const controller: IController = new Controller();
+        const controller: IController = new Controller(container);
         StatusApi.addRoutes(router, controller);
         ControlApi.addRoutes(router, controller);
+        ProgramApi.addRoutes(router, controller);
 
         // start the controller: this initialises digital outputpins and starts the environment polling
         controller.start();
@@ -38,7 +42,7 @@ class App {
         this.express.use("/api/", router);
 
         // tell express to use the wwwroot folder for serving staic files
-        this.express.use(express.static("wwwroot"));
+        this.express.use(express.static(__dirname + "wwwroot"));
 
         return this.express;
     }
