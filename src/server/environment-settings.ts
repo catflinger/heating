@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import { IEnvironmentSettings } from "../controller/index";
+import { IEnvironmentSettings } from "../controller/types";
 
 @injectable()
 export class EnvironmentSettings implements IEnvironmentSettings {

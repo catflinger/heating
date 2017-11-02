@@ -1,4 +1,5 @@
 import * as bodyParser from "body-parser";
+import * as Debug from "debug";
 import * as express from "express";
 
 import { container } from "./inversify.config";
@@ -9,6 +10,8 @@ import { IController } from "../controller/types";
 import { ControlApi } from "./api/control-api";
 import { ProgramApi } from "./api/program-api";
 import { StatusApi } from "./api/status-api";
+
+const debug = Debug("app");
 
 class App {
     public express: express.Application;
@@ -42,7 +45,9 @@ class App {
         this.express.use("/api/", router);
 
         // tell express to use the wwwroot folder for serving staic files
-        this.express.use(express.static(__dirname + "wwwroot"));
+        const wwwroot: string = __dirname + "/../../../wwwroot";
+        this.express.use(express.static(wwwroot));
+        debug("Serving static content from " + wwwroot);
 
         return this.express;
     }

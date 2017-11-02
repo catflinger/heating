@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import { IControllerSettings } from "../controller/index";
+import { IControllerSettings } from "../controller/types";
 
 @injectable()
 export class ControllerSettings implements IControllerSettings {

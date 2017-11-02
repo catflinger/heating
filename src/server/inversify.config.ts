@@ -7,6 +7,7 @@ import { EnvironmentSettings } from "../server/environment-settings";
 import {
     // the injectable interfaces
     IClock,
+    IControllable,
     IController,
     IControllerSettings,
     IControlStrategy,
@@ -14,25 +15,21 @@ import {
     IEnvironment,
     IEnvironmentSettings,
     INJECTABLES,
+    IOverride,
     IProgram,
     ISwitchable,
-} from "../controller/index";
-
-import {
-    // the concrete class for this implementation
-    BasicControlStrategy,
-    Boiler,
-    CHPump,
-    Clock,
-    Controller,
-    Environment,
-    HWPump,
-    Program,
-} from "../controller/index";
+} from "../controller/types";
 
 import { MockDigitalOutput } from "../../test/switchables/mocks";
+import { BasicControlStrategy } from "../controller/basic-control-strategy";
+import { Boiler } from "../controller/boiler";
+import { CHPump } from "../controller/ch-pump";
+import { Clock } from "../controller/clock";
+import { Environment } from "../controller/environment";
+import { HWPump } from "../controller/hw-pump";
+import { Override } from "../controller/override";
+import { Program } from "../controller/program";
 import { System } from "../controller/system";
-import { IControllable } from "../controller/types";
 
 export const container = new Container();
 
@@ -47,3 +44,4 @@ container.bind<ISwitchable>(INJECTABLES.CHPump).to(CHPump).inSingletonScope();
 container.bind<IClock>(INJECTABLES.Clock).to(Clock).inSingletonScope();
 container.bind<IDigitalOutput>(INJECTABLES.DigitalOutput).to(MockDigitalOutput).inSingletonScope();
 container.bind<IControllable>(INJECTABLES.System).to(System);
+container.bind<IOverride>(INJECTABLES.Override).to(Override).inSingletonScope();
