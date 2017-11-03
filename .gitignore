@@ -7,6 +7,6 @@ src/**/*.js
 src/**/*.js.map
 src/**/*.d.ts
 
-lib/**/*.js
-lib/**/*.js.map
-lib/**/*.d.ts
+# lib/**/*.js
+# lib/**/*.js.map
+# lib/**/*.d.ts
