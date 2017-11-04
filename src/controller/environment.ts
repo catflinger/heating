@@ -1,30 +1,25 @@
 import { readFileSync } from "fs";
 import { inject, injectable } from "inversify";
 
-import { EnvironmentSnapshot, IEnvironment, IEnvironmentSettings, INJECTABLES } from "./types";
+import { Sensor } from "./sensor";
+import { EnvironmentSnapshot, IEnvironment, IEnvironmentSettings, INJECTABLES, ISensor } from "./types";
 
 @injectable()
 export class Environment implements IEnvironment {
 
-    @inject(INJECTABLES.EnvironmentSettings)
-    private settings: IEnvironmentSettings;
+    private sensors: ISensor[] = [];
 
-    public getSnapshot(): EnvironmentSnapshot {
-        return new EnvironmentSnapshot(this.readSensor("DS18B20-1"));
+    constructor(@inject(INJECTABLES.EnvironmentSettings) private settings: IEnvironmentSettings) {
+        this.settings.sensors.forEach((sensor) => {
+            this.sensors.push(new Sensor(sensor.id, sensor.deviceId));
+        });
     }
 
-    private readSensor(deviceId: string): number {
-        let result: number;
+    public getSnapshot(): EnvironmentSnapshot {
+        return new EnvironmentSnapshot(this.sensors);
+    }
 
-        try {
-            const path: string = this.settings.oneWireDirectory + "/" + deviceId;
-            const data: string = readFileSync(path, "utf8");
-            result = Number.parseInt(data);
-
-        } catch (exp) {
-            result = NaN;
-        }
-
-        return result;
+    public refresh(): void {
+        this.sensors.forEach((s) => s.read());
     }
 }

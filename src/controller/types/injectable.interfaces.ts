@@ -158,6 +158,9 @@ export interface ISwitchable {
 export interface IEnvironment {
     // return the current environment readings
     getSnapshot(): EnvironmentSnapshot;
+
+    // refresh the sensor readings
+    refresh(): void;
 }
 
 /**
@@ -165,4 +168,11 @@ export interface IEnvironment {
  */
 export interface IEnvironmentSettings {
     oneWireDirectory: string;
+    sensors: any[];
+}
+
+export interface ISensor {
+    reading: number;
+    id: string;
+    read(): void;
 }

@@ -26,7 +26,7 @@ export class StatusApi {
                         water: snapshot.control.hotWater,
                     },
                     env: {
-                        hwTemp: snapshot.environment.hwTemperature,
+                        sensors: snapshot.environment.sensors,
                     },
                     override: snapshot.override ? {
                         date: snapshot.override.date,

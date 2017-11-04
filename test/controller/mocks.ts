@@ -8,7 +8,7 @@ import {
     IControlStrategy, 
     IProgram, 
     ISwitchable, 
-    Sensors, 
+    ISensor,
     Snapshot, 
     ControlStateSnapshot, 
     DeviceStateSnapshot } from "../../src/controller/types";
@@ -25,12 +25,24 @@ export class MockControlStrategy implements IControlStrategy {
     }  
 }
 
+class MockSensor implements ISensor {
+    reading: number = 45;
+    id: string = "hw";
+    read(): void {
+        throw new Error("Method not implemented.");
+    }
+    
+}
+
 @injectable()
 export class MockEnvironment implements IEnvironment {
+    refresh(): void {
+        // do nothing
+    }
     private hwTemp: number = 30;
 
     public getSnapshot(): EnvironmentSnapshot {
-        return new EnvironmentSnapshot( this.hwTemp);
+        return new EnvironmentSnapshot([new MockSensor()]);
     }
 
     public setHWTemperature(temp: number) {

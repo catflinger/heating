@@ -5,3 +5,4 @@ export * from "./snapshots/controlstate-snapshot";
 export * from "./snapshots/devicestate-snapshot";
 export * from "./snapshots/environment-snapshot";
 export * from "./snapshots/override-snapshot";
+export * from "./snapshots/sensor-snapshot";

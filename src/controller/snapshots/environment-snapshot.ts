@@ -1,14 +1,18 @@
 /**
  * data class to contain environment readings
  */
-export class EnvironmentSnapshot {
-    private _hwTemperature: number;
+import { ISensor } from "../types";
+import { SensorSnapshot } from "./sensor-snapshot";
 
-    constructor(hwTemperature: number) {
-        this._hwTemperature = hwTemperature;
+export class EnvironmentSnapshot {
+    private snapshots: SensorSnapshot[] = [];
+
+    constructor(sensors: ISensor[]) {
+        sensors.forEach((sensor) =>
+        this.snapshots.push(new SensorSnapshot(sensor)));
     }
 
-    public get hwTemperature(): number {
-        return this._hwTemperature;
+    public get sensors(): SensorSnapshot[] {
+        return this.snapshots;
     }
 }

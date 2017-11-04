@@ -7,6 +7,7 @@ export declare class MockControlStrategy implements IControlStrategy {
     calculateControlState(currentState: Snapshot): ControlStateSnapshot;
 }
 export declare class MockEnvironment implements IEnvironment {
+    refresh(): void;
     private hwTemp;
     getSnapshot(): EnvironmentSnapshot;
     setHWTemperature(temp: number): void;

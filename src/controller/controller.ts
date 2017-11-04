@@ -75,6 +75,8 @@ export class Controller implements IController {
         // remove any expired overrides
         this.override.refresh();
 
+        this.environment.refresh();
+
         // get the new control stat
         this.currentControlState = this.strategy.calculateControlState(this.getSnapshot());
 

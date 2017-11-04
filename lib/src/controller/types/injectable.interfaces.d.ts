@@ -79,7 +79,14 @@ export interface ISwitchable {
 }
 export interface IEnvironment {
     getSnapshot(): EnvironmentSnapshot;
+    refresh(): void;
 }
 export interface IEnvironmentSettings {
     oneWireDirectory: string;
+    sensors: any[];
+}
+export interface ISensor {
+    reading: number;
+    id: string;
+    read(): void;
 }
