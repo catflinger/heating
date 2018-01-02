@@ -1,3 +1,4 @@
+import * as Debug from "debug";
 import { Container, inject } from "inversify";
 import "reflect-metadata";
 
@@ -16,6 +17,8 @@ import {
     IProgram,
     Snapshot,
 } from "./types";
+
+const debug = Debug("app");
 
 export class Controller implements IController {
 
@@ -42,9 +45,14 @@ export class Controller implements IController {
     }
 
     public start(): void {
+        this.environment.refresh();
         this.system.start();
 
-        // TO DO: start the environment polling...
+        debug ("starting environment polling...");
+
+        setInterval(() => {
+            this.environment.refresh();
+        } , 10000);
     }
 
     public getSnapshot(): Snapshot {

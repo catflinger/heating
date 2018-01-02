@@ -11,7 +11,7 @@ export class Environment implements IEnvironment {
 
     constructor(@inject(INJECTABLES.EnvironmentSettings) private settings: IEnvironmentSettings) {
         this.settings.sensors.forEach((sensor) => {
-            this.sensors.push(new Sensor(sensor.id, sensor.deviceId));
+            this.sensors.push(new Sensor(settings, sensor.id, sensor.deviceId));
         });
     }
 

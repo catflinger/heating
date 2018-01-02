@@ -1,16 +1,20 @@
+import * as Debug from "debug";
 import { readFileSync } from "fs";
 import { inject, injectable } from "inversify";
 
 import { IEnvironmentSettings, INJECTABLES, ISensor } from "./types";
 
+const debug = Debug("app");
+
 @injectable()
 export class Sensor implements ISensor {
 
-    @inject(INJECTABLES.EnvironmentSettings)
-    private settings: IEnvironmentSettings;
     private lastReading: number;
 
-    constructor(private _id: string, private _deviceId: string) {
+    constructor(private settings: IEnvironmentSettings,
+                private _id: string,
+                private deviceId: string) {
+
         this.lastReading = NaN;
     }
 
@@ -18,11 +22,17 @@ export class Sensor implements ISensor {
         let result: number;
 
         try {
-            const path: string = this.settings.oneWireDirectory + "/" + this._deviceId + "/temperature";
+            debug("Reading sensor " + this.deviceId);
+
+            const path: string = this.settings.oneWireDirectory + "/" + this.deviceId + "/temperature";
+
+            debug("Reading sensor path " + path);
             const data: string = readFileSync(path, "utf8");
+
             result = Number.parseFloat(data);
 
         } catch (exp) {
+            debug("Reading sensor failed " + this.deviceId + " " + exp);
             result = NaN;
         }
         this.lastReading = result;

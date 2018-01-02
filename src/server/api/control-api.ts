@@ -1,5 +1,5 @@
-import { Router } from "@types/express";
 import * as Debug from "debug";
+import { Router } from "express";
 
 import { Validate } from "../../common/validate";
 import { IController } from "../../controller/types";
@@ -15,7 +15,7 @@ export class ControlApi {
 
             const duration: number = Validate.isNumber(req.body.duration, "Invalid data for heating boost duration");
 
-            if ( isNaN(duration) || !isFinite(duration) || duration < 0 ) {
+            if (isNaN(duration) || !isFinite(duration) || duration < 0) {
                 throw new Error("value out of range for override duration");
             }
 

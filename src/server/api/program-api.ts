@@ -1,5 +1,5 @@
-import { Router } from "@types/express";
 import * as Debug from "debug";
+import { Router } from "express";
 
 import { IController, Snapshot } from "../../controller/types";
 

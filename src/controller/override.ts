@@ -18,24 +18,21 @@ export class Override implements IOverride {
         if (!this.override) {
             return;
 
-            // see if the override is for yesterday
+        // see if the override is for yesterday
         } else if (this.clock.isYesterday(this.override.date)) {
 
             // seee if it spans midgnight and so overflows into the following day
             const overflow: number = this.override.start + this.override.duration - this.setttings.slotsPerDay;
 
-            if (overflow > 0) {
+            this.override = (overflow > 0) ?
 
                 // create a new override for today with the remaining time
-                this.override = new OverrideSnapshot(0, overflow, true, this.clock.getDate());
-
-            } else {
+                new OverrideSnapshot(0, overflow, true, this.clock.getDate()) :
 
                 // this override is expired
-                this.override = null;
-            }
+                null;
 
-            // see if we have an override for today
+        // see if we have an override for today
         } else if (this.clock.isToday(this.override.date)) {
 
             // see if it has already expired
@@ -60,13 +57,13 @@ export class Override implements IOverride {
     }
 
     public setOverride(duration: number): void {
-        if (this.override) {
+        this.override = (this.override) ?
+
             // bump the current override along some
-            this.override = new OverrideSnapshot(this.override.start, this.override.duration + duration, true, this.override.date);
-        } else {
+            new OverrideSnapshot(this.override.start, this.override.duration + duration, true, this.override.date) :
+
             // create a new override
             this.override = new OverrideSnapshot(this.clock.currentSlot, duration, true, this.clock.getDate());
-        }
     }
 
     public clearOverride() {
