@@ -1,6 +1,6 @@
 import { IControllerSettings } from "../controller/types";
 export declare class ControllerSettings implements IControllerSettings {
-    readonly programFile: string;
+    readonly programStore: string;
     readonly slotsPerDay: number;
     readonly boilerPin: number;
     readonly hwPumpPin: number;

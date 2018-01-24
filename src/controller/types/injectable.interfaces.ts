@@ -20,7 +20,9 @@ export const INJECTABLES = {
     HWPump: Symbol("HWPump"),
     Override: Symbol("Override"),
     Program: Symbol("Program"),
-    Store: Symbol("Store"),
+    ProgramFactory: Symbol("Factory<IProgram>"),
+    ProgramManager: Symbol("ProgramManager"),
+    SlotsPerDay: Symbol("SlotsPerDay"),
     System: Symbol("System"),
 };
 
@@ -48,7 +50,7 @@ export interface IController {
 export interface IControllable {
     start(): void;
     applyControlState(state: ControlStateSnapshot): void;
-    getDevicelState(): DeviceStateSnapshot;
+    getDeviceState(): DeviceStateSnapshot;
 }
 
 /**
@@ -63,12 +65,12 @@ export interface IControlStrategy {
  * rather than program settings (eg hw threshold)
  */
 export interface IControllerSettings {
-    slotsPerDay: number;
+    // slotsPerDay: number;
     maxOverrideDuration: number;
     boilerPin: number;
     hwPumpPin: number;
     chPumpPin: number;
-    programFile: string;
+    programStore: string;
 }
 
 /**
@@ -97,6 +99,10 @@ export interface IDigitalOutput {
  *  program value false = heating OFF
  */
 export interface IProgram {
+    // unique id for the program
+    id: string;
+    // short human readable name
+    name: string;
 
     // the minimum acceptable HW temperature (to be implemented as get properties only)
     minHWTemp: number;
@@ -114,14 +120,23 @@ export interface IProgram {
     // set the program value for slot numbers in the range.  from and to are are inclusive
     setRange(state: boolean[], from: number, to: number): void;
 
-    // save the current program
-    save(): void;
-
-    // serialise the program to json
-    toJson(): string;
-
     // deserialise from json
-    loadJson(json: string): void;
+    loadFrom(src: any): void;
+
+    // return a simple javascript object for storage
+    toStorable(): any;
+}
+
+/**
+ *  interface for storing programs
+ */
+export interface IProgramManager {
+    activeProgram: IProgram;
+    list(): IProgram[];
+    get(id: string): IProgram;
+    add(program: IProgram): string;
+    update(program: IProgram): string;
+    remove(id: string): void;
 }
 
 /**

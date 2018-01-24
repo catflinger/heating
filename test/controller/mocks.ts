@@ -52,6 +52,8 @@ export class MockEnvironment implements IEnvironment {
 
 @injectable()
 export class MockProgram implements IProgram {
+    id: string = "abc";
+    name: string = "mock program";
     save(): void {
         throw new Error("Method not implemented.");
     }
@@ -64,10 +66,10 @@ export class MockProgram implements IProgram {
     setHWTemps(min: number, max: number): void {
         throw new Error("Method not implemented.");
     }
-    toJson(): string {
+    toStorable(): string {
         throw new Error("Method not implemented.");
     }
-    loadJson(json: string): void {
+    loadFrom(json: string): void {
         throw new Error("Method not implemented.");
     }
 

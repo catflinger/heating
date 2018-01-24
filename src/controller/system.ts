@@ -7,22 +7,17 @@ import { ControlStateSnapshot, DeviceStateSnapshot, IControllable, IControllerSe
 @injectable()
 export class System implements IControllable {
 
-    @inject(INJECTABLES.Boiler)
     private boiler: ISwitchable;
-
-    @inject(INJECTABLES.HWPump)
     private hwPump: ISwitchable;
-
-    @inject(INJECTABLES.CHPump)
     private chPump: ISwitchable;
 
     @inject(INJECTABLES.ControllerSettings)
     private settings: IControllerSettings;
 
     public start(): void {
-        this.boiler.init();
-        this.chPump.init();
-        this.hwPump.init();
+        this.boiler = new Switchable("boiler", this.settings.boilerPin);
+        this.chPump = new Switchable("heating pump", this.settings.chPumpPin);
+        this.hwPump = new Switchable("hot water pump", this.settings.hwPumpPin);
     }
 
     public applyControlState(state: ControlStateSnapshot): void {
@@ -38,7 +33,7 @@ export class System implements IControllable {
         this.chPump.switch(chPumpState);
     }
 
-    public getDevicelState(): DeviceStateSnapshot {
+    public getDeviceState(): DeviceStateSnapshot {
 
         // return a snapshot of the device states (boiler on, pump off etc)
         return new DeviceStateSnapshot(

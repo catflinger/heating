@@ -7,8 +7,8 @@ export class Clock implements IClock {
 
     protected now: Date = new Date();
 
-    @inject(INJECTABLES.ControllerSettings)
-    protected settings: IControllerSettings;
+    @inject(INJECTABLES.SlotsPerDay)
+    protected slotsPerDay: number;
 
     public get currentSlot(): number {
         const minutesElapsed: number = this.now.getHours() * 60 + this.now.getMinutes();
@@ -37,7 +37,7 @@ export class Clock implements IClock {
     }
 
     protected minutesPerSlot(): number {
-        return (24 * 60) / this.settings.slotsPerDay;
+        return (24 * 60) / this.slotsPerDay;
     }
 
     private isSameDay(date1: Date, date2: Date): boolean {

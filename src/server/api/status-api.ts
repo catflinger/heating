@@ -25,6 +25,11 @@ export class StatusApi {
                         heating: snapshot.control.heating,
                         water: snapshot.control.hotWater,
                     },
+                    device: {
+                        boiler: snapshot.device.boiler,
+                        chPump: snapshot.device.chPump,
+                        hwPump: snapshot.device.hwPump,
+                    },
                     env: {
                         sensors: snapshot.environment.sensors,
                     },

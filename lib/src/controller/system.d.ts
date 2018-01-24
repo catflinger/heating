@@ -7,5 +7,5 @@ export declare class System implements IControllable {
     private settings;
     start(): void;
     applyControlState(state: ControlStateSnapshot): void;
-    getDevicelState(): DeviceStateSnapshot;
+    getDeviceState(): DeviceStateSnapshot;
 }

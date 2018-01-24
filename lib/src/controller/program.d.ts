@@ -1,19 +1,29 @@
 import { ProgramSnapshot } from "./snapshots/program-snapshot";
-import { IControllerSettings, IProgram } from "./types";
+import { IProgram } from "./types";
 export declare class Program implements IProgram {
-    private settings;
-    private slots;
+    protected slotsPerDay: number;
+    private _id;
+    private _name;
+    private _slots;
     private _minHwTemp;
     private _maxHwTemp;
-    constructor(settings: IControllerSettings);
-    save(): void;
+    constructor(slotsPerDay: number);
     getValue(slot: number): boolean;
     getSnapshot(): ProgramSnapshot;
     readonly minHWTemp: number;
     readonly maxHWTemp: number;
+    id: string;
+    name: string;
+    readonly slots: boolean[];
     setHWTemps(min: number, max: number): void;
     setRange(state: boolean[], from: number, to: number): void;
-    toJson(): string;
-    loadJson(json: string): void;
+    loadFrom(src: any): void;
+    toStorable(): {
+        _id: string;
+        maxHwTemp: number;
+        minHwTemp: number;
+        name: string;
+        slots: boolean[];
+    };
     private validateSlotNumber(...args);
 }

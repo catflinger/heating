@@ -7,48 +7,41 @@ import { IControllerSettings, INJECTABLES, IProgram } from "./types";
 
 @injectable()
 export class Program implements IProgram {
+    // general attributes
+    private _id: string;
+    private _name: string;
 
     // array to hold the heating program: true=heating ON, false = heating off
-    private slots: boolean[] = [];
+    private _slots: boolean[] = [];
 
     // threshold value for hot water
     private _minHwTemp: number;
     private _maxHwTemp: number;
 
-    constructor(@inject(INJECTABLES.ControllerSettings) private settings: IControllerSettings) {
+    constructor(@inject(INJECTABLES.SlotsPerDay) protected slotsPerDay: number) {
 
         // set default values for hot water
         this._maxHwTemp = 0;
         this._minHwTemp = 0;
 
         // set defaults for heating
-        for (let i = 0; i < this.settings.slotsPerDay; i++) {
-            this.slots.push(false);
+        for (let i = 0; i < this.slotsPerDay; i++) {
+            this._slots.push(false);
         }
-
-        // now see if we have a stored program to load
-        if (fs.existsSync(this.settings.programFile)) {
-            const json: string = fs.readFileSync(this.settings.programFile, "utf8");
-            this.loadJson(json);
-        }
-    }
-
-    public save(): void {
-        fs.writeFileSync(this.settings.programFile, this.toJson(), { encoding: "utf8"});
     }
 
     public getValue(slot: number): boolean {
         Validate.isInteger(slot, "slot number not numeric");
 
-        if (slot < 0 || slot >= this.settings.slotsPerDay) {
+        if (slot < 0 || slot >= this.slotsPerDay) {
             throw new Error("Method not implemented.");
         }
 
-        return this.slots[slot];
+        return this._slots[slot];
     }
 
     public getSnapshot(): ProgramSnapshot {
-        return new ProgramSnapshot(this._minHwTemp, this._maxHwTemp, this.slots, this.settings.slotsPerDay);
+        return new ProgramSnapshot(this._minHwTemp, this._maxHwTemp, this._slots, this.slotsPerDay);
     }
 
     public get minHWTemp(): number {
@@ -59,11 +52,30 @@ export class Program implements IProgram {
         return this._maxHwTemp;
     }
 
+    public get id(): string {
+        return this._id;
+    }
+
+    public set id(id: string) {
+        this._id = id;
+    }
+
+    public get name(): string {
+        return this._name;
+    }
+
+    public set name(name: string) {
+        this._name = name;
+    }
+
+    public get slots(): boolean[] {
+        return this._slots;
+    }
+
     public setHWTemps(min: number, max: number) {
         if (min > 10 && max > 10 && min < 60 && max < 60 && max - min > 5) {
             this._minHwTemp = min;
             this._maxHwTemp = max;
-            this.save();
         } else {
             throw new Error("HW temperature value out of range");
         }
@@ -78,29 +90,19 @@ export class Program implements IProgram {
         }
 
         for (let i = 0; i <= to - from; i++) {
-            this.slots[from + i] = state[i];
+            this._slots[from + i] = state[i];
         }
-        this.save();
     }
 
-    public toJson(): string {
-        return JSON.stringify({
-            hwmax: this._maxHwTemp,
-            hwmin: this._minHwTemp,
-            slots: this.slots,
-        });
-    }
-
-    public loadJson(json: string): void {
+    public loadFrom(src: any): void {
         let valid: boolean = true;
-        const src: any = JSON.parse(json);
 
         // validate the input string
         if (!src ||
             (typeof src.hwmax !== "number") ||
             (typeof src.hwmin !== "number") ||
             !Array.isArray(src.slots) ||
-            src.slots.length !== this.settings.slotsPerDay) {
+            src.slots.length !== this.slotsPerDay) {
 
             // reject the data
             valid = false;
@@ -119,19 +121,28 @@ export class Program implements IProgram {
             this.setHWTemps(src.hwmin, src.hwmax);
 
             for (let i: number = 0; i < src.slots.length; i++) {
-                this.slots[i] = src.slots[i];
+                this._slots[i] = src.slots[i];
             }
         } else {
             throw new Error("Invalid or missing values in json.");
         }
     }
 
+    public toStorable() {
+        return {
+            _id: this.id,
+            maxHwTemp: this.maxHWTemp,
+            minHwTemp: this.minHWTemp,
+            name: this.name,
+            slots: this._slots,
+        };
+    }
+
     private validateSlotNumber(...args: number[]) {
         args.forEach((arg: number) => {
-            if (isNaN(arg) || arg < 0 || arg >= this.settings.slotsPerDay) {
+            if (isNaN(arg) || arg < 0 || arg >= this.slotsPerDay) {
                 throw new Error("Slots per day out of range");
             }
         });
     }
-
 }

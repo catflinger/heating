@@ -3,8 +3,9 @@ import { IControllerSettings } from "../controller/types";
 
 @injectable()
 export class ControllerSettings implements IControllerSettings {
-    public get programFile(): string {
-        return __dirname + "/data/program.json";
+
+    public get programStore(): string {
+        return __dirname + "/data/";
     }
 
     public get slotsPerDay(): number {
@@ -12,15 +13,15 @@ export class ControllerSettings implements IControllerSettings {
     }
 
     public get boilerPin(): number {
-        return 21;
+        return 16;
     }
 
     public get hwPumpPin(): number {
-        return 22;
+        return 20;
     }
 
     public get chPumpPin(): number {
-        return 23;
+        return 21;
     }
 
     public get maxOverrideDuration(): number {

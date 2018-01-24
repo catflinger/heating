@@ -16,7 +16,9 @@ export declare const INJECTABLES: {
     HWPump: symbol;
     Override: symbol;
     Program: symbol;
-    Store: symbol;
+    ProgramFactory: symbol;
+    ProgramManager: symbol;
+    SlotsPerDay: symbol;
     System: symbol;
 };
 export interface IController {
@@ -28,18 +30,17 @@ export interface IController {
 export interface IControllable {
     start(): void;
     applyControlState(state: ControlStateSnapshot): void;
-    getDevicelState(): DeviceStateSnapshot;
+    getDeviceState(): DeviceStateSnapshot;
 }
 export interface IControlStrategy {
     calculateControlState(currentState: Snapshot): ControlStateSnapshot;
 }
 export interface IControllerSettings {
-    slotsPerDay: number;
     maxOverrideDuration: number;
     boilerPin: number;
     hwPumpPin: number;
     chPumpPin: number;
-    programFile: string;
+    programStore: string;
 }
 export interface IClock {
     currentSlot: number;
@@ -54,15 +55,24 @@ export interface IDigitalOutput {
     write(pin: number, state: boolean): void;
 }
 export interface IProgram {
+    id: string;
+    name: string;
     minHWTemp: number;
     maxHWTemp: number;
     setHWTemps(min: number, max: number): void;
     getSnapshot(): ProgramSnapshot;
     getValue(slot: number): boolean;
     setRange(state: boolean[], from: number, to: number): void;
-    save(): void;
-    toJson(): string;
-    loadJson(json: string): void;
+    loadFrom(src: any): void;
+    toStorable(): any;
+}
+export interface IProgramManager {
+    activeProgram: IProgram;
+    list(): IProgram[];
+    get(id: string): IProgram;
+    add(program: IProgram): string;
+    update(program: IProgram): string;
+    remove(id: string): void;
 }
 export interface IOverride {
     refresh(): void;

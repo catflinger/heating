@@ -1,8 +1,8 @@
 import { IOverride, OverrideSnapshot } from "./types";
 export declare class Override implements IOverride {
-    private override;
+    protected slotsPerDay: number;
     private clock;
-    private setttings;
+    private override;
     refresh(): void;
     getSnapshot(): OverrideSnapshot;
     setOverride(duration: number): void;

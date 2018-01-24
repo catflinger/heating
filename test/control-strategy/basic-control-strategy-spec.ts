@@ -22,8 +22,8 @@ let bcs: IControlStrategy = container.get<IControlStrategy>(INJECTABLES.ControlS
 let program: IProgram = container.get<IProgram>(INJECTABLES.Program);
 let clock: MockClock = container.get<MockClock>(INJECTABLES.Clock);
 
-const json: string = '{"hwmax":50,"hwmin":40,"slots":[true,false,true,false,true,false,false,false,false,false]}';
-program.loadJson(json);
+const json: any = {"hwmax":50,"hwmin":40,"slots":[true,false,true,false,true,false,false,false,false,false]};
+program.loadFrom(json);
 
 describe("BasicControlStrategy", () => {
 
@@ -79,7 +79,7 @@ describe("BasicControlStrategy", () => {
     describe("when controlling heating", () => {
         before(() => {
             const json: string = '{"hwmax":50,"hwmin":40,"slots":[true,false,true,false,true,false,false,false,false,false]}';
-            program.loadJson(json);
+            program.loadFrom(json);
             clock.setSlotNumber(0);
         });
 
@@ -112,7 +112,7 @@ describe("BasicControlStrategy", () => {
     describe("when override is present it should", () => {
         before(() => {
             const json: string = '{"hwmax":50,"hwmin":40,"slots":[true,true,true,true,true,true,false,false,false,false]}';
-            program.loadJson(json);
+            program.loadFrom(json);
             clock.setSlotNumber(0);
         });
 

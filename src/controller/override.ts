@@ -3,13 +3,14 @@ import { IClock, IControllerSettings, INJECTABLES, IOverride, OverrideSnapshot }
 
 @injectable()
 export class Override implements IOverride {
-    private override: OverrideSnapshot = null;
+
+    @inject(INJECTABLES.SlotsPerDay)
+    protected slotsPerDay: number;
 
     @inject(INJECTABLES.Clock)
     private clock: IClock;
 
-    @inject(INJECTABLES.ControllerSettings)
-    private setttings: IControllerSettings;
+    private override: OverrideSnapshot = null;
 
     // clears out any expired overrides
     public refresh(): void {
@@ -22,7 +23,7 @@ export class Override implements IOverride {
         } else if (this.clock.isYesterday(this.override.date)) {
 
             // seee if it spans midgnight and so overflows into the following day
-            const overflow: number = this.override.start + this.override.duration - this.setttings.slotsPerDay;
+            const overflow: number = this.override.start + this.override.duration - this.slotsPerDay;
 
             this.override = (overflow > 0) ?
 

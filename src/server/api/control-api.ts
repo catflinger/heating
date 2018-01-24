@@ -10,7 +10,7 @@ export class ControlApi {
 
     public static addRoutes(router: Router, controller: IController): void {
 
-        router.post("/control/boost", (req, res, next) => {
+        router.post("/control/override/set", (req, res, next) => {
             debug("POST: boost set");
 
             const duration: number = Validate.isNumber(req.body.duration, "Invalid data for heating boost duration");

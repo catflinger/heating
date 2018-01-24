@@ -6,6 +6,7 @@ import { MockEnvironmentSettings } from "./mocks";
 
 export const container = new Container();
 
+container.bind<number>(INJECTABLES.SlotsPerDay).toConstantValue(10);
 container.bind<MockEnvironmentSettings>(INJECTABLES.EnvironmentSettings).to(MockEnvironmentSettings).inSingletonScope();
 container.bind<IEnvironment>(INJECTABLES.Environment).to(Environment).inSingletonScope();
 

@@ -1,7 +1,7 @@
-import { IClock, IControllerSettings } from "./types";
+import { IClock } from "./types";
 export declare class Clock implements IClock {
     protected now: Date;
-    protected settings: IControllerSettings;
+    protected slotsPerDay: number;
     readonly currentSlot: number;
     getDate(): Date;
     tick(): void;

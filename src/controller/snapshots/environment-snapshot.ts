@@ -15,4 +15,8 @@ export class EnvironmentSnapshot {
     public get sensors(): SensorSnapshot[] {
         return this.snapshots;
     }
+
+    public get hwTemperature(): number {
+        return this.sensors.find(s => s.id === "hw").reading;
+    }
 }

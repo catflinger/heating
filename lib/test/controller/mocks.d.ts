@@ -13,12 +13,14 @@ export declare class MockEnvironment implements IEnvironment {
     setHWTemperature(temp: number): void;
 }
 export declare class MockProgram implements IProgram {
+    id: string;
+    name: string;
     save(): void;
     getValue(slot: number): boolean;
     getSnapshot(): ProgramSnapshot;
     setHWTemps(min: number, max: number): void;
-    toJson(): string;
-    loadJson(json: string): void;
+    toStorable(): string;
+    loadFrom(json: string): void;
     setRange(state: boolean[], from: number, to: number): void;
     readonly slotsPerDay: number;
     readonly minHWTemp: number;

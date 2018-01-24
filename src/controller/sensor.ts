@@ -4,7 +4,7 @@ import { inject, injectable } from "inversify";
 
 import { IEnvironmentSettings, INJECTABLES, ISensor } from "./types";
 
-const debug = Debug("app");
+const debug = Debug("env");
 
 @injectable()
 export class Sensor implements ISensor {

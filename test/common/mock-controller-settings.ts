@@ -4,7 +4,7 @@ import * as path from "path";
 
 @injectable()
 export class MockControllerSettings implements IControllerSettings {
-    programFile: string = path.join(__dirname, "..", "..", "data", "program-test.json");
+    programStore: string = path.join(__dirname, "..", "..", "data");
     
     boilerPin: number = 21;
     hwPumpPin: number = 22;

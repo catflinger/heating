@@ -4,4 +4,5 @@ export declare class EnvironmentSnapshot {
     private snapshots;
     constructor(sensors: ISensor[]);
     readonly sensors: SensorSnapshot[];
+    readonly hwTemperature: number;
 }

@@ -3,9 +3,12 @@ import { Container, inject } from "inversify";
 import "reflect-metadata";
 
 import { BasicControlStrategy } from "./basic-control-strategy";
+import { ProgramSnapshot } from "./snapshots/program-snapshot";
 
 import {
     ControlStateSnapshot,
+    DeviceStateSnapshot,
+    EnvironmentSnapshot,
     IClock,
     IControllable,
     IController,
@@ -15,6 +18,8 @@ import {
     INJECTABLES,
     IOverride,
     IProgram,
+    IProgramManager,
+    OverrideSnapshot,
     Snapshot,
 } from "./types";
 
@@ -27,7 +32,7 @@ export class Controller implements IController {
     private strategy: IControlStrategy;
     private settings: IControllerSettings;
     private environment: IEnvironment;
-    private program: IProgram;
+    private programManager: IProgramManager;
     private clock: IClock;
     private override: IOverride;
     private system: IControllable;
@@ -38,7 +43,7 @@ export class Controller implements IController {
         this.strategy = container.get<IControlStrategy>(INJECTABLES.ControlStrategy);
         this.settings = container.get<IControllerSettings>(INJECTABLES.ControllerSettings);
         this.environment = container.get<IEnvironment>(INJECTABLES.Environment);
-        this.program = container.get<IProgram>(INJECTABLES.Program);
+        this.programManager = container.get<IProgramManager>(INJECTABLES.ProgramManager);
         this.clock = container.get<IClock>(INJECTABLES.Clock);
         this.override = container.get<IOverride>(INJECTABLES.Override);
         this.system = container.get<IControllable>(INJECTABLES.System);
@@ -56,22 +61,34 @@ export class Controller implements IController {
     }
 
     public getSnapshot(): Snapshot {
-        return new Snapshot(
-            this.currentControlState.clone(),
-            this.environment.getSnapshot(),
-            this.system.getDevicelState(),
-            this.override.getSnapshot(),
-            this.program.getSnapshot());
+        debug ("getting control state snapshot");
+        const cs: ControlStateSnapshot = this.currentControlState.clone();
+
+        debug ("getting environment state snapshot");
+        const env: EnvironmentSnapshot = this.environment.getSnapshot();
+
+        debug ("getting device state snapshot");
+        const dev: DeviceStateSnapshot = this.system.getDeviceState();
+
+        debug ("getting override state snapshot");
+        const ov: OverrideSnapshot = this.override.getSnapshot();
+
+        debug ("getting program state snapshot");
+        const prog: ProgramSnapshot = this.programManager.activeProgram.getSnapshot();
+
+        return new Snapshot(cs, env, dev, ov, prog);
     }
 
     // reveal for setOveride
     public setOverride(duration: number): void {
         this.override.setOverride(duration);
+        this.refresh();
     }
 
     // reveal for clearOveride
     public clearOverride(): void {
         this.override.clearOverride();
+        this.refresh();
     }
 
     // TO DO TODO : make this private

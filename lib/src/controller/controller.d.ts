@@ -6,7 +6,7 @@ export declare class Controller implements IController {
     private strategy;
     private settings;
     private environment;
-    private program;
+    private programManager;
     private clock;
     private override;
     private system;
