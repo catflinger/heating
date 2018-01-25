@@ -1,7 +1,7 @@
 import { IController, IEnvironment, IControllerSettings, IProgram, ISwitchable, Sensors, Snapshot, INJECTABLES } from "../../src/controller/types";
 import { Controller } from "../../src/controller/controller";
 import { container } from "./inversify.config.test";
-import { MockEnvironment, MockControlStrategy } from "./mocks";
+import { MockEnvironment, MockControlStrategy, MockDevice } from "./mocks";
 import { MockClock } from "../common/mock-clock";
 
 import * as chai from "chai";
@@ -12,7 +12,16 @@ const expect = chai.expect;
 
 let controller: Controller = new Controller(container);
 let mockStrategy: MockControlStrategy = container.get<MockControlStrategy>(INJECTABLES.ControlStrategy);
+let mockEnvironment: MockEnvironment =  container.get<MockEnvironment>(INJECTABLES.Environment);
 let clock: MockClock = container.get<MockClock>(INJECTABLES.Clock);
+
+let boiler: MockDevice = container.get<MockDevice>(INJECTABLES.Boiler);
+let hwPump: MockDevice = container.get<MockDevice>(INJECTABLES.HWPump);
+let chPump: MockDevice = container.get<MockDevice>(INJECTABLES.CHPump);
+
+boiler.name = "boiler";
+hwPump.name = "hot water pump";
+chPump.name = "chPump";
 
 const hwTempBelowThreshold = 30;
 const hwTempInsideThreshold = 45;
@@ -46,6 +55,7 @@ describe("controller", () => {
     });
 
     it("should return summary info", () => {
+        mockEnvironment.setHWTemperature(30);
         const summary: Snapshot = controller.getSnapshot();
         compareState(testDataDefault, summary);
     });

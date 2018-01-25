@@ -1,24 +1,17 @@
 import { inject, injectable } from "inversify";
 import "reflect-metadata";
 
+import { Boiler } from "./devices/boiler";
+import { CHPump } from "./devices/ch-pump";
+import { HWPump } from "./devices/hw-pump";
 import { Switchable } from "./switchable";
-import { ControlStateSnapshot, DeviceStateSnapshot, IControllable, IControllerSettings, INJECTABLES, ISwitchable, Snapshot } from "./types";
+import { ControlStateSnapshot, DeviceStateSnapshot, IControllable, IControllerSettings, INJECTABLES, Snapshot } from "./types";
 
 @injectable()
 export class System implements IControllable {
-
-    private boiler: ISwitchable;
-    private hwPump: ISwitchable;
-    private chPump: ISwitchable;
-
-    @inject(INJECTABLES.ControllerSettings)
-    private settings: IControllerSettings;
-
-    public start(): void {
-        this.boiler = new Switchable("boiler", this.settings.boilerPin);
-        this.chPump = new Switchable("heating pump", this.settings.chPumpPin);
-        this.hwPump = new Switchable("hot water pump", this.settings.hwPumpPin);
-    }
+    @inject(INJECTABLES.Boiler) private boiler: Boiler;
+    @inject(INJECTABLES.CHPump) private hwPump: CHPump;
+    @inject(INJECTABLES.HWPump) private chPump: HWPump;
 
     public applyControlState(state: ControlStateSnapshot): void {
 

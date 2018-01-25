@@ -25,7 +25,7 @@ export class BasicControlStrategy implements IControlStrategy {
         // If the temp is too low, keep trying to raise the temmperature.   If the temperature is over the minimum
         // already then keep the boiler on until it is over the maximum.  This hysteresis avoids cycling on/offf around
         // the minimum temp
-        const hwTemperature: number = currentState.environment.sensors.find((s) =>  s.id === "hw").reading;
+        const hwTemperature: number = currentState.environment.hwTemperature;
 
         if (hwTemperature < currentState.program.minHwTemp ||
             (hwTemperature < currentState.program.maxHwTemp &&

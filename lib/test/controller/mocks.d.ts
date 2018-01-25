@@ -7,8 +7,8 @@ export declare class MockControlStrategy implements IControlStrategy {
     calculateControlState(currentState: Snapshot): ControlStateSnapshot;
 }
 export declare class MockEnvironment implements IEnvironment {
+    private hwSensor;
     refresh(): void;
-    private hwTemp;
     getSnapshot(): EnvironmentSnapshot;
     setHWTemperature(temp: number): void;
 }
@@ -19,8 +19,10 @@ export declare class MockProgram implements IProgram {
     getValue(slot: number): boolean;
     getSnapshot(): ProgramSnapshot;
     setHWTemps(min: number, max: number): void;
-    toStorable(): string;
-    loadFrom(json: string): void;
+    toStorable(): any;
+    toJson(): string;
+    loadFrom(): void;
+    loadFromJson(json: string): void;
     setRange(state: boolean[], from: number, to: number): void;
     readonly slotsPerDay: number;
     readonly minHWTemp: number;
@@ -30,7 +32,7 @@ export declare class MockDevice implements ISwitchable {
     private _name;
     private _state;
     init(): void;
-    readonly name: string;
+    name: string;
     readonly state: boolean;
     toggle(): void;
     switch(state: boolean): void;

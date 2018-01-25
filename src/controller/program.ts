@@ -21,8 +21,8 @@ export class Program implements IProgram {
     constructor(@inject(INJECTABLES.SlotsPerDay) protected slotsPerDay: number) {
 
         // set default values for hot water
-        this._maxHwTemp = 0;
-        this._minHwTemp = 0;
+        this._maxHwTemp = 50;
+        this._minHwTemp = 40;
 
         // set defaults for heating
         for (let i = 0; i < this.slotsPerDay; i++) {
@@ -94,48 +94,56 @@ export class Program implements IProgram {
         }
     }
 
+    public loadFromJson(json: string) {
+        const data = JSON.parse(json);
+        this.loadFrom(data);
+    }
+
     public loadFrom(src: any): void {
-        let valid: boolean = true;
 
-        // validate the input string
-        if (!src ||
-            (typeof src.hwmax !== "number") ||
-            (typeof src.hwmin !== "number") ||
-            !Array.isArray(src.slots) ||
-            src.slots.length !== this.slotsPerDay) {
+        // first validate the input string
+        if (!src) {
+            throw new Error("Missing source data loading program.");
+        }
 
-            // reject the data
-            valid = false;
+        if ((typeof src.hwmax !== "number") ||
+            (typeof src.hwmin !== "number")) {
+            throw new Error(`hwmax or hwmin not numeric loading program. [${typeof src.hwmax}] [${typeof src.hwmin}]`);
+        }
+        if (!Array.isArray(src.slots)) {
+            throw new Error("slot array missing from source data loading program.");
+        }
 
-        } else {
-            // test each slot is boolean
-            for (const slot of src.slots) {
-                if (typeof slot !== "boolean") {
-                    valid = false;
-                    break;
-                }
+        if (src.slots.length !== this.slotsPerDay) {
+            throw new Error("slot array wrong length in source data loading program.");
+        }
+
+        for (const slot of src.slots) {
+            if (typeof slot !== "boolean") {
+                throw new Error("slot array must contain booleans in source data loading program.");
             }
         }
 
-        if (valid) {
-            this.setHWTemps(src.hwmin, src.hwmax);
+        // source data looks OK so load it
+        this.setHWTemps(src.hwmin, src.hwmax);
 
-            for (let i: number = 0; i < src.slots.length; i++) {
-                this._slots[i] = src.slots[i];
-            }
-        } else {
-            throw new Error("Invalid or missing values in json.");
+        for (let i: number = 0; i < src.slots.length; i++) {
+            this._slots[i] = src.slots[i];
         }
     }
 
-    public toStorable() {
+    public toStorable(): any {
         return {
             _id: this.id,
-            maxHwTemp: this.maxHWTemp,
-            minHwTemp: this.minHWTemp,
-            name: this.name,
+            hwmax: this.maxHWTemp,
+            hwmin: this.minHWTemp,
+            name: this._name,
             slots: this._slots,
         };
+    }
+
+    public toJson(): string {
+        return JSON.stringify(this.toStorable());
     }
 
     private validateSlotNumber(...args: number[]) {

@@ -28,7 +28,6 @@ export interface IController {
     clearOverride(): void;
 }
 export interface IControllable {
-    start(): void;
     applyControlState(state: ControlStateSnapshot): void;
     getDeviceState(): DeviceStateSnapshot;
 }
@@ -63,6 +62,8 @@ export interface IProgram {
     getSnapshot(): ProgramSnapshot;
     getValue(slot: number): boolean;
     setRange(state: boolean[], from: number, to: number): void;
+    loadFromJson(json: string): void;
+    toJson(): string;
     loadFrom(src: any): void;
     toStorable(): any;
 }
@@ -70,8 +71,7 @@ export interface IProgramManager {
     activeProgram: IProgram;
     list(): IProgram[];
     get(id: string): IProgram;
-    add(program: IProgram): string;
-    update(program: IProgram): string;
+    save(program: IProgram): string;
     remove(id: string): void;
 }
 export interface IOverride {

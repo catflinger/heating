@@ -31,22 +31,22 @@ class MockSensor implements ISensor {
     read(): void {
         throw new Error("Method not implemented.");
     }
-    
 }
 
 @injectable()
 export class MockEnvironment implements IEnvironment {
+    private hwSensor: MockSensor = new MockSensor();
+
     refresh(): void {
         // do nothing
     }
-    private hwTemp: number = 30;
-
+    
     public getSnapshot(): EnvironmentSnapshot {
-        return new EnvironmentSnapshot([new MockSensor()]);
+        return new EnvironmentSnapshot([this.hwSensor]);
     }
 
     public setHWTemperature(temp: number) {
-        this.hwTemp = temp;
+        this.hwSensor.reading = temp;
     }
 }
 
@@ -66,10 +66,16 @@ export class MockProgram implements IProgram {
     setHWTemps(min: number, max: number): void {
         throw new Error("Method not implemented.");
     }
-    toStorable(): string {
+    toStorable(): any {
         throw new Error("Method not implemented.");
     }
-    loadFrom(json: string): void {
+    toJson(): string {
+        throw new Error("Method not implemented.");
+    }
+    loadFrom(): void {
+        throw new Error("Method not implemented.");
+    }
+    loadFromJson(json: string): void {
         throw new Error("Method not implemented.");
     }
 
@@ -101,6 +107,10 @@ export class MockDevice implements ISwitchable {
 
     public get name(): string {
         return this._name;
+    }
+    
+    public set name(str: string) {
+        this._name = str;
     }
     
     public get state(): boolean {

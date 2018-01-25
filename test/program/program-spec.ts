@@ -12,6 +12,7 @@ let settings: IControllerSettings;
 let program: IProgram;
 let max: number;
 let min: number;
+let slotsPerDay = container.get<number>(INJECTABLES.SlotsPerDay);
 
 const minHWTemp = 40;
 const maxHWTemp = 50;
@@ -22,12 +23,11 @@ describe("program", () => {
         settings = container.get<IControllerSettings>(INJECTABLES.ControllerSettings);
 
         const json: string = '{"hwmax":50,"hwmin":40,"slots":[true,false,true,false,true,false,false,false,false,false]}';
-        fs.writeFileSync(settings.programFile, json);
-
         program = container.get<IProgram>(INJECTABLES.Program);
+        program.loadFromJson(json);
 
         min = 0;
-        max = settings.slotsPerDay - 1;
+        max = slotsPerDay - 1;
 
     });
 
@@ -141,7 +141,7 @@ describe("program", () => {
         // check the object contains the original program values
         expect(obj.hwmin).to.equal(minHWTemp);
         expect(obj.hwmax).to.equal(maxHWTemp);
-        expect(obj.slots.length).to.equal(settings.slotsPerDay);
+        expect(obj.slots.length).to.equal(slotsPerDay);
         expect(obj.slots[1]).to.equal(true, "wrong value for slot 1");
         expect(obj.slots[2]).to.equal(false, "wrong value for slot 2");
     });
@@ -149,63 +149,63 @@ describe("program", () => {
     it("shoud refuse to load from invalid JSON", () => {
         // slot array missing
         let json: string = '{"hwmax":55,"hwmin":45}';
-        expect(() => program.loadJson(json)).to.throw();
+        expect(() => program.loadFrom(json)).to.throw();
         // slot array not an array
         json = '{"hwmax":55,"hwmin":45,"slots": "foo"}';
-        expect(() => program.loadJson(json)).to.throw();
+        expect(() => program.loadFrom(json)).to.throw();
         // array too short
         json = '{"hwmax":55,"hwmin":45,"slots":[true, false]}';
-        expect(() => program.loadJson(json)).to.throw();
+        expect(() => program.loadFrom(json)).to.throw();
         // array contains invalid fields
         json = '{"hwmax":55,"hwmin":45,"slots":[1,0,true,false,true,false,false,false,false,false]}';
-        expect(() => program.loadJson(json)).to.throw();
+        expect(() => program.loadFrom(json)).to.throw();
 
         // hwmin missing
         json = '{"hwmax":45,"slots":[true,false,true,false,true,false,false,false,false,false]}';
-        expect(() => program.loadJson(json)).to.throw();
+        expect(() => program.loadFrom(json)).to.throw();
         // hwmin not numeric
         json = '{"hwmax":55,"hwmin":"45","slots":[true,false,true,false,true,false,false,false,false,false]}';
-        expect(() => program.loadJson(json)).to.throw();
+        expect(() => program.loadFrom(json)).to.throw();
         // hwmin too low
         json = '{"hwmax":55,"hwmin":0,"slots":[true,false,true,false,true,false,false,false,false,false]}';
-        expect(() => program.loadJson(json)).to.throw();
+        expect(() => program.loadFrom(json)).to.throw();
         // hwmin too low
         json = '{"hwmax":55,"hwmin":61,"slots":[true,false,true,false,true,false,false,false,false,false]}';
-        expect(() => program.loadJson(json)).to.throw();
+        expect(() => program.loadFrom(json)).to.throw();
 
         // hwmax missing
         json = '{"hwmin":45,"slots":[true,false,true,false,true,false,false,false,false,false]}';
-        expect(() => program.loadJson(json)).to.throw();
+        expect(() => program.loadFrom(json)).to.throw();
         // hwmax not numeric
         json = '{"hwmax":"55","hwmin":45,"slots":[true,false,true,false,true,false,false,false,false,false]}';
-        expect(() => program.loadJson(json)).to.throw();
+        expect(() => program.loadFrom(json)).to.throw();
         // hwmax too low
         json = '{"hwmax":0,"hwmin":45,"slots":[true,false,true,false,true,false,false,false,false,false]}';
-        expect(() => program.loadJson(json)).to.throw();
+        expect(() => program.loadFrom(json)).to.throw();
         // hwmin too low
         json = '{"hwmax":61,"hwmin":45,"slots":[true,false,true,false,true,false,false,false,false,false]}';
-        expect(() => program.loadJson(json)).to.throw();
+        expect(() => program.loadFrom(json)).to.throw();
 
         // hwmin and max too close
         json = '{"hwmax":45,"hwmin":45,"slots":[true,false,true,false,true,false,false,false,false,false]}';
-        expect(() => program.loadJson(json)).to.throw();
+        expect(() => program.loadFrom(json)).to.throw();
         // hwmin and max too close
         json = '{"hwmax":48,"hwmin":45,"slots":[true,false,true,false,true,false,false,false,false,false]}';
-        expect(() => program.loadJson(json)).to.throw();
+        expect(() => program.loadFrom(json)).to.throw();
         // hwmin and max wrong order
         json = '{"hwmax":45,"hwmin":55,"slots":[true,false,true,false,true,false,false,false,false,false]}';
-        expect(() => program.loadJson(json)).to.throw();
+        expect(() => program.loadFrom(json)).to.throw();
     });
 
     it("should save", () => {
-        const file: string = settings.programFile;
+        const file: string = settings.programStore;
 
         if (fs.existsSync(file)) {
             fs.unlinkSync(file);
         }
         expect(fs.existsSync(file)).to.be.false;
 
-        program.save();
+        program.toStorable();
         expect(fs.existsSync(file)).to.be.true;
     });
 });

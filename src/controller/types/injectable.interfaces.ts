@@ -20,7 +20,7 @@ export const INJECTABLES = {
     HWPump: Symbol("HWPump"),
     Override: Symbol("Override"),
     Program: Symbol("Program"),
-    ProgramFactory: Symbol("Factory<IProgram>"),
+    ProgramFactory: Symbol("ProgramFactory"),
     ProgramManager: Symbol("ProgramManager"),
     SlotsPerDay: Symbol("SlotsPerDay"),
     System: Symbol("System"),
@@ -48,7 +48,6 @@ export interface IController {
  * interface for control strategies
  */
 export interface IControllable {
-    start(): void;
     applyControlState(state: ControlStateSnapshot): void;
     getDeviceState(): DeviceStateSnapshot;
 }
@@ -121,6 +120,12 @@ export interface IProgram {
     setRange(state: boolean[], from: number, to: number): void;
 
     // deserialise from json
+    loadFromJson(json: string): void;
+
+    // serialise to json
+    toJson(): string;
+
+    // load form a data object
     loadFrom(src: any): void;
 
     // return a simple javascript object for storage
@@ -134,8 +139,7 @@ export interface IProgramManager {
     activeProgram: IProgram;
     list(): IProgram[];
     get(id: string): IProgram;
-    add(program: IProgram): string;
-    update(program: IProgram): string;
+    save(program: IProgram): string;
     remove(id: string): void;
 }
 

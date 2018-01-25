@@ -1,58 +1,105 @@
 // import { EINPROGRESS } from "constants";
+import * as fs from "fs";
 import { inject, injectable } from "inversify";
+import * as path from "path";
+import { v4 as guid } from "uuid";
 import { Program } from "./program";
 import { ProgramSnapshot } from "./snapshots/program-snapshot";
 import { IControllerSettings, INJECTABLES, IProgram, IProgramManager } from "./types";
 
-const db = require("diskdb");
-
 @injectable()
 export class ProgramManager implements IProgramManager {
-
+    private ext: string = ".json";
     private _activeProgram: IProgram = undefined;
 
-    constructor(
-        @inject(INJECTABLES.ControllerSettings) private settings: IControllerSettings,
-        @inject(INJECTABLES.ProgramFactory) private programFactory: () => IProgram ) {
+    constructor(@inject(INJECTABLES.ControllerSettings) private settings: IControllerSettings,
+                @inject(INJECTABLES.ProgramFactory) private programFactory: () => IProgram) {
 
-        // TO DO: get the last used program
-        // this._activeProgram = new Program(settings.slotsPerDay);
+        this._activeProgram = this.programFactory();
+
+        // TO DO: get the last used program here
     }
 
     get activeProgram(): IProgram {
         return this._activeProgram;
     }
 
-    public list(): any[] {
-        db.connect(this.settings.programStore, ["programs"]);
-        return db.programs.find();
+    public list(): IProgram[] {
+        const results: IProgram[] = [];
+        const files: string[]  = fs.readdirSync(this.settings.programStore);
+        const ids: string[] = [];
+
+        // get a list of all program file ids
+        files.forEach((f: string) => {
+            if (f.endsWith(this.ext)) {
+                ids.push(f.substr(0, f.length - this.ext.length));
+            }
+        });
+
+        // create a program object from each id
+        ids.forEach((id) => {
+            results.push(this.get(id));
+        });
+
+        return results;
     }
 
     public get(id: string): IProgram {
         let result: IProgram = null;
 
-        db.connect(this.settings.programStore, ["programs"]);
-        const storable = db.programs.findOne({_id: id});
-
-        if (storable) {
+        try {
+            const json: string = fs.readFileSync(this.makePath(id), "utf8");
             result = this.programFactory();
-            result.loadFrom(storable);
+            result.loadFrom(json);
+
+        } catch {
+            result = null;
         }
+
         return result;
     }
 
-    public add(program: IProgram): string {
-        db.connect(this.settings.programStore, ["programs"]);
-        return db.programs.save(program.toStorable());
-    }
+    public save(program: IProgram): string {
+        let result: string = null;
 
-    public update(program: IProgram): string {
-        db.connect(this.settings.programStore, ["programs"]);
-        return db.programs.update(program.toStorable());
+        try {
+            // create a new id if needed
+            let id: string = program.id;
+            if (!id) {
+                id = guid();
+            }
+
+            // write the file to disk
+            fs.writeFileSync(this.makePath(id), program.toStorable());
+
+            // return the id of the program newly created
+            result = id;
+
+        } catch {
+            result = null;
+        }
+
+        return result;
     }
 
     public remove(id: string): void {
-        db.connect(this.settings.programStore, ["programs"]);
-        return db.programs.remove({_id: id});
+
+        if (this._activeProgram != null && this._activeProgram.id !== id) {
+            const filepath: string = this.makePath(id);
+
+            if (fs.existsSync(filepath)) {
+                fs.unlinkSync(filepath);
+            }
+        } else {
+            // do not remove the active program
+        }
+    }
+
+    private makePath(id: string): string {
+        return path.format({
+            ext: this.ext,
+            name: id,
+            root: this.settings.programStore,
+        });
     }
 }

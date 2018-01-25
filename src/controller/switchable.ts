@@ -1,12 +1,9 @@
 import * as Debug from "debug";
 import { readFileSync, writeFileSync } from "fs";
-import { inject, injectable } from "inversify";
-
-import { IControllerSettings, INJECTABLES, ISwitchable } from "./types";
+import { IControllerSettings, ISwitchable } from "./types";
 
 const debug = Debug("app");
 
-@injectable()
 export class Switchable implements ISwitchable {
     private _name: string;
     private _pin: number;

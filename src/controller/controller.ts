@@ -51,7 +51,6 @@ export class Controller implements IController {
 
     public start(): void {
         this.environment.refresh();
-        this.system.start();
 
         debug ("starting environment polling...");
 

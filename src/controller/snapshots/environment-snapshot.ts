@@ -17,6 +17,12 @@ export class EnvironmentSnapshot {
     }
 
     public get hwTemperature(): number {
-        return this.sensors.find(s => s.id === "hw").reading;
+        let result: number;
+        try {
+            result = this.sensors.find((s) => s.id === "hw").reading;
+        } catch {
+            result = NaN;
+        }
+        return result;
     }
 }
