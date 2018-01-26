@@ -26,7 +26,7 @@ export class ProgramManager implements IProgramManager {
 
     public list(): IProgram[] {
         const results: IProgram[] = [];
-        const files: string[]  = fs.readdirSync(this.settings.programStore);
+        const files: string[]  = fs.readdirSync(this.settings.programStoreDir);
         const ids: string[] = [];
 
         // get a list of all program file ids
@@ -99,7 +99,7 @@ export class ProgramManager implements IProgramManager {
         return path.format({
             ext: this.ext,
             name: id,
-            root: this.settings.programStore,
+            root: this.settings.programStoreDir,
         });
     }
 }

@@ -9,6 +9,8 @@ const debug = Debug("app");
 @injectable()
 export class Boiler extends Switchable {
     constructor(@inject(INJECTABLES.ControllerSettings) private settings: IControllerSettings) {
-        super("boiler", settings.boilerPin);
+        super();
+        this.name = "Boiler";
+        this.gpioPath = settings.boilerPath;
     }
 }

@@ -7,72 +7,54 @@ import "mocha";
 
 const expect = chai.expect;
 
-let settings: IControllerSettings;
-let switchable: ISwitchable;
+let switchables: any[] = [
+    { 
+        testName: "boiler",
+        device: container.get<ISwitchable>(INJECTABLES.Boiler),
+        expectedName: "Boiler"
+    },
+    { 
+        testName: "heating pump",
+        device: container.get<ISwitchable>(INJECTABLES.CHPump),
+        expectedName: "Central Heating Pump"
+    },
+    { 
+        testName: "hot water pump",
+        device: container.get<ISwitchable>(INJECTABLES.HWPump),
+        expectedName: "Hot Water Pump"
+    },
+];
 
-describe("Boiler", () => {
-    before(() => {
-        settings = container.get<IControllerSettings>(INJECTABLES.ControllerSettings);
-        switchable = container.get<ISwitchable>(INJECTABLES.Boiler);
-    });
+switchables.forEach((test:any) => {
+    describe(test.testName, () => {
+        before(() => {
+        });
 
-    it("should construct", () => {
-        expect(switchable).not.to.be.undefined;
-    });
+        it("should construct", () => {
+            expect(test.device).not.to.be.undefined;
+        });
 
-    // the rest of these test are testing Switchable rather than Boiler, so need not be repeated for CHPump and HWPump
+        it("should be named correctly", () => {
+            expect(test.device.name).equals(test.expectedName);
+        });
 
-    it("should not read from an uninitialised pin", () => {
-        expect(() => switchable.state).to.throw;
-        expect(() => switchable.switch).to.throw;
-        expect(() => switchable.toggle).to.throw;
-    });
+        it("should toggle the state", () => {
+            expect(test.device.state).to.be.false;
+            test.device.toggle();
+            expect(test.device.state).to.be.true;
+            test.device.toggle();
+            expect(test.device.state).to.be.false;
+        });
 
-    it("should initialise", () => {
-        // initialsie the boiler pin
-        switchable.init();
-
-        expect(switchable.state).to.be.false;
-    });
-
-    it("should toggle the state", () => {
-        expect(switchable.state).to.be.false;
-        switchable.toggle();
-        expect(switchable.state).to.be.true;
-        switchable.toggle();
-        expect(switchable.state).to.be.false;
-    });
-
-    it("should set the state", () => {
-        expect(switchable.state).to.be.false;
-        switchable.switch(true);
-        expect(switchable.state).to.be.true;
-        switchable.switch(true);
-        expect(switchable.state).to.be.true;
-        switchable.switch(false);
-        expect(switchable.state).to.be.false;
-    });
-    
-});
-
-describe("Central Heating Pump", () => {
-    before(() => {
-        settings = container.get<IControllerSettings>(INJECTABLES.ControllerSettings);
-        switchable = container.get<ISwitchable>(INJECTABLES.CHPump);
-    });
-
-    it("should construct", () => {
-        expect(switchable).not.to.be.undefined;
+        it("should set the state", () => {
+            expect(test.device.state).to.be.false;
+            test.device.switch(true);
+            expect(test.device.state).to.be.true;
+            test.device.switch(true);
+            expect(test.device.state).to.be.true;
+            test.device.switch(false);
+            expect(test.device.state).to.be.false;
+        });
     });
 });
 
-describe("Hot Water Pump", () => {
-    before(() => {
-        settings = container.get<IControllerSettings>(INJECTABLES.ControllerSettings);
-        switchable = container.get<ISwitchable>(INJECTABLES.HWPump);
-    });
-
-    it("should construct", () => {
-        expect(switchable).not.to.be.undefined;
-    });
-});

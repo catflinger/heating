@@ -9,6 +9,8 @@ const debug = Debug("app");
 @injectable()
 export class CHPump extends Switchable {
     constructor(@inject(INJECTABLES.ControllerSettings) private settings: IControllerSettings) {
-        super("centrl heating pump", settings.chPumpPin);
+        super();
+        this.name = "Central Heating Pump";
+        this.gpioPath = settings.chPumpPath;
     }
 }

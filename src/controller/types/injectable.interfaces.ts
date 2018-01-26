@@ -66,10 +66,10 @@ export interface IControlStrategy {
 export interface IControllerSettings {
     // slotsPerDay: number;
     maxOverrideDuration: number;
-    boilerPin: number;
-    hwPumpPin: number;
-    chPumpPin: number;
-    programStore: string;
+    boilerPath: string;
+    hwPumpPath: string;
+    chPumpPath: string;
+    programStoreDir: string;
 }
 
 /**
@@ -166,7 +166,6 @@ export interface IOverride {
 export interface ISwitchable {
     name: string;
     state: boolean;
-    init(): void;
     toggle(): void;
     switch(state: boolean): void;
 }

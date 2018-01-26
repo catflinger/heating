@@ -9,6 +9,8 @@ const debug = Debug("app");
 @injectable()
 export class HWPump extends Switchable {
     constructor(@inject(INJECTABLES.ControllerSettings) private settings: IControllerSettings) {
-        super("hot water pump", settings.hwPumpPin);
+        super();
+        this.name = "Hot Water Pump";
+        this.gpioPath = settings.hwPumpPath;
     }
 }

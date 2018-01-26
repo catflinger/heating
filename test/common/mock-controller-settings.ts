@@ -4,15 +4,16 @@ import * as path from "path";
 
 @injectable()
 export class MockControllerSettings implements IControllerSettings {
-    programStore: string = path.join(__dirname, "..", "..", "data");
     
-    boilerPin: number = 21;
-    hwPumpPin: number = 22;
-    chPumpPin: number = 23;
+    programStoreDir: string = path.join(__dirname, "..", "..", "data", "programs");
+
+    boilerPath: string = path.join(__dirname, "..", "..", "test", "data", "gpio", "gpio16", "value");
+    chPumpPath: string = path.join(__dirname, "..", "..", "test", "data", "gpio", "gpio20", "value");
+    hwPumpPath: string = path.join(__dirname, "..", "..", "test", "data", "gpio", "gpio21", "value");
 
     public slotsPerDay: number = 10;
         
     public get maxOverrideDuration(): number {
-        return 10;    
+        return 10;
     }
 }
