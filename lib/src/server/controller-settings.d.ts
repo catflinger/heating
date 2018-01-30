@@ -1,5 +1,6 @@
 import { IControllerSettings } from "../controller/types";
 export declare class ControllerSettings implements IControllerSettings {
+    readonly startPolling: boolean;
     readonly programStoreDir: string;
     readonly boilerPath: string;
     readonly hwPumpPath: string;

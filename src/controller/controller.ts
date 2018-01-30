@@ -52,11 +52,13 @@ export class Controller implements IController {
     public start(): void {
         this.environment.refresh();
 
-        debug ("starting environment polling...");
+        if (this.settings.startPolling) {
+            debug ("starting environment polling...");
 
-        setInterval(() => {
-            this.environment.refresh();
-        } , 10000);
+            setInterval(() => {
+                this.environment.refresh();
+            } , 10000);
+        }
     }
 
     public getSnapshot(): Snapshot {

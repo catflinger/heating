@@ -11,10 +11,10 @@ export const container = new Container();
 container.bind<number>(INJECTABLES.SlotsPerDay).toConstantValue(10);
 
 // singletons
-container.bind<IProgramManager>(INJECTABLES.ProgramManager).to(ProgramManager).inSingletonScope();
 container.bind<IControllerSettings>(INJECTABLES.ControllerSettings).to(MockControllerSettings).inSingletonScope();
 
 // discrete instances
+container.bind<IProgramManager>(INJECTABLES.ProgramManager).to(ProgramManager); //note: this would normally be a singleton
 container.bind<IProgram>(INJECTABLES.Program).to(Program);
 
 // bind INJECTABLES.ProgramFactory to a function that creates program objects

@@ -5,6 +5,10 @@ import { IControllerSettings } from "../controller/types";
 @injectable()
 export class ControllerSettings implements IControllerSettings {
 
+    public get startPolling(): boolean {
+        return true;
+    }
+
     public get programStoreDir(): string {
         return path.join(__dirname, "data");
     }

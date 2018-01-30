@@ -21,6 +21,7 @@ export declare class MockProgram implements IProgram {
     setHWTemps(min: number, max: number): void;
     toStorable(): any;
     toJson(): string;
+    loadDefaults(): void;
     loadFrom(): void;
     loadFromJson(json: string): void;
     setRange(state: boolean[], from: number, to: number): void;

@@ -45,7 +45,6 @@ container.bind<IControllable>(INJECTABLES.System).to(System).inSingletonScope();
 container.bind<IOverride>(INJECTABLES.Override).to(Override).inSingletonScope();
 
 // discrete instances
-container.bind<IProgram>(INJECTABLES.Program).to(Program);
 
 // factory methods
 container.bind<interfaces.Factory<IProgram>>(INJECTABLES.ProgramFactory)

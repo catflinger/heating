@@ -17,6 +17,7 @@ export declare class Program implements IProgram {
     readonly slots: boolean[];
     setHWTemps(min: number, max: number): void;
     setRange(state: boolean[], from: number, to: number): void;
+    loadDefaults(): void;
     loadFromJson(json: string): void;
     loadFrom(src: any): void;
     toStorable(): any;

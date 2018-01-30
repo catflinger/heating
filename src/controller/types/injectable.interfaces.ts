@@ -70,6 +70,7 @@ export interface IControllerSettings {
     hwPumpPath: string;
     chPumpPath: string;
     programStoreDir: string;
+    startPolling: boolean;
 }
 
 /**
@@ -119,6 +120,9 @@ export interface IProgram {
     // set the program value for slot numbers in the range.  from and to are are inclusive
     setRange(state: boolean[], from: number, to: number): void;
 
+    // load default values
+    loadDefaults(): void;
+
     // deserialise from json
     loadFromJson(json: string): void;
 
@@ -137,10 +141,12 @@ export interface IProgram {
  */
 export interface IProgramManager {
     activeProgram: IProgram;
-    list(): IProgram[];
-    get(id: string): IProgram;
-    save(program: IProgram): string;
-    remove(id: string): void;
+    setActiveProgram(id: string): void;
+    listPrograms(): IProgram[];
+    getProgram(id: string): IProgram;
+    createProgram(src: any): IProgram;
+    saveProgram(program: IProgram): void;
+    removeProgram(id: string): void;
 }
 
 /**

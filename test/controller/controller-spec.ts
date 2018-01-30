@@ -60,45 +60,6 @@ describe("controller", () => {
         compareState(testDataDefault, summary);
     });
 
-    describe ("override", () => {
-        before(() => {
-            clock.setSlotNumber(2);
-        });
-
-        it("should start off with no override", () => {
-            let summary: Snapshot = controller.getSnapshot();
-            expect(summary.override).to.be.null;
-        });
-        
-        it("should set an override", () => {
-            // set one for 3 slots
-            controller.setOverride(3);
-            let summary: Snapshot = controller.getSnapshot();
-
-            expect(summary.override.start).to.equal(2);
-            expect(summary.override.duration).to.equal(3);
-            expect(summary.override.state).to.equal(true);
-        });
-
-        it("should increase by one slot", () => {
-            controller.setOverride(1);
-            let summary: Snapshot = controller.getSnapshot();
-
-            expect(summary.override.start).to.equal(2);
-            expect(summary.override.duration).to.equal(4);
-            expect(summary.override.state).to.equal(true);
-        });
-
-        it("should clear an override", () => {
-
-            // clear the override
-            controller.clearOverride();
-            let summary: Snapshot = controller.getSnapshot();
-
-            expect(summary.override).to.be.null;
-        });
-    });
-
     it("should not set an override with bad data", () => {       
         expect( () => controller.setOverride(undefined)).to.throw;
         expect( () => controller.setOverride(NaN)).to.throw;
@@ -148,5 +109,4 @@ describe("controller", () => {
         expect(summary.device.hwPump).to.be.true;
         expect(summary.device.chPump).to.be.true;
     });
-
 });

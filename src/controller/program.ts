@@ -1,9 +1,13 @@
+import * as Debug from "debug";
 import * as fs from "fs";
 import { inject, injectable } from "inversify";
+import { v4 as guid } from "uuid";
 
 import { Validate } from "../common/validate";
 import { ProgramSnapshot } from "./snapshots/program-snapshot";
 import { IControllerSettings, INJECTABLES, IProgram } from "./types";
+
+const debug = Debug("prog");
 
 @injectable()
 export class Program implements IProgram {
@@ -19,15 +23,6 @@ export class Program implements IProgram {
     private _maxHwTemp: number;
 
     constructor(@inject(INJECTABLES.SlotsPerDay) protected slotsPerDay: number) {
-
-        // set default values for hot water
-        this._maxHwTemp = 50;
-        this._minHwTemp = 40;
-
-        // set defaults for heating
-        for (let i = 0; i < this.slotsPerDay; i++) {
-            this._slots.push(false);
-        }
     }
 
     public getValue(slot: number): boolean {
@@ -94,12 +89,34 @@ export class Program implements IProgram {
         }
     }
 
+    public loadDefaults() {
+        // set default values for hot water
+        this._maxHwTemp = 50;
+        this._minHwTemp = 40;
+        this._name = "default";
+        this._id = guid();
+
+        // set defaults for heating
+        for (let i = 0; i < this.slotsPerDay; i++) {
+            this._slots.push(false);
+        }
+    }
+
     public loadFromJson(json: string) {
+
+        if (!json || typeof json !== "string") {
+            throw new Error("Missing source string loading json.");
+        }
+
         const data = JSON.parse(json);
         this.loadFrom(data);
     }
 
     public loadFrom(src: any): void {
+
+        if (typeof src !== "object") {
+            throw new Error("Missing source string loading json.");
+        }
 
         // first validate the input string
         if (!src) {
@@ -127,6 +144,12 @@ export class Program implements IProgram {
         // source data looks OK so load it
         this.setHWTemps(src.hwmin, src.hwmax);
 
+        // if id is present and a string use it, otherwise create a new one
+        this._id = src.id && typeof src.id === "string" ? src.id : guid();
+
+        // name is optional
+        this._name = (src.name && typeof src.name === "string") ? src.name : "not named";
+
         for (let i: number = 0; i < src.slots.length; i++) {
             this._slots[i] = src.slots[i];
         }
@@ -134,9 +157,9 @@ export class Program implements IProgram {
 
     public toStorable(): any {
         return {
-            _id: this.id,
             hwmax: this.maxHWTemp,
             hwmin: this.minHWTemp,
+            id: this._id,
             name: this._name,
             slots: this._slots,
         };

@@ -72,6 +72,9 @@ export class MockProgram implements IProgram {
     toJson(): string {
         throw new Error("Method not implemented.");
     }
+    loadDefaults(): void {
+        throw new Error("Method not implemented.");
+    }
     loadFrom(): void {
         throw new Error("Method not implemented.");
     }

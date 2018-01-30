@@ -4,8 +4,10 @@ import * as path from "path";
 
 @injectable()
 export class MockControllerSettings implements IControllerSettings {
+
+    startPolling: boolean = false;
     
-    programStoreDir: string = path.join(__dirname, "..", "..", "data", "programs");
+    programStoreDir: string = path.join(__dirname, "..", "..", "test", "data");
 
     boilerPath: string = path.join(__dirname, "..", "..", "test", "data", "gpio", "gpio16", "value");
     chPumpPath: string = path.join(__dirname, "..", "..", "test", "data", "gpio", "gpio20", "value");

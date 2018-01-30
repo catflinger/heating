@@ -18,13 +18,14 @@ container.bind<IOverride>(INJECTABLES.Override).to(Override).inSingletonScope();
 container.bind<MockControlStrategy>(INJECTABLES.ControlStrategy).to(MockControlStrategy).inSingletonScope();
 container.bind<IControllerSettings>(INJECTABLES.ControllerSettings).to(MockControllerSettings).inSingletonScope();
 container.bind<IEnvironment>(INJECTABLES.Environment).to(MockEnvironment).inSingletonScope();
-container.bind<IProgram>(INJECTABLES.Program).to(Program).inSingletonScope();
 container.bind<IProgramManager>(INJECTABLES.ProgramManager).to(ProgramManager).inSingletonScope();
 container.bind<ISwitchable>(INJECTABLES.Boiler).to(MockDevice).inSingletonScope();
 container.bind<ISwitchable>(INJECTABLES.HWPump).to(MockDevice).inSingletonScope();
 container.bind<ISwitchable>(INJECTABLES.CHPump).to(MockDevice).inSingletonScope();
 container.bind<MockClock>(INJECTABLES.Clock).to(MockClock).inSingletonScope();
 container.bind<IControllable>(INJECTABLES.System).to(System);
+
+container.bind<IProgram>(INJECTABLES.Program).to(Program);
 
 // bind INJECTABLES.ProgramFactory to a function that creates program objects
 container.bind<interfaces.Factory<IProgram>>(INJECTABLES.ProgramFactory)

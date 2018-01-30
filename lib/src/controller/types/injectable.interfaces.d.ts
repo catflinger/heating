@@ -40,6 +40,7 @@ export interface IControllerSettings {
     hwPumpPath: string;
     chPumpPath: string;
     programStoreDir: string;
+    startPolling: boolean;
 }
 export interface IClock {
     currentSlot: number;
@@ -62,6 +63,7 @@ export interface IProgram {
     getSnapshot(): ProgramSnapshot;
     getValue(slot: number): boolean;
     setRange(state: boolean[], from: number, to: number): void;
+    loadDefaults(): void;
     loadFromJson(json: string): void;
     toJson(): string;
     loadFrom(src: any): void;
@@ -69,10 +71,12 @@ export interface IProgram {
 }
 export interface IProgramManager {
     activeProgram: IProgram;
-    list(): IProgram[];
-    get(id: string): IProgram;
-    save(program: IProgram): string;
-    remove(id: string): void;
+    setActiveProgram(id: string): void;
+    listPrograms(): IProgram[];
+    getProgram(id: string): IProgram;
+    createProgram(src: any): IProgram;
+    saveProgram(program: IProgram): void;
+    removeProgram(id: string): void;
 }
 export interface IOverride {
     refresh(): void;
