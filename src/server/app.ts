@@ -26,7 +26,7 @@ class App {
         const controller: IController = new Controller(container);
         StatusApi.addRoutes(router, controller);
         ControlApi.addRoutes(router, controller);
-        ProgramApi.addRoutes(router, controller);
+        ProgramApi.addRoutes(router, controller.programManager);
 
         // start the controller: this initialises digital outputpins and starts the environment polling
         controller.start();

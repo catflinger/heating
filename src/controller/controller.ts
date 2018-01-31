@@ -32,7 +32,7 @@ export class Controller implements IController {
     private strategy: IControlStrategy;
     private settings: IControllerSettings;
     private environment: IEnvironment;
-    private programManager: IProgramManager;
+    private _programManager: IProgramManager;
     private clock: IClock;
     private override: IOverride;
     private system: IControllable;
@@ -43,7 +43,7 @@ export class Controller implements IController {
         this.strategy = container.get<IControlStrategy>(INJECTABLES.ControlStrategy);
         this.settings = container.get<IControllerSettings>(INJECTABLES.ControllerSettings);
         this.environment = container.get<IEnvironment>(INJECTABLES.Environment);
-        this.programManager = container.get<IProgramManager>(INJECTABLES.ProgramManager);
+        this._programManager = container.get<IProgramManager>(INJECTABLES.ProgramManager);
         this.clock = container.get<IClock>(INJECTABLES.Clock);
         this.override = container.get<IOverride>(INJECTABLES.Override);
         this.system = container.get<IControllable>(INJECTABLES.System);
@@ -90,6 +90,11 @@ export class Controller implements IController {
     public clearOverride(): void {
         this.override.clearOverride();
         this.refresh();
+    }
+
+    // TO DO: consider moving the composition root higher to avoid this acessor
+    public get programManager(): IProgramManager {
+        return this._programManager;
     }
 
     // TO DO TODO : make this private

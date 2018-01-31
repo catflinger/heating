@@ -22,6 +22,7 @@ export declare const INJECTABLES: {
     System: symbol;
 };
 export interface IController {
+    programManager: IProgramManager;
     start(): void;
     getSnapshot(): Snapshot;
     setOverride(duration: number): void;

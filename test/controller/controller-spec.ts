@@ -6,8 +6,6 @@ import { MockClock } from "../common/mock-clock";
 
 import * as chai from "chai";
 import "mocha";
-
-
 const expect = chai.expect;
 
 let controller: Controller = new Controller(container);

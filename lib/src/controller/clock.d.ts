@@ -8,5 +8,4 @@ export declare class Clock implements IClock {
     isToday(date: Date): boolean;
     isYesterday(date: Date): boolean;
     protected minutesPerSlot(): number;
-    private isSameDay(date1, date2);
 }

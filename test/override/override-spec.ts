@@ -104,7 +104,7 @@ describe("Override", () => {
         expect(clock.isToday(snap.date)).to.be.true;
 
         // move the clock and check that the override is carried over into next day
-        clock.addSlots(4);
+        clock.addSlots(2);
         override.refresh();
         snap = override.getSnapshot();
 

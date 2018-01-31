@@ -5,6 +5,5 @@ export declare class MockControllerSettings implements IControllerSettings {
     boilerPath: string;
     chPumpPath: string;
     hwPumpPath: string;
-    slotsPerDay: number;
     readonly maxOverrideDuration: number;
 }

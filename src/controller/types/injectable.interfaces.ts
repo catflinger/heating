@@ -31,6 +31,9 @@ export const INJECTABLES = {
  */
 export interface IController {
 
+    // TO DO: get rid of this we shouldn't need it
+    programManager: IProgramManager;
+
     // initialses devices and begins polling the environment
     start(): void;
 

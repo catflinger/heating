@@ -13,7 +13,7 @@ export class MockControllerSettings implements IControllerSettings {
     chPumpPath: string = path.join(__dirname, "..", "..", "test", "data", "gpio", "gpio20", "value");
     hwPumpPath: string = path.join(__dirname, "..", "..", "test", "data", "gpio", "gpio21", "value");
 
-    public slotsPerDay: number = 10;
+    // public slotsPerDay: number = 10;
         
     public get maxOverrideDuration(): number {
         return 10;

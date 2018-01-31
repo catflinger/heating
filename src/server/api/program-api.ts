@@ -1,17 +1,32 @@
 import * as Debug from "debug";
 import { Router } from "express";
 
-import { IController, Snapshot } from "../../controller/types";
+import { IProgram, IProgramManager } from "../../controller/types";
 
 const debug = Debug("app");
 
 export class ProgramApi {
 
-    public static addRoutes(router: Router, controller: IController): void {
+    public static addRoutes(router: Router, programManager: IProgramManager): void {
 
         router.get("/program", (req, res, next) => {
             debug("GET: program");
-            res.status(500).send("Program listing API not implemented yet. ");
+
+            try {
+                const programs: any[] = [];
+
+                // make a list of program data to return
+                programManager.listPrograms().forEach((p) => {
+                    programs.push(p.toStorable());
+                });
+
+                res.json({
+                    programs,
+                });
+
+            } catch (e) {
+                res.status(500).send("could not process this request " + e);
+            }
         });
 
         router.get("/program/:program_id", (req, res, next) => {
@@ -23,27 +38,19 @@ export class ProgramApi {
 
             const programId: string = req.params.program_id;
 
-            if (programId === "0") {
+            try {
+                const program: IProgram = programManager.getProgram(programId);
 
-                try {
-                    const snapshot: Snapshot = controller.getSnapshot();
-
-                    // define of API response
-                    const result: any = {
-                        hwmax: snapshot.program.maxHwTemp,
-                        hwmin: snapshot.program.minHwTemp,
-                        id: 0,
-                        name: "curernt program",
-                        slots: snapshot.program.slots,
-                        slotsPerDay: snapshot.program.slotsPerDay,
-                    };
-                    res.json(result);
-
-                } catch (e) {
-                    res.status(500).send("could not process this request " + e);
+                if (program) {
+                    res.json({
+                        program: program.toStorable(),
+                    });
+                } else {
+                    res.status(404).send("program not found");
                 }
-            } else {
-                res.status(404).send("Program not found.");
+
+            } catch (e) {
+                res.status(500).send("could not process this request " + e);
             }
         });
 
