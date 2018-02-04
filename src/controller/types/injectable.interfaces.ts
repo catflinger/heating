@@ -79,6 +79,7 @@ export interface IControllerSettings {
     // slotsPerDay: number;
     maxOverrideDuration: number;
     boilerPath: string;
+    debugDir: string;
     hwPumpPath: string;
     chPumpPath: string;
     programStoreDir: string;

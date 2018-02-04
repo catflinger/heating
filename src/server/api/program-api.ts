@@ -1,8 +1,16 @@
 import * as Debug from "debug";
 import { Router } from "express";
+import * as Fs from "fs";
 import { inject, injectable } from "inversify";
+import * as Path from "path";
 
-import { IApi, INJECTABLES, IProgram, IProgramManager } from "../../controller/types";
+import {
+    IApi,
+    IControllerSettings,
+    INJECTABLES,
+    IProgram,
+    IProgramManager,
+} from "../../controller/types";
 
 const debug = Debug("app");
 const dump = Debug("dump");
@@ -11,6 +19,9 @@ const dump = Debug("dump");
 export class ProgramApi implements IApi {
     @inject(INJECTABLES.ProgramManager)
     private programManager: IProgramManager;
+
+    @inject(INJECTABLES.ControllerSettings)
+    private settings: IControllerSettings;
 
     public addRoutes(router: Router): void {
 
@@ -27,8 +38,15 @@ export class ProgramApi implements IApi {
 
                 const result = { programs };
 
+                // dump the response to file here
                 if (dump.enabled) {
-                    // TO DO: dump the response to file here
+                    Fs.writeFile(
+                        Path.join(this.settings.debugDir, "programs.json"),
+                        JSON.stringify(result),
+                        (err) => {
+                            // is it worth reporting any errors? and if so where to?
+                        }
+                    );
                 }
 
                 res.json(result);

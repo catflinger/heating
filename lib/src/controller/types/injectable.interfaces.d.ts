@@ -46,6 +46,7 @@ export interface IControlStrategy {
 export interface IControllerSettings {
     maxOverrideDuration: number;
     boilerPath: string;
+    debugDir: string;
     hwPumpPath: string;
     chPumpPath: string;
     programStoreDir: string;

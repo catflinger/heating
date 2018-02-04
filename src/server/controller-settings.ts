@@ -13,6 +13,10 @@ export class ControllerSettings implements IControllerSettings {
         return path.join(__dirname, "data");
     }
 
+    public get debugDir(): string {
+        return path.join(__dirname, "debug");
+    }
+
     public get boilerPath(): string {
         return "/sys/class/gpio/gpio16/value";
     }

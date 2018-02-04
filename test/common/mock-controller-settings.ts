@@ -8,6 +8,7 @@ export class MockControllerSettings implements IControllerSettings {
     startPolling: boolean = false;
     
     programStoreDir: string = path.join(__dirname, "..", "..", "test", "data");
+    debugDir: string = path.join(__dirname, "..", "..", "..", "test", "debug");
 
     boilerPath: string = path.join(__dirname, "..", "..", "test", "data", "gpio", "gpio16", "value");
     chPumpPath: string = path.join(__dirname, "..", "..", "test", "data", "gpio", "gpio20", "value");

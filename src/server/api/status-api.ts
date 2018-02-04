@@ -2,14 +2,19 @@ import * as Debug from "debug";
 import { Router } from "express";
 import { inject, injectable } from "inversify";
 
-import { IApi, IController, INJECTABLES, Snapshot } from "../../controller/types";
+import { IApi, IController, IControllerSettings, INJECTABLES, Snapshot } from "../../controller/types";
 
 const debug = Debug("app");
+const dump = Debug("dump");
 
 @injectable()
 export class StatusApi implements IApi {
+
     @inject(INJECTABLES.Controller)
     private controller: IController;
+
+    @inject(INJECTABLES.ControllerSettings)
+    private settings: IControllerSettings;
 
     public addRoutes(router: Router): void {
 
@@ -50,6 +55,17 @@ export class StatusApi implements IApi {
                         slotsPerDay: snapshot.program.slotsPerDay,
                     },
                 };
+
+                // dump the response to file here
+                if (dump.enabled) {
+                    Fs.writeFile(
+                        Path.join(this.settings.debugDir, "programs.json"),
+                        JSON.stringify(result),
+                        (err) => {
+                            // is it worth reporting any errors? and if so where to?
+                        }
+                    );
+                }
                 res.json(result);
 
             } catch (e) {
