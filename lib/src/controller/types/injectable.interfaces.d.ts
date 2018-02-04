@@ -1,3 +1,4 @@
+import { Router } from "express";
 import { ControlStateSnapshot } from "../snapshots/controlstate-snapshot";
 import { EnvironmentSnapshot } from "../snapshots/environment-snapshot";
 import { OverrideSnapshot } from "../snapshots/override-snapshot";
@@ -8,7 +9,9 @@ export declare const INJECTABLES: {
     Boiler: symbol;
     CHPump: symbol;
     Clock: symbol;
+    ControlApi: symbol;
     ControlStrategy: symbol;
+    Controller: symbol;
     ControllerSettings: symbol;
     DigitalOutput: symbol;
     Environment: symbol;
@@ -16,11 +19,16 @@ export declare const INJECTABLES: {
     HWPump: symbol;
     Override: symbol;
     Program: symbol;
+    ProgramApi: symbol;
     ProgramFactory: symbol;
     ProgramManager: symbol;
     SlotsPerDay: symbol;
+    StatusApi: symbol;
     System: symbol;
 };
+export interface IApi {
+    addRoutes(router: Router): void;
+}
 export interface IController {
     programManager: IProgramManager;
     start(): void;

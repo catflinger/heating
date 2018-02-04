@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { IProgramManager } from "../../controller/types";
-export declare class ProgramApi {
-    static addRoutes(router: Router, programManager: IProgramManager): void;
+import { IApi } from "../../controller/types";
+export declare class ProgramApi implements IApi {
+    private programManager;
+    addRoutes(router: Router): void;
 }

@@ -1,14 +1,18 @@
 import * as Debug from "debug";
 import { Router } from "express";
+import { inject, injectable } from "inversify";
 
 import { Validate } from "../../common/validate";
-import { IController } from "../../controller/types";
+import { IApi, IController, INJECTABLES } from "../../controller/types";
 
 const debug = Debug("app");
 
-export class ControlApi {
+@injectable()
+export class ControlApi implements IApi {
+    @inject(INJECTABLES.Controller)
+    private controller: IController;
 
-    public static addRoutes(router: Router, controller: IController): void {
+    public addRoutes(router: Router): void {
 
         router.post("/control/override/set", (req, res, next) => {
             debug("POST: boost set");
@@ -19,7 +23,7 @@ export class ControlApi {
                 throw new Error("value out of range for override duration");
             }
 
-            controller.setOverride(duration);
+            this.controller.setOverride(duration);
 
             // define of API response
             const result: any = { result: "OK"};
@@ -30,7 +34,7 @@ export class ControlApi {
         router.post("/control/override/clear", (req, res, next) => {
             debug("POST: override clear");
 
-            controller.clearOverride();
+            this.controller.clearOverride();
 
             // define of API response
             const result: any = { result: "OK"};

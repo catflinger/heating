@@ -1,15 +1,14 @@
 import * as Debug from "debug";
 import * as http from "http";
-
-const debug = Debug("app");
-
-import App from "./server/app";
+import expressApp from "./server/app";
 
 // const port = normalizePort(process.env.PORT || 3000);
 const port = 3000;
-App.set("port", port);
+const debug = Debug("app");
 
-const server = http.createServer(App);
+expressApp.set("port", port);
+
+const server = http.createServer(expressApp);
 server.listen(port);
 server.on("error", onError);
 server.on("listening", onListening);

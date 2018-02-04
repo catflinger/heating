@@ -1,13 +1,17 @@
 import * as Debug from "debug";
 import { Router } from "express";
+import { inject, injectable } from "inversify";
 
-import { IController, Snapshot } from "../../controller/types";
+import { IApi, IController, INJECTABLES, Snapshot } from "../../controller/types";
 
 const debug = Debug("app");
 
-export class StatusApi {
+@injectable()
+export class StatusApi implements IApi {
+    @inject(INJECTABLES.Controller)
+    private controller: IController;
 
-    public static addRoutes(router: Router, controller: IController): void {
+    public addRoutes(router: Router): void {
 
         router.get("/status", (req, res, next) => {
             debug("GET: system status");
@@ -17,7 +21,7 @@ export class StatusApi {
             res.header("Pragma", "no-cache");
 
             try {
-                const snapshot: Snapshot = controller.getSnapshot();
+                const snapshot: Snapshot = this.controller.getSnapshot();
 
                 // define of API response
                 const result: any = {

@@ -1,13 +1,18 @@
 import * as Debug from "debug";
 import { Router } from "express";
+import { inject, injectable } from "inversify";
 
-import { IProgram, IProgramManager } from "../../controller/types";
+import { IApi, INJECTABLES, IProgram, IProgramManager } from "../../controller/types";
 
 const debug = Debug("app");
+const dump = Debug("dump");
 
-export class ProgramApi {
+@injectable()
+export class ProgramApi implements IApi {
+    @inject(INJECTABLES.ProgramManager)
+    private programManager: IProgramManager;
 
-    public static addRoutes(router: Router, programManager: IProgramManager): void {
+    public addRoutes(router: Router): void {
 
         router.get("/program", (req, res, next) => {
             debug("GET: program");
@@ -16,13 +21,17 @@ export class ProgramApi {
                 const programs: any[] = [];
 
                 // make a list of program data to return
-                programManager.listPrograms().forEach((p) => {
+                this.programManager.listPrograms().forEach((p) => {
                     programs.push(p.toStorable());
                 });
 
-                res.json({
-                    programs,
-                });
+                const result = { programs };
+
+                if (dump.enabled) {
+                    // TO DO: dump the response to file here
+                }
+
+                res.json(result);
 
             } catch (e) {
                 res.status(500).send("could not process this request " + e);
@@ -39,7 +48,7 @@ export class ProgramApi {
             const programId: string = req.params.program_id;
 
             try {
-                const program: IProgram = programManager.getProgram(programId);
+                const program: IProgram = this.programManager.getProgram(programId);
 
                 if (program) {
                     res.json({

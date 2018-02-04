@@ -1,8 +1,6 @@
-import { Container } from "inversify";
 import "reflect-metadata";
-import { IController, IProgramManager, Snapshot } from "./types";
+import { IClock, IControllable, IController, IControllerSettings, IControlStrategy, IEnvironment, IOverride, IProgramManager, Snapshot } from "./types";
 export declare class Controller implements IController {
-    private currentControlState;
     private strategy;
     private settings;
     private environment;
@@ -10,7 +8,8 @@ export declare class Controller implements IController {
     private clock;
     private override;
     private system;
-    constructor(container: Container);
+    private currentControlState;
+    constructor(strategy: IControlStrategy, settings: IControllerSettings, environment: IEnvironment, _programManager: IProgramManager, clock: IClock, override: IOverride, system: IControllable);
     start(): void;
     getSnapshot(): Snapshot;
     setOverride(duration: number): void;

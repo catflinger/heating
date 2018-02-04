@@ -1,5 +1,5 @@
 import * as Debug from "debug";
-import { Container, inject } from "inversify";
+import { inject, injectable } from "inversify";
 import "reflect-metadata";
 
 import { BasicControlStrategy } from "./basic-control-strategy";
@@ -25,28 +25,22 @@ import {
 
 const debug = Debug("app");
 
+@injectable()
 export class Controller implements IController {
 
     // stores the control state: eg heating OFF hot water ON
     private currentControlState: ControlStateSnapshot;
-    private strategy: IControlStrategy;
-    private settings: IControllerSettings;
-    private environment: IEnvironment;
-    private _programManager: IProgramManager;
-    private clock: IClock;
-    private override: IOverride;
-    private system: IControllable;
 
-    constructor(container: Container) {
+    constructor(
+        @inject(INJECTABLES.ControlStrategy) private strategy: IControlStrategy,
+        @inject(INJECTABLES.ControllerSettings) private settings: IControllerSettings,
+        @inject(INJECTABLES.Environment) private environment: IEnvironment,
+        @inject(INJECTABLES.ProgramManager) private _programManager: IProgramManager,
+        @inject(INJECTABLES.Clock) private clock: IClock,
+        @inject(INJECTABLES.Override) private override: IOverride,
+        @inject(INJECTABLES.ControlStrategy) private system: IControllable) {
+
         this.currentControlState = new ControlStateSnapshot(false, false);
-
-        this.strategy = container.get<IControlStrategy>(INJECTABLES.ControlStrategy);
-        this.settings = container.get<IControllerSettings>(INJECTABLES.ControllerSettings);
-        this.environment = container.get<IEnvironment>(INJECTABLES.Environment);
-        this._programManager = container.get<IProgramManager>(INJECTABLES.ProgramManager);
-        this.clock = container.get<IClock>(INJECTABLES.Clock);
-        this.override = container.get<IOverride>(INJECTABLES.Override);
-        this.system = container.get<IControllable>(INJECTABLES.System);
     }
 
     public start(): void {

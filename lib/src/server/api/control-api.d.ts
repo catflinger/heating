@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { IController } from "../../controller/types";
-export declare class ControlApi {
-    static addRoutes(router: Router, controller: IController): void;
+import { IApi } from "../../controller/types";
+export declare class ControlApi implements IApi {
+    private controller;
+    addRoutes(router: Router): void;
 }

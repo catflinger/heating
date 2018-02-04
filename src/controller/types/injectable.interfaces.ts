@@ -1,3 +1,4 @@
+import { Router } from "express";
 import { ControlStateSnapshot } from "../snapshots/controlstate-snapshot";
 import { EnvironmentSnapshot } from "../snapshots/environment-snapshot";
 import { OverrideSnapshot } from "../snapshots/override-snapshot";
@@ -12,7 +13,9 @@ export const INJECTABLES = {
     Boiler: Symbol("Boiler"),
     CHPump: Symbol("CHPump"),
     Clock: Symbol("Clock"),
+    ControlApi: Symbol("controlApi"),
     ControlStrategy: Symbol("ControlStrategy"),
+    Controller: Symbol("Controller"),
     ControllerSettings: Symbol("ControllerSettings"),
     DigitalOutput: Symbol("DigitalOutput"),
     Environment: Symbol("Environment"),
@@ -20,11 +23,17 @@ export const INJECTABLES = {
     HWPump: Symbol("HWPump"),
     Override: Symbol("Override"),
     Program: Symbol("Program"),
+    ProgramApi: Symbol("programApi"),
     ProgramFactory: Symbol("ProgramFactory"),
     ProgramManager: Symbol("ProgramManager"),
     SlotsPerDay: Symbol("SlotsPerDay"),
+    StatusApi: Symbol("statusApi"),
     System: Symbol("System"),
 };
+
+export interface IApi {
+    addRoutes(router: Router): void;
+}
 
 /**
  * Main entry point and public interface for the heating control
