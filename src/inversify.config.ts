@@ -34,6 +34,8 @@ import { ControlApi } from "./server/api/control-api";
 import { ProgramApi } from "./server/api/program-api";
 import { StatusApi } from "./server/api/status-api";
 
+import { Utils } from "./common/utils";
+
 export const container = new Container();
 
 // server config
@@ -54,6 +56,7 @@ container.bind<IProgramManager>(INJECTABLES.ProgramManager).to(ProgramManager).i
 container.bind<IClock>(INJECTABLES.Clock).to(Clock).inSingletonScope();
 container.bind<IControllable>(INJECTABLES.System).to(System).inSingletonScope();
 container.bind<IOverride>(INJECTABLES.Override).to(Override).inSingletonScope();
+container.bind<Utils>(INJECTABLES.Utils).to(Utils).inSingletonScope();
 
 // discrete instances
 container.bind<IProgram>(INJECTABLES.Program).to(Program);

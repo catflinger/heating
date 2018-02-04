@@ -25,6 +25,7 @@ export declare const INJECTABLES: {
     SlotsPerDay: symbol;
     StatusApi: symbol;
     System: symbol;
+    Utils: symbol;
 };
 export interface IApi {
     addRoutes(router: Router): void;

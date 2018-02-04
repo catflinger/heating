@@ -9,6 +9,7 @@ const debug = Debug("app");
 
 @injectable()
 export class ControlApi implements IApi {
+
     @inject(INJECTABLES.Controller)
     private controller: IController;
 

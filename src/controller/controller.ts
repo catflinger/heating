@@ -38,7 +38,7 @@ export class Controller implements IController {
         @inject(INJECTABLES.ProgramManager) private _programManager: IProgramManager,
         @inject(INJECTABLES.Clock) private clock: IClock,
         @inject(INJECTABLES.Override) private override: IOverride,
-        @inject(INJECTABLES.ControlStrategy) private system: IControllable) {
+        @inject(INJECTABLES.System) private system: IControllable) {
 
         this.currentControlState = new ControlStateSnapshot(false, false);
     }

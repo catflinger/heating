@@ -22,6 +22,8 @@ import {
     ISwitchable,
 } from "./controller/types";
 
+import { Utils } from "./common/utils";
+
 import { BasicControlStrategy } from "./controller/basic-control-strategy";
 import { Clock } from "./controller/clock";
 import { Controller } from "./controller/controller";
@@ -55,6 +57,7 @@ container.bind<IOverride>(INJECTABLES.Override).to(Override).inSingletonScope();
 container.bind<ISwitchable>(INJECTABLES.Boiler).to(Boiler).inSingletonScope();
 container.bind<ISwitchable>(INJECTABLES.CHPump).to(CHPump).inSingletonScope();
 container.bind<ISwitchable>(INJECTABLES.HWPump).to(HWPump).inSingletonScope();
+container.bind<Utils>(INJECTABLES.Utils).to(Utils).inSingletonScope();
 
 // server config
 container.bind<IApi>(INJECTABLES.ControlApi).to(ControlApi).inSingletonScope();

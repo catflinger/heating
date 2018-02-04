@@ -29,6 +29,7 @@ export const INJECTABLES = {
     SlotsPerDay: Symbol("SlotsPerDay"),
     StatusApi: Symbol("statusApi"),
     System: Symbol("System"),
+    Utils: Symbol("Utils"),
 };
 
 export interface IApi {

@@ -2,10 +2,10 @@ import * as Debug from "debug";
 import { Router } from "express";
 import { inject, injectable } from "inversify";
 
-import { IApi, IController, IControllerSettings, INJECTABLES, Snapshot } from "../../controller/types";
+import { Utils } from "../../common/utils";
+import { IApi, IController, INJECTABLES, Snapshot } from "../../controller/types";
 
 const debug = Debug("app");
-const dump = Debug("dump");
 
 @injectable()
 export class StatusApi implements IApi {
@@ -13,8 +13,8 @@ export class StatusApi implements IApi {
     @inject(INJECTABLES.Controller)
     private controller: IController;
 
-    @inject(INJECTABLES.ControllerSettings)
-    private settings: IControllerSettings;
+    @inject(INJECTABLES.Utils)
+    private utils: Utils;
 
     public addRoutes(router: Router): void {
 
@@ -56,16 +56,8 @@ export class StatusApi implements IApi {
                     },
                 };
 
-                // dump the response to file here
-                if (dump.enabled) {
-                    Fs.writeFile(
-                        Path.join(this.settings.debugDir, "programs.json"),
-                        JSON.stringify(result),
-                        (err) => {
-                            // is it worth reporting any errors? and if so where to?
-                        }
-                    );
-                }
+                // send the response
+                this.utils.dumpTextFile("status.json", result);
                 res.json(result);
 
             } catch (e) {

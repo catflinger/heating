@@ -1,27 +1,25 @@
 import * as Debug from "debug";
 import { Router } from "express";
-import * as Fs from "fs";
 import { inject, injectable } from "inversify";
-import * as Path from "path";
 
+import { Utils } from "../../common/utils";
 import {
     IApi,
-    IControllerSettings,
     INJECTABLES,
     IProgram,
     IProgramManager,
 } from "../../controller/types";
 
 const debug = Debug("app");
-const dump = Debug("dump");
 
 @injectable()
 export class ProgramApi implements IApi {
+
     @inject(INJECTABLES.ProgramManager)
     private programManager: IProgramManager;
 
-    @inject(INJECTABLES.ControllerSettings)
-    private settings: IControllerSettings;
+    @inject(INJECTABLES.Utils)
+    private utils: Utils;
 
     public addRoutes(router: Router): void {
 
@@ -38,17 +36,7 @@ export class ProgramApi implements IApi {
 
                 const result = { programs };
 
-                // dump the response to file here
-                if (dump.enabled) {
-                    Fs.writeFile(
-                        Path.join(this.settings.debugDir, "programs.json"),
-                        JSON.stringify(result),
-                        (err) => {
-                            // is it worth reporting any errors? and if so where to?
-                        }
-                    );
-                }
-
+                this.utils.dumpTextFile("programs.json", JSON.stringify(result));
                 res.json(result);
 
             } catch (e) {
@@ -69,9 +57,11 @@ export class ProgramApi implements IApi {
                 const program: IProgram = this.programManager.getProgram(programId);
 
                 if (program) {
-                    res.json({
+                    const result: string = JSON.stringify({
                         program: program.toStorable(),
                     });
+                    this.utils.dumpTextFile("program.json", result);
+                    res.json(result);
                 } else {
                     res.status(404).send("program not found");
                 }
