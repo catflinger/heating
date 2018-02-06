@@ -13,11 +13,10 @@ export class Utils {
 
     public dumpTextFile(name: string, data: string): void {
         if (dump.enabled) {
+            // is it worth reporting any errors here? If so how and where to?
             Fs.writeFile(
                 Path.join(this.settings.debugDir, name),
-                JSON.stringify(data)
-            );
-            // is it worth reporting any errors? if so how and where to?
+                JSON.stringify(data));
         }
     }
 }

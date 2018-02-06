@@ -2,6 +2,7 @@ import * as Debug from "debug";
 import { Router } from "express";
 import { inject, injectable } from "inversify";
 
+import { Utils } from "../../common/utils";
 import { Validate } from "../../common/validate";
 import { IApi, IController, INJECTABLES } from "../../controller/types";
 
@@ -12,6 +13,9 @@ export class ControlApi implements IApi {
 
     @inject(INJECTABLES.Controller)
     private controller: IController;
+
+    @inject(INJECTABLES.Utils)
+    private utils: Utils;
 
     public addRoutes(router: Router): void {
 
@@ -28,6 +32,7 @@ export class ControlApi implements IApi {
 
             // define of API response
             const result: any = { result: "OK"};
+            this.utils.dumpTextFile("override-set.json", JSON.stringify(result));
             res.json(result);
 
         });
@@ -39,6 +44,7 @@ export class ControlApi implements IApi {
 
             // define of API response
             const result: any = { result: "OK"};
+            this.utils.dumpTextFile("override-clear.json", JSON.stringify(result));
             res.json(result);
         });
     }
