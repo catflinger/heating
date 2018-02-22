@@ -29,6 +29,10 @@ export class Clock implements IClock {
         return moment(this.now).isSame(date, "day");
     }
 
+    public get dayOfWeek(): number {
+        return moment(this.now).isoWeekday();
+    }
+
     public isYesterday(date: Date): boolean {
         const yesterday = moment(this.now).subtract(1, "day");
         return yesterday.isSame(date, "day");

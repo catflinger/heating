@@ -18,6 +18,7 @@
     "lint": "tslint --force --format verbose \"src/**/*.ts\"",
     "build": "npm run clean && npm run lint && echo Using TypeScript && tsc --version && tsc --pretty",
     "test": "cls && npm run build && mocha --compilers ts:ts-node/register --recursive \"test/**/*-spec.ts\"",
+    "testa": "cls && npm run build && mocha --compilers ts:ts-node/register --recursive \"test/program-manager/program-manager-spec.ts\"",
     "coverage": "nyc --include='src/**/*.ts' --reporter=text --reporter=html --reporter=lcov mocha --compilers ts:ts-node/register --recursive \"test/**/*.test.ts\"",
     "watch": "npm run build -- --watch",
     "watch:test": "npm run test -- --watch",

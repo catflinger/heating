@@ -1,19 +1,22 @@
-import { IControllerSettings, IProgram, IProgramManager } from "./types";
+import { IClock, IControllerSettings, IProgram, IProgramManager, IProgramStore, ProgramMode } from "./types";
 export declare class ProgramManager implements IProgramManager {
     private settings;
     private programFactory;
-    private _ext;
-    private _activeProgram;
-    constructor(settings: IControllerSettings, programFactory: () => IProgram);
-    readonly activeProgram: IProgram;
-    setActiveProgram(id: string): void;
+    private store;
+    private clock;
+    private _programs;
+    private _config;
+    constructor(settings: IControllerSettings, programFactory: () => IProgram, store: IProgramStore, clock: IClock);
+    init(): void;
+    readonly weekdayProgram: IProgram;
+    readonly saturdayProgram: IProgram;
+    readonly sundayProgram: IProgram;
     listPrograms(): IProgram[];
+    readonly activeProgram: IProgram;
+    setActiveProgram(mode: ProgramMode, id: string): void;
     getProgram(id: string): IProgram;
     createProgram(src: any): IProgram;
-    saveProgram(program: IProgram): void;
+    updateProgram(data: any): void;
     removeProgram(id: string): void;
-    private makeProgramPath(id);
-    private makeLatestIdPath();
-    private setLatestProgamId(id);
-    private getLatestProgamId();
+    private save();
 }

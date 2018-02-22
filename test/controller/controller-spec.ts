@@ -8,7 +8,7 @@ import * as chai from "chai";
 import "mocha";
 const expect = chai.expect;
 
-let controller: Controller = new Controller(container);
+let controller: IController = container.get<IController>(INJECTABLES.Controller);
 let mockStrategy: MockControlStrategy = container.get<MockControlStrategy>(INJECTABLES.ControlStrategy);
 let mockEnvironment: MockEnvironment =  container.get<MockEnvironment>(INJECTABLES.Environment);
 let clock: MockClock = container.get<MockClock>(INJECTABLES.Clock);

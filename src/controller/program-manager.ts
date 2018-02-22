@@ -1,88 +1,87 @@
-// import { EINPROGRESS } from "constants";
-import * as fs from "fs";
 import { inject, injectable } from "inversify";
-import * as path from "path";
 import { Program } from "./program";
 import { ProgramSnapshot } from "./snapshots/program-snapshot";
-import { IControllerSettings, INJECTABLES, IProgram, IProgramManager } from "./types";
+import { IClock, IControllerSettings, INJECTABLES, IProgram, IProgramManager, IProgramStore, ProgramConfig, ProgramMode } from "./types";
 
 @injectable()
 export class ProgramManager implements IProgramManager {
-    private _ext: string = ".json";
-    private _activeProgram: IProgram = undefined;
+    private _programs: IProgram[] = [];
+    private _config: ProgramConfig;
 
     constructor(@inject(INJECTABLES.ControllerSettings) private settings: IControllerSettings,
-                @inject(INJECTABLES.ProgramFactory) private programFactory: () => IProgram) {
+                @inject(INJECTABLES.ProgramFactory) private programFactory: () => IProgram,
+                @inject(INJECTABLES.ProgramStore) private store: IProgramStore,
+                @inject(INJECTABLES.Clock) private clock: IClock) {  }
 
-        // get the last used program
-        const latestId = this.getLatestProgamId();
-        if (latestId) {
+    public init(): void {
+        try {
+            this.store.init();
+            this._config = this.store.getConfig();
+            this._programs = this.store.getPrograms();
+        } catch {
+            // TO DO: notify the user here and ask what to do
+            // for now just assume they want a factory reset
 
-            const prog = this.getProgram(latestId);
-            if (prog) {
-                this._activeProgram = prog;
-                this.setLatestProgamId(this._activeProgram.id);
-            }
-        }
+            // create some defaults
+            const program: IProgram = this.programFactory();
 
-        // check it loaded
-        if (!this._activeProgram) {
+            const config = new ProgramConfig();
+            config.activeProgramIds[ProgramMode.Saturday] = program.id;
+            config.activeProgramIds[ProgramMode.Sunday] = program.id;
+            config.activeProgramIds[ProgramMode.Weekday] = program.id;
 
-            // no last used so start off with a new default program
-            this._activeProgram = this.programFactory();
-            this._activeProgram.loadDefaults();
-            this.saveProgram(this._activeProgram);
-            this.setLatestProgamId(this._activeProgram.id);
+            // reset the store and load defaults
+            this.store.reset();
+            this._programs.push(program);
+            this._config = config;
+            this.save();
         }
     }
 
-    get activeProgram(): IProgram {
-        return this._activeProgram;
+    public get weekdayProgram(): IProgram {
+        return this._programs[ProgramMode.Weekday];
     }
-
-    public setActiveProgram(id: string) {
-        const program: IProgram = this.getProgram(id);
-
-        if (program) {
-            this._activeProgram = program;
-            this.setLatestProgamId(id);
-        }
+    public get saturdayProgram(): IProgram {
+        return this._programs[ProgramMode.Saturday];
+    }
+    public get sundayProgram(): IProgram {
+        return this._programs[ProgramMode.Sunday];
     }
 
     public listPrograms(): IProgram[] {
-        const results: IProgram[] = [];
-        const files: string[]  = fs.readdirSync(path.join(this.settings.programStoreDir, "programs"));
-        const ids: string[] = [];
+        return this._programs;
+    }
 
-        // get a list of all program file ids
-        files.forEach((f: string) => {
-            if (f.endsWith(this._ext)) {
-                ids.push(f.substr(0, f.length - this._ext.length));
-            }
-        });
+    get activeProgram(): IProgram {
+        let id: string;
 
-        // create a program object from each id
-        ids.forEach((id) => {
-            results.push(this.getProgram(id));
-        });
+        // find the date and choose the right program
+        switch (this.clock.dayOfWeek) {
+            case 6:
+                id = this._config.activeProgramIds[ProgramMode.Saturday];
+                break;
+            case 7:
+                id = this._config.activeProgramIds[ProgramMode.Sunday];
+                break;
+            default :
+                id = this._config.activeProgramIds[ProgramMode.Weekday];
+                break;
+        }
+        return this.getProgram(id);
+    }
 
-        return results;
+    public setActiveProgram(mode: ProgramMode, id: string) {
+
+        // check that a program with this id exists before using it
+        if (!this.getProgram(id)) {
+            throw new Error("program not found");
+        }
+        this._config.activeProgramIds[mode] = id;
+        this.save();
     }
 
     public getProgram(id: string): IProgram {
-        let result: IProgram = null;
-
-        try {
-            const json: string = fs.readFileSync(this.makeProgramPath(id), "utf8");
-
-            result = this.programFactory();
-            result.loadFromJson(json);
-
-        } catch (e) {
-            result = null;
-        }
-
-        return result;
+        return this._programs.find((p) => p.id === id);
     }
 
     public createProgram(src: any): IProgram {
@@ -95,48 +94,55 @@ export class ProgramManager implements IProgramManager {
         // create the new program and save it to disk
         const program: IProgram = this.programFactory();
         program.loadFrom(src);
-        this.saveProgram(program);
+        this._programs.push(program);
+
+        this.save();
 
         return program;
     }
 
-    public saveProgram(program: IProgram) {
-        // write the file to disk
-        fs.writeFileSync(this.makeProgramPath(program.id), program.toJson());
+    public updateProgram(data: any) {
+
+        const program: IProgram = this.programFactory();
+        program.loadFrom(data);
+
+        // check that a program with this id exists
+        const idx = this._programs.findIndex((p) => p.id === program.id);
+
+        if (idx >= 0) {
+            // remove existing program from the program array
+            this._programs = this._programs.splice(idx, 1);
+
+            // add updated program back in
+            this._programs.push(program);
+
+            this.save();
+
+        } else {
+            throw new Error("Cannot find program to update");
+        }
     }
 
     public removeProgram(id: string): void {
 
-        if (this._activeProgram != null && this._activeProgram.id !== id) {
-            const filepath: string = this.makeProgramPath(id);
-
-            if (fs.existsSync(filepath)) {
-                fs.unlinkSync(filepath);
+        // check the program is not being used
+        this._config.activeProgramIds.forEach((progId) => {
+            if (progId === id) {
+                throw new Error("Cannot remove program as it is still in use");
             }
-        } else {
-            // do not remove the active program
+        });
+
+        // remove from the program array
+        const idx = this._programs.findIndex((p) => p.id === id);
+        if (idx >= 0) {
+            this._programs = this._programs.splice(idx, 1);
         }
+
+        this.save();
     }
 
-    private makeProgramPath(id: string): string {
-        return path.join(this.settings.programStoreDir, "programs", id + this._ext);
-    }
-
-    private makeLatestIdPath() {
-        return path.join(this.settings.programStoreDir, "latest-program.json");
-    }
-
-    private setLatestProgamId(id: string): void {
-        fs.writeFileSync(this.makeLatestIdPath(), JSON.stringify({latest: id}));
-    }
-
-    private getLatestProgamId(): string {
-        let result: string = null;
-
-        if (fs.existsSync(this.makeLatestIdPath())) {
-            const config: any = JSON.parse(fs.readFileSync(this.makeLatestIdPath(), "utf8"));
-            result = config.latest;
-        }
-        return result;
+    private save() {
+        this.store.saveConfig(this._config);
+        this.store.savePrograms(this._programs);
     }
 }

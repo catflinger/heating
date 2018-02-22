@@ -23,8 +23,8 @@ export class ProgramApi implements IApi {
 
     public addRoutes(router: Router): void {
 
-        router.get("/program", (req, res, next) => {
-            debug("GET: program");
+        router.get("/programs", (req, res, next) => {
+            debug("GET: programs");
 
             try {
                 const programs: any[] = [];
@@ -34,7 +34,14 @@ export class ProgramApi implements IApi {
                     programs.push(p.toStorable());
                 });
 
-                const result = { programs };
+                const result = {
+                    config: {
+                        saturday: this.programManager.saturdayProgram,
+                        sunday: this.programManager.sundayProgram,
+                        weekday: this.programManager.weekdayProgram,
+                    },
+                    programs,
+                };
 
                 this.utils.dumpTextFile("programs.json", JSON.stringify(result));
                 res.json(result);
@@ -71,38 +78,45 @@ export class ProgramApi implements IApi {
             }
         });
 
-        router.post("/program", (req, res, next) => {
-            debug("POST: program");
-
-            // TO DO: implement the changes
-
-            // TO DO: return the new program
-
-            res.status(500).send("Not implemented yet. ");
-        });
-
-        router.put("/program/:program_id", (req, res, next) => {
-            debug("PUT: program");
-
-            // TO DO: implement the changes
-
-            res.status(500).send("Not implemented yet. ");
-        });
-
         router.post("/program/:program_id", (req, res, next) => {
             debug("POST: program");
 
-            // TO DO: implement the changes
+            try {
+                this.programManager.updateProgram(req.body);
+            } catch (e) {
+                res.status(500).send("could not process this request " + e);
+            }
 
-            res.status(500).send("Not implemented yet. ");
+            res.json({result: true});
+        });
+
+        router.put("/program", (req, res, next) => {
+            debug("PUT: program");
+
+            let program: IProgram;
+
+            try {
+                program = this.programManager.createProgram(req.body);
+            } catch (e) {
+                res.status(500).send("could not process this request " + e);
+            }
+
+            res.json(program.toStorable());
+
         });
 
         router.delete("/program/:program_id", (req, res, next) => {
             debug("DELETE: program");
 
-            // TO DO: implement the changes
+            const id: string = req.query.get("program_id");
 
-            res.status(500).send("Not implemented yet. ");
+            try {
+                this.programManager.removeProgram(id);
+            } catch (e) {
+                res.status(500).send("could not process this request " + e);
+            }
+
+            res.json({result: true});
         });
     }
 }

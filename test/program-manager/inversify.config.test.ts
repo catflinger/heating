@@ -1,9 +1,11 @@
 import { Container, interfaces } from "inversify";
-
-import { IControllerSettings, IProgram, INJECTABLES, IProgramManager } from "../../src/controller/types";
+import "reflect-metadata";
+import { IControllerSettings, IProgram, INJECTABLES, IProgramManager, IClock, IProgramStore } from "../../src/controller/types";
 import { Program } from "../../src/controller/program"; 
 import { MockControllerSettings } from "../common/mock-controller-settings";
 import { ProgramManager } from "../../src/controller/program-manager";
+import { MockClock } from "../common/mock-clock";
+import { ProgramStore } from "../../src/controller/program-store";
 
 export const container = new Container();
 
@@ -12,9 +14,11 @@ container.bind<number>(INJECTABLES.SlotsPerDay).toConstantValue(10);
 
 // singletons
 container.bind<IControllerSettings>(INJECTABLES.ControllerSettings).to(MockControllerSettings).inSingletonScope();
+container.bind<IClock>(INJECTABLES.Clock).to(MockClock).inSingletonScope();
 
 // discrete instances
 container.bind<IProgramManager>(INJECTABLES.ProgramManager).to(ProgramManager); //note: this would normally be a singleton
+container.bind<IProgramStore>(INJECTABLES.ProgramStore).to(ProgramStore).inSingletonScope();
 container.bind<IProgram>(INJECTABLES.Program).to(Program);
 
 // bind INJECTABLES.ProgramFactory to a function that creates program objects

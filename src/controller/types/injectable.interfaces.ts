@@ -26,11 +26,18 @@ export const INJECTABLES = {
     ProgramApi: Symbol("programApi"),
     ProgramFactory: Symbol("ProgramFactory"),
     ProgramManager: Symbol("ProgramManager"),
+    ProgramStore: Symbol("ProgramStore"),
     SlotsPerDay: Symbol("SlotsPerDay"),
     StatusApi: Symbol("statusApi"),
     System: Symbol("System"),
     Utils: Symbol("Utils"),
 };
+
+export enum ProgramMode {
+    Weekday = 0,
+    Saturday = 1,
+    Sunday = 2,
+}
 
 export interface IApi {
     addRoutes(router: Router): void;
@@ -55,6 +62,8 @@ export interface IController {
 
     // removes any override
     clearOverride(): void;
+
+    refresh(): void;
 }
 
 /**
@@ -93,6 +102,7 @@ export interface IControllerSettings {
  */
 export interface IClock {
     currentSlot: number;
+    dayOfWeek: number;
     tick(): void;
     isToday(date: Date): boolean;
     isYesterday(date: Date): boolean;
@@ -154,13 +164,38 @@ export interface IProgram {
  *  interface for storing programs
  */
 export interface IProgramManager {
+
+    saturdayProgram: IProgram;
+    sundayProgram: IProgram;
+    weekdayProgram: IProgram;
+
     activeProgram: IProgram;
-    setActiveProgram(id: string): void;
-    listPrograms(): IProgram[];
-    getProgram(id: string): IProgram;
     createProgram(src: any): IProgram;
-    saveProgram(program: IProgram): void;
+    getProgram(id: string): IProgram;
+    init(): void;
+    listPrograms(): IProgram[];
     removeProgram(id: string): void;
+    setActiveProgram(mode: ProgramMode, id: string): void;
+    updateProgram(program: IProgram): void;
+}
+
+export class ProgramConfig {
+    public activeProgramIds: string[] = [];
+}
+
+export interface IProgramStore {
+
+    // attempts to load from existing config
+    init(): void;
+
+    // clears store and resets to defaults
+    reset(): void;
+
+    // get and set progrm store items
+    getConfig(): ProgramConfig;
+    saveConfig(config: ProgramConfig): void;
+    getPrograms(): IProgram[];
+    savePrograms(programs: IProgram[]): void;
 }
 
 /**

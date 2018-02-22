@@ -22,7 +22,7 @@ function getProgramPath(id: string): string {
     return Path.join(settings.programStoreDir, "programs", id + ".json");
 }
 
-let latestFilePath: string = Path.join(settings.programStoreDir, "latest-program.json");
+let latestFilePath: string = Path.join(settings.programStoreDir, "programs.json");
 let programsDir: string = Path.join(settings.programStoreDir, "programs");
 
 let lastProgramId: string = null;
@@ -35,24 +35,25 @@ function removeProgramFile(id: string) {
     }
 }
 
+// delete any saved program info
+if (fs.existsSync(latestFilePath)) {
+    fs.unlinkSync(latestFilePath);
+}
+
+// delete any program files
+let files: string[] = fs.readdirSync(programsDir);
+files.forEach((f) => {
+    fs.unlinkSync(Path.join(programsDir, f));
+});
+
 describe("program-manager", () => {
 
     describe("bootstrap", () => {
 
-        before(() => {
-            // delete any saved program info
-            fs.unlinkSync(latestFilePath);
-
-            // delete any program files
-            let files: string[] = fs.readdirSync(programsDir);
-            files.forEach((f) => {
-                fs.unlinkSync(Path.join(programsDir, f));
-            });
-        });
-
         it("should bootstrap with no history", () => {
             // create the program manager
             programManager = container.get<IProgramManager>(INJECTABLES.ProgramManager);
+            programManager.init();
 
             // expect the default program to be loaded and active
             expect(programManager).not.to.be.undefined;
@@ -71,9 +72,10 @@ describe("program-manager", () => {
         before(() => {
         });
 
-        it("should load last used program", () => {
-            // create the program manager
+        it("should load existing programs", () => {
+            // create the program manageragain
             programManager = container.get<IProgramManager>(INJECTABLES.ProgramManager);
+            programManager.init();
 
             // expect the default program to be loaded and active
             expect(programManager).not.to.be.undefined;
@@ -85,7 +87,7 @@ describe("program-manager", () => {
         });
 
         it("should create a new program", () => {
-            const data = {"name": "some name or other", "hwmax":50,"hwmin":40,"slots":[true,false,true,false,true,false,false,false,false,false]};
+            const data = { "name": "some name or other", "hwmax": 50, "hwmin": 40, "slots": [true, false, true, false, true, false, false, false, false, false] };
             let newProg: IProgram = programManager.createProgram(data);
             expect(typeof newProg.id).to.equal("string");
             expect(newProg.id.length).to.equal(36);
@@ -95,14 +97,14 @@ describe("program-manager", () => {
         });
 
         it("should create a new program when data contains an empty id", () => {
-            const data = {"id": "", "name": "some name or other", "hwmax":50,"hwmin":40,"slots":[true,false,true,false,true,false,false,false,false,false]};
-            let newProg: IProgram  = programManager.createProgram(data);
+            const data = { "id": "", "name": "some name or other", "hwmax": 50, "hwmin": 40, "slots": [true, false, true, false, true, false, false, false, false, false] };
+            let newProg: IProgram = programManager.createProgram(data);
             expect(typeof newProg.id).to.equal("string");
             expect(newProg.id.length).to.equal(36);
         });
 
         it("should fail to create a new program when data contains a given id", () => {
-            const data = {"id": "12345", "name": "some name or other", "hwmax":50,"hwmin":40,"slots":[true,false,true,false,true,false,false,false,false,false]};
+            const data = { "id": "12345", "name": "some name or other", "hwmax": 50, "hwmin": 40, "slots": [true, false, true, false, true, false, false, false, false, false] };
             expect(() => { programManager.createProgram(data) }).to.throw;
         });
     });
@@ -115,9 +117,10 @@ describe("program-manager", () => {
         it("should list programs", () => {
             // create the program manager
             programManager = container.get<IProgramManager>(INJECTABLES.ProgramManager);
+            programManager.init();
 
             let programs: IProgram[] = programManager.listPrograms();
-            
+
             // the tests above should have created 3 programs in total
             expect(programs.length).to.equal(3);
             let id0: string = programs[0].id;

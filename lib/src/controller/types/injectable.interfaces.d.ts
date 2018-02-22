@@ -22,11 +22,17 @@ export declare const INJECTABLES: {
     ProgramApi: symbol;
     ProgramFactory: symbol;
     ProgramManager: symbol;
+    ProgramStore: symbol;
     SlotsPerDay: symbol;
     StatusApi: symbol;
     System: symbol;
     Utils: symbol;
 };
+export declare enum ProgramMode {
+    Weekday = 0,
+    Saturday = 1,
+    Sunday = 2,
+}
 export interface IApi {
     addRoutes(router: Router): void;
 }
@@ -36,6 +42,7 @@ export interface IController {
     getSnapshot(): Snapshot;
     setOverride(duration: number): void;
     clearOverride(): void;
+    refresh(): void;
 }
 export interface IControllable {
     applyControlState(state: ControlStateSnapshot): void;
@@ -55,6 +62,7 @@ export interface IControllerSettings {
 }
 export interface IClock {
     currentSlot: number;
+    dayOfWeek: number;
     tick(): void;
     isToday(date: Date): boolean;
     isYesterday(date: Date): boolean;
@@ -81,13 +89,28 @@ export interface IProgram {
     toStorable(): any;
 }
 export interface IProgramManager {
+    saturdayProgram: IProgram;
+    sundayProgram: IProgram;
+    weekdayProgram: IProgram;
     activeProgram: IProgram;
-    setActiveProgram(id: string): void;
-    listPrograms(): IProgram[];
-    getProgram(id: string): IProgram;
     createProgram(src: any): IProgram;
-    saveProgram(program: IProgram): void;
+    getProgram(id: string): IProgram;
+    init(): void;
+    listPrograms(): IProgram[];
     removeProgram(id: string): void;
+    setActiveProgram(mode: ProgramMode, id: string): void;
+    updateProgram(program: IProgram): void;
+}
+export declare class ProgramConfig {
+    activeProgramIds: string[];
+}
+export interface IProgramStore {
+    init(): void;
+    reset(): void;
+    getConfig(): ProgramConfig;
+    saveConfig(config: ProgramConfig): void;
+    getPrograms(): IProgram[];
+    savePrograms(programs: IProgram[]): void;
 }
 export interface IOverride {
     refresh(): void;

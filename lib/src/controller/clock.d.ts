@@ -6,6 +6,7 @@ export declare class Clock implements IClock {
     getDate(): Date;
     tick(): void;
     isToday(date: Date): boolean;
+    readonly dayOfWeek: number;
     isYesterday(date: Date): boolean;
     protected minutesPerSlot(): number;
 }

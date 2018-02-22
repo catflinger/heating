@@ -11,7 +11,7 @@ const expect = chai.expect;
 let clock: MockClock = container.get<MockClock>(INJECTABLES.Clock);
 let slotsPerDay: number = container.get<number>(INJECTABLES.SlotsPerDay);
 
-describe("clock", () => {
+describe("Clock", () => {
 
     it("should give the time", () => {
         expect(typeof clock.getDate().getMonth).to.equal("function");

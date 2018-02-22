@@ -10,6 +10,7 @@ import { System } from "../../src/controller/system";
 import { MockControllerSettings } from "../common/mock-controller-settings";
 import { ProgramManager } from "../../src/controller/program-manager";
 import { Switchable } from "../../src/controller/switchable";
+import { Controller } from "../../src/controller/controller";
 
 export const container = new Container();
 
@@ -24,6 +25,7 @@ container.bind<ISwitchable>(INJECTABLES.HWPump).to(MockDevice).inSingletonScope(
 container.bind<ISwitchable>(INJECTABLES.CHPump).to(MockDevice).inSingletonScope();
 container.bind<MockClock>(INJECTABLES.Clock).to(MockClock).inSingletonScope();
 container.bind<IControllable>(INJECTABLES.System).to(System);
+container.bind<IController>(INJECTABLES.Controller).to(Controller).inSingletonScope();
 
 container.bind<IProgram>(INJECTABLES.Program).to(Program);
 

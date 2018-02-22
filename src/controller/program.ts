@@ -23,6 +23,7 @@ export class Program implements IProgram {
     private _maxHwTemp: number;
 
     constructor(@inject(INJECTABLES.SlotsPerDay) protected slotsPerDay: number) {
+        this.loadDefaults();
     }
 
     public getValue(slot: number): boolean {
