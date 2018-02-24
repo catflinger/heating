@@ -1,16 +1,17 @@
 import { Container, interfaces } from "inversify";
 import "reflect-metadata";
-import { IControlStrategy, IController, IControllerSettings, IEnvironment, IOverride, IProgram, ISwitchable, INJECTABLES, IControllable, IProgramManager } from "../../src/controller/types";
+import { IControlStrategy, IController, IControllerSettings, IEnvironment, IOverride, IProgram, ISwitchable, INJECTABLES, IControllable, IProgramManager, IProgramStore } from "../../src/controller/types";
 
 import { MockControlStrategy, MockDevice,MockEnvironment } from "./mocks";
 import { MockClock } from "../common/mock-clock";
 import { Program } from "../../src/controller/program";
 import { Override } from "../../src/controller/override";
 import { System } from "../../src/controller/system";
-import { MockControllerSettings } from "../common/mock-controller-settings";
+import { MockControllerSettings } from "./mock-controller-settings";
 import { ProgramManager } from "../../src/controller/program-manager";
 import { Switchable } from "../../src/controller/switchable";
 import { Controller } from "../../src/controller/controller";
+import { ProgramStore } from "../../src/controller/program-store";
 
 export const container = new Container();
 
@@ -26,7 +27,7 @@ container.bind<ISwitchable>(INJECTABLES.CHPump).to(MockDevice).inSingletonScope(
 container.bind<MockClock>(INJECTABLES.Clock).to(MockClock).inSingletonScope();
 container.bind<IControllable>(INJECTABLES.System).to(System);
 container.bind<IController>(INJECTABLES.Controller).to(Controller).inSingletonScope();
-
+container.bind<IProgramStore>(INJECTABLES.ProgramStore).to(ProgramStore);
 container.bind<IProgram>(INJECTABLES.Program).to(Program);
 
 // bind INJECTABLES.ProgramFactory to a function that creates program objects

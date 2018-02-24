@@ -1,9 +1,8 @@
 import { Container, interfaces } from "inversify";
 import "reflect-metadata";
-import { IControllerSettings, IProgram, INJECTABLES, IProgramManager, IClock, IProgramStore } from "../../src/controller/types";
+import { IControllerSettings, IProgram, INJECTABLES, IClock, IProgramStore } from "../../src/controller/types";
 import { Program } from "../../src/controller/program"; 
 import { MockControllerSettings } from "./mock-controller-settings";
-import { ProgramManager } from "../../src/controller/program-manager";
 import { MockClock } from "../common/mock-clock";
 import { ProgramStore } from "../../src/controller/program-store";
 
@@ -17,7 +16,6 @@ container.bind<IControllerSettings>(INJECTABLES.ControllerSettings).to(MockContr
 container.bind<IClock>(INJECTABLES.Clock).to(MockClock).inSingletonScope();
 
 // discrete instances
-container.bind<IProgramManager>(INJECTABLES.ProgramManager).to(ProgramManager); //note: this would normally be a singleton
 container.bind<IProgramStore>(INJECTABLES.ProgramStore).to(ProgramStore);
 container.bind<IProgram>(INJECTABLES.Program).to(Program);
 

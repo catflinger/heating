@@ -40,6 +40,7 @@ export class Controller implements IController {
         @inject(INJECTABLES.Override) private override: IOverride,
         @inject(INJECTABLES.System) private system: IControllable) {
 
+        this.programManager.init();
         this.currentControlState = new ControlStateSnapshot(false, false);
     }
 
@@ -69,7 +70,7 @@ export class Controller implements IController {
         const ov: OverrideSnapshot = this.override.getSnapshot();
 
         debug ("getting program state snapshot");
-        const prog: ProgramSnapshot = this.programManager.activeProgram.getSnapshot();
+        const prog: ProgramSnapshot = this.programManager.currentProgram.getSnapshot();
 
         return new Snapshot(cs, env, dev, ov, prog);
     }

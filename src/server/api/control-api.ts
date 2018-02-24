@@ -4,7 +4,7 @@ import { inject, injectable } from "inversify";
 
 import { Utils } from "../../common/utils";
 import { Validate } from "../../common/validate";
-import { IApi, IController, INJECTABLES } from "../../controller/types";
+import { IApi, IController, INJECTABLES, ProgramConfig } from "../../controller/types";
 
 const debug = Debug("app");
 
@@ -19,33 +19,49 @@ export class ControlApi implements IApi {
 
     public addRoutes(router: Router): void {
 
-        router.post("/control/override/set", (req, res, next) => {
-            debug("POST: boost set");
+        router.get("/control/:id", (req, res, next) => {
+            debug("GET/id: control");
 
-            const duration: number = Validate.isNumber(req.body.duration, "Invalid data for heating boost duration");
+            // define of API response
+            res.json({
+                items: [this.controller.programManager.getConfig()],
+            });
+        });
 
-            if (isNaN(duration) || !isFinite(duration) || duration < 0) {
-                throw new Error("value out of range for override duration");
-            }
+        router.get("/control", (req, res, next) => {
+            debug("GET: control");
 
-            this.controller.setOverride(duration);
+            // define of API response
+            res.json(this.controller.programManager.getConfig());
+        });
+
+        router.post("/control/:id", (req, res, next) => {
+            debug("POST: control");
+
+            const weekdayId: string = req.params.weekdayId;
+            const saturdayId: string = req.params.saturdayId;
+            const sundayId: string = req.params.sundayId;
+
+            // TO DO: check that the data is valid
+
+            const config = new ProgramConfig();
+            config.saturdayProgramId = saturdayId;
+            config.sundayProgramId = sundayId;
+            config.weekdayProgramId = weekdayId;
+
+            this.controller.programManager.setConfig(config);
 
             // define of API response
             const result: any = { result: "OK"};
             this.utils.dumpTextFile("override-set.json", JSON.stringify(result));
             res.json(result);
-
         });
 
-        router.post("/control/override/clear", (req, res, next) => {
-            debug("POST: override clear");
-
-            this.controller.clearOverride();
-
-            // define of API response
-            const result: any = { result: "OK"};
-            this.utils.dumpTextFile("override-clear.json", JSON.stringify(result));
-            res.json(result);
+        router.put("/control/*", (req, res, next) => {
+            res.status(405).send("method not allowed");
+        });
+        router.delete("/control/*", (req, res, next) => {
+            res.status(405).send("method not allowed");
         });
     }
 }

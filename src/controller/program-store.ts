@@ -46,9 +46,9 @@ export class ProgramStore implements IProgramStore {
         }
         // return the result
         const result = new ProgramConfig();
-        result.activeProgramIds[ProgramMode.Saturday] = data.activeProgramIds.saturdayId;
-        result.activeProgramIds[ProgramMode.Sunday] = data.activeProgramIds.sundayId;
-        result.activeProgramIds[ProgramMode.Weekday] = data.activeProgramIds.weekdayId;
+        result.saturdayProgramId = data.activeProgramIds.saturdayId;
+        result.sundayProgramId = data.activeProgramIds.sundayId;
+        result.weekdayProgramId = data.activeProgramIds.weekdayId;
 
         return result;
     }
@@ -74,9 +74,9 @@ export class ProgramStore implements IProgramStore {
     public saveConfig(config: ProgramConfig): void {
         const data: any = {
             activeProgramIds: {
-                saturdayId: config.activeProgramIds[ProgramMode.Saturday],
-                sundayId: config.activeProgramIds[ProgramMode.Sunday],
-                weekdayId: config.activeProgramIds[ProgramMode.Weekday],
+                saturdayId: config.saturdayProgramId,
+                sundayId: config.sundayProgramId,
+                weekdayId: config.weekdayProgramId,
             },
         };
         fs.writeFileSync(this.configPath, JSON.stringify(data));

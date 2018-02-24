@@ -8,10 +8,11 @@ export class ProgramManager implements IProgramManager {
     private _programs: IProgram[] = [];
     private _config: ProgramConfig;
 
-    constructor(@inject(INJECTABLES.ControllerSettings) private settings: IControllerSettings,
-                @inject(INJECTABLES.ProgramFactory) private programFactory: () => IProgram,
-                @inject(INJECTABLES.ProgramStore) private store: IProgramStore,
-                @inject(INJECTABLES.Clock) private clock: IClock) {  }
+    constructor(
+        @inject(INJECTABLES.ControllerSettings) private settings: IControllerSettings,
+        @inject(INJECTABLES.ProgramFactory) private programFactory: () => IProgram,
+        @inject(INJECTABLES.ProgramStore) private store: IProgramStore,
+        @inject(INJECTABLES.Clock) private clock: IClock) { }
 
     public init(): void {
         try {
@@ -26,9 +27,9 @@ export class ProgramManager implements IProgramManager {
             const program: IProgram = this.programFactory();
 
             const config = new ProgramConfig();
-            config.activeProgramIds[ProgramMode.Saturday] = program.id;
-            config.activeProgramIds[ProgramMode.Sunday] = program.id;
-            config.activeProgramIds[ProgramMode.Weekday] = program.id;
+            config.saturdayProgramId = program.id;
+            config.sundayProgramId = program.id;
+            config.weekdayProgramId = program.id;
 
             // reset the store and load defaults
             this.store.reset();
@@ -52,31 +53,35 @@ export class ProgramManager implements IProgramManager {
         return this._programs;
     }
 
-    get activeProgram(): IProgram {
+    get currentProgram(): IProgram {
         let id: string;
 
         // find the date and choose the right program
         switch (this.clock.dayOfWeek) {
             case 6:
-                id = this._config.activeProgramIds[ProgramMode.Saturday];
+                id = this._config.saturdayProgramId;
                 break;
             case 7:
-                id = this._config.activeProgramIds[ProgramMode.Sunday];
+                id = this._config.sundayProgramId;
                 break;
-            default :
-                id = this._config.activeProgramIds[ProgramMode.Weekday];
+            default:
+                id = this._config.weekdayProgramId;
                 break;
         }
         return this.getProgram(id);
     }
 
-    public setActiveProgram(mode: ProgramMode, id: string) {
+    public getConfig(): ProgramConfig {
+        return Object.assign(new ProgramConfig(), this._config);
+    }
+
+    public setConfig(config: ProgramConfig) {
 
         // check that a program with this id exists before using it
-        if (!this.getProgram(id)) {
-            throw new Error("program not found");
-        }
-        this._config.activeProgramIds[mode] = id;
+        // if (!this.getProgram(id)) {
+        //     throw new Error("program not found");
+        // }
+        // this._config.activeProgramIds[mode] = id;
         this.save();
     }
 
@@ -126,11 +131,11 @@ export class ProgramManager implements IProgramManager {
     public removeProgram(id: string): void {
 
         // check the program is not being used
-        this._config.activeProgramIds.forEach((progId) => {
-            if (progId === id) {
-                throw new Error("Cannot remove program as it is still in use");
-            }
-        });
+        if (id === this._config.saturdayProgramId ||
+            id === this._config.sundayProgramId ||
+            id === this._config.weekdayProgramId) {
+            throw new Error("Cannot remove program as it is still in use");
+        }
 
         // remove from the program array
         const idx = this._programs.findIndex((p) => p.id === id);

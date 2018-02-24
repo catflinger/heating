@@ -3,6 +3,8 @@ import { IControllerSettings, IProgram, IProgramStore, ProgramConfig, INJECTABLE
 import { Program } from "../../src/controller/program";
 import { ProgramStore } from "../../src/controller/program-store";
 import { container } from "./inversify.config.test";
+import { clean } from "../common/clean";
+
 import * as fs from "fs";
 import * as Path from "path";
 
@@ -18,9 +20,7 @@ let slotsPerDay = container.get<number>(INJECTABLES.SlotsPerDay);
 const minHWTemp = 40;
 const maxHWTemp = 50;
 
-function getProgramPath(id: string): string {
-    return Path.join(settings.programStoreDir, "programs", id + ".json");
-}
+clean(settings);
 
 let latestFilePath: string = Path.join(settings.programStoreDir, "programs.json");
 let programsDir: string = Path.join(settings.programStoreDir, "programs");
@@ -29,24 +29,6 @@ let lastProgramId: string = null;
 let programStore: IProgramStore;
 let programFactory: () => IProgram = container.get<() => IProgram>(INJECTABLES.ProgramFactory);
 
-function removeProgramFile(id: string) {
-    let path: string = getProgramPath(id);
-    if (fs.existsSync(path)) {
-        fs.unlinkSync(path);
-    }
-}
-
-// delete any saved program info
-if (fs.existsSync(latestFilePath)) {
-    fs.unlinkSync(latestFilePath);
-}
-
-// delete any program files
-let files: string[] = fs.readdirSync(programsDir);
-files.forEach((f) => {
-    fs.unlinkSync(Path.join(programsDir, f));
-});
-
 describe("program-store", () => {
 
     describe("bootstrap", () => {
@@ -54,6 +36,8 @@ describe("program-store", () => {
         it("should fail to load without cofig", () => {
             expect(() => { container.get<IProgramStore>(INJECTABLES.ProgramStore) }).to.throw;
         });
+
+        clean(settings);
 
         it("should load with existing config", () => {
             // add some default config
@@ -77,11 +61,10 @@ describe("program-store", () => {
 
             // expect the default config to be loaded
             expect(config).not.to.be.undefined;
-            expect(config.activeProgramIds.length).to.equal(3);
 
-            expect(config.activeProgramIds[0]).to.equal(program.id);
-            expect(config.activeProgramIds[1]).to.equal(program.id);
-            expect(config.activeProgramIds[2]).to.equal(program.id);
+            expect(config.saturdayProgramId).to.equal(program.id);
+            expect(config.sundayProgramId).to.equal(program.id);
+            expect(config.weekdayProgramId).to.equal(program.id);
 
             let programs: IProgram[] = programStore.getPrograms();
 

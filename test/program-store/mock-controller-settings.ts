@@ -10,9 +10,9 @@ export class MockControllerSettings implements IControllerSettings {
     programStoreDir: string = path.join(__dirname, "data");
     debugDir: string = path.join(__dirname, "..", "..", "..", "test", "debug");
 
-    boilerPath: string = path.join(__dirname, "..", "..", "test", "data", "gpio", "gpio16", "value");
-    chPumpPath: string = path.join(__dirname, "..", "..", "test", "data", "gpio", "gpio20", "value");
-    hwPumpPath: string = path.join(__dirname, "..", "..", "test", "data", "gpio", "gpio21", "value");
+    boilerPath: string = "";
+    chPumpPath: string = "";
+    hwPumpPath: string = "";
 
     // public slotsPerDay: number = 10;
         

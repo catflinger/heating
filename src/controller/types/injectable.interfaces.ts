@@ -168,19 +168,22 @@ export interface IProgramManager {
     saturdayProgram: IProgram;
     sundayProgram: IProgram;
     weekdayProgram: IProgram;
+    currentProgram: IProgram;
 
-    activeProgram: IProgram;
     createProgram(src: any): IProgram;
     getProgram(id: string): IProgram;
+    getConfig(): ProgramConfig;
     init(): void;
     listPrograms(): IProgram[];
     removeProgram(id: string): void;
-    setActiveProgram(mode: ProgramMode, id: string): void;
+    setConfig(config: ProgramConfig): void;
     updateProgram(program: IProgram): void;
 }
 
 export class ProgramConfig {
-    public activeProgramIds: string[] = [];
+    public saturdayProgramId: string;
+    public sundayProgramId: string;
+    public weekdayProgramId: string;
 }
 
 export interface IProgramStore {

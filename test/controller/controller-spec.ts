@@ -3,6 +3,8 @@ import { Controller } from "../../src/controller/controller";
 import { container } from "./inversify.config.test";
 import { MockEnvironment, MockControlStrategy, MockDevice } from "./mocks";
 import { MockClock } from "../common/mock-clock";
+import { clean } from "../common/clean";
+
 
 import * as chai from "chai";
 import "mocha";
@@ -12,6 +14,7 @@ let controller: IController = container.get<IController>(INJECTABLES.Controller)
 let mockStrategy: MockControlStrategy = container.get<MockControlStrategy>(INJECTABLES.ControlStrategy);
 let mockEnvironment: MockEnvironment =  container.get<MockEnvironment>(INJECTABLES.Environment);
 let clock: MockClock = container.get<MockClock>(INJECTABLES.Clock);
+const settings: IControllerSettings = container.get(INJECTABLES.ControllerSettings);
 
 let boiler: MockDevice = container.get<MockDevice>(INJECTABLES.Boiler);
 let hwPump: MockDevice = container.get<MockDevice>(INJECTABLES.HWPump);
@@ -24,6 +27,8 @@ chPump.name = "chPump";
 const hwTempBelowThreshold = 30;
 const hwTempInsideThreshold = 45;
 const hwTempAboveThreshold = 55;
+
+clean(settings);
 
 // everything at or returned to starting values
 // note: this state should only exist temporarily at start-up

@@ -5,6 +5,7 @@ import { ProgramManager } from "../../src/controller/program-manager";
 import { container } from "./inversify.config.test";
 import * as fs from "fs";
 import * as Path from "path";
+import { clean } from "../common/clean";
 
 import * as chai from "chai";
 import "mocha";
@@ -18,6 +19,8 @@ let slotsPerDay = container.get<number>(INJECTABLES.SlotsPerDay);
 const minHWTemp = 40;
 const maxHWTemp = 50;
 
+clean(settings);
+
 function getProgramPath(id: string): string {
     return Path.join(settings.programStoreDir, "programs", id + ".json");
 }
@@ -27,24 +30,6 @@ let programsDir: string = Path.join(settings.programStoreDir, "programs");
 
 let lastProgramId: string = null;
 let programManager: IProgramManager;
-
-function removeProgramFile(id: string) {
-    let path: string = getProgramPath(id);
-    if (fs.existsSync(path)) {
-        fs.unlinkSync(path);
-    }
-}
-
-// delete any saved program info
-if (fs.existsSync(latestFilePath)) {
-    fs.unlinkSync(latestFilePath);
-}
-
-// delete any program files
-let files: string[] = fs.readdirSync(programsDir);
-files.forEach((f) => {
-    fs.unlinkSync(Path.join(programsDir, f));
-});
 
 describe("program-manager", () => {
 
@@ -57,10 +42,10 @@ describe("program-manager", () => {
 
             // expect the default program to be loaded and active
             expect(programManager).not.to.be.undefined;
-            expect(programManager.activeProgram).not.to.be.undefined;
-            expect(programManager.activeProgram.maxHWTemp).equals(maxHWTemp);
+            expect(programManager.currentProgram).not.to.be.undefined;
+            expect(programManager.currentProgram.maxHWTemp).equals(maxHWTemp);
 
-            lastProgramId = programManager.activeProgram.id;
+            lastProgramId = programManager.currentProgram.id;
 
             // expect the new program so be saved
             expect(fs.existsSync(getProgramPath(lastProgramId))).to.be.true;
@@ -79,11 +64,11 @@ describe("program-manager", () => {
 
             // expect the default program to be loaded and active
             expect(programManager).not.to.be.undefined;
-            expect(programManager.activeProgram).not.to.be.undefined;
-            expect(programManager.activeProgram.maxHWTemp).equals(maxHWTemp);
+            expect(programManager.currentProgram).not.to.be.undefined;
+            expect(programManager.currentProgram.maxHWTemp).equals(maxHWTemp);
 
             // expect it to have the same id as last time
-            expect(programManager.activeProgram.id).to.equal(lastProgramId);
+            expect(programManager.currentProgram.id).to.equal(lastProgramId);
         });
 
         it("should create a new program", () => {

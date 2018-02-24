@@ -23,7 +23,7 @@ export class ProgramApi implements IApi {
 
     public addRoutes(router: Router): void {
 
-        router.get("/programs", (req, res, next) => {
+        router.get("/program", (req, res, next) => {
             debug("GET: programs");
 
             try {
