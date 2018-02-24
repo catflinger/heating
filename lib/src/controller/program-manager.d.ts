@@ -8,9 +8,6 @@ export declare class ProgramManager implements IProgramManager {
     private _config;
     constructor(settings: IControllerSettings, programFactory: () => IProgram, store: IProgramStore, clock: IClock);
     init(): void;
-    readonly weekdayProgram: IProgram;
-    readonly saturdayProgram: IProgram;
-    readonly sundayProgram: IProgram;
     listPrograms(): IProgram[];
     readonly currentProgram: IProgram;
     getConfig(): ProgramConfig;

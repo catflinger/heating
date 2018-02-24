@@ -39,15 +39,15 @@ export class ProgramManager implements IProgramManager {
         }
     }
 
-    public get weekdayProgram(): IProgram {
-        return this._programs[ProgramMode.Weekday];
-    }
-    public get saturdayProgram(): IProgram {
-        return this._programs[ProgramMode.Saturday];
-    }
-    public get sundayProgram(): IProgram {
-        return this._programs[ProgramMode.Sunday];
-    }
+    // public get weekdayProgram(): IProgram {
+    //     return this._programs[ProgramMode.Weekday];
+    // }
+    // public get saturdayProgram(): IProgram {
+    //     return this._programs[ProgramMode.Saturday];
+    // }
+    // public get sundayProgram(): IProgram {
+    //     return this._programs[ProgramMode.Sunday];
+    // }
 
     public listPrograms(): IProgram[] {
         return this._programs;

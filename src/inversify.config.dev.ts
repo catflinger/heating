@@ -19,6 +19,7 @@ import {
     IOverride,
     IProgram,
     IProgramManager,
+    IProgramStore,
     ISwitchable,
 } from "./controller/types";
 
@@ -38,6 +39,7 @@ import { System } from "./controller/system";
 import { ControlApi } from "./server/api/control-api";
 import { ProgramApi } from "./server/api/program-api";
 import { StatusApi } from "./server/api/status-api";
+import { ProgramStore } from "./controller/program-store";
 
 export const container = new Container();
 
@@ -50,6 +52,7 @@ container.bind<IControlStrategy>(INJECTABLES.ControlStrategy).to(BasicControlStr
 container.bind<IControllerSettings>(INJECTABLES.ControllerSettings).to(ControllerSettingsDev).inSingletonScope();
 container.bind<IEnvironment>(INJECTABLES.Environment).to(Environment).inSingletonScope();
 container.bind<IEnvironmentSettings>(INJECTABLES.EnvironmentSettings).to(EnvironmentSettingsDev).inSingletonScope();
+container.bind<IProgramStore>(INJECTABLES.ProgramStore).to(ProgramStore).inSingletonScope();
 container.bind<IProgramManager>(INJECTABLES.ProgramManager).to(ProgramManager).inSingletonScope();
 container.bind<IClock>(INJECTABLES.Clock).to(Clock).inSingletonScope();
 container.bind<IControllable>(INJECTABLES.System).to(System).inSingletonScope();

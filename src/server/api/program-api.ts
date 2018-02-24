@@ -36,9 +36,9 @@ export class ProgramApi implements IApi {
 
                 const result = {
                     config: {
-                        saturday: this.programManager.saturdayProgram,
-                        sunday: this.programManager.sundayProgram,
-                        weekday: this.programManager.weekdayProgram,
+                        saturday: this.programManager.getConfig().saturdayProgramId,
+                        sunday: this.programManager.getConfig().sundayProgramId,
+                        weekday: this.programManager.getConfig().weekdayProgramId,
                     },
                     programs,
                 };

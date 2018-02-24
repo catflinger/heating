@@ -165,9 +165,9 @@ export interface IProgram {
  */
 export interface IProgramManager {
 
-    saturdayProgram: IProgram;
-    sundayProgram: IProgram;
-    weekdayProgram: IProgram;
+    //saturdayProgram: IProgram;
+    //sundayProgram: IProgram;
+    //weekdayProgram: IProgram;
     currentProgram: IProgram;
 
     createProgram(src: any): IProgram;

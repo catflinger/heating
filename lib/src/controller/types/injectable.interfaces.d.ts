@@ -89,9 +89,6 @@ export interface IProgram {
     toStorable(): any;
 }
 export interface IProgramManager {
-    saturdayProgram: IProgram;
-    sundayProgram: IProgram;
-    weekdayProgram: IProgram;
     currentProgram: IProgram;
     createProgram(src: any): IProgram;
     getProgram(id: string): IProgram;
