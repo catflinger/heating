@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { IClock, IControllable, IController, IControllerSettings, IControlStrategy, IEnvironment, IOverride, IProgramManager, Snapshot } from "./types";
+import { IClock, IControllable, IController, IControllerSettings, IControlStrategy, IEnvironment, IOverrideManager, IProgramManager, Snapshot } from "./types";
 export declare class Controller implements IController {
     private strategy;
     private settings;
@@ -9,7 +9,7 @@ export declare class Controller implements IController {
     private override;
     private system;
     private currentControlState;
-    constructor(strategy: IControlStrategy, settings: IControllerSettings, environment: IEnvironment, _programManager: IProgramManager, clock: IClock, override: IOverride, system: IControllable);
+    constructor(strategy: IControlStrategy, settings: IControllerSettings, environment: IEnvironment, _programManager: IProgramManager, clock: IClock, override: IOverrideManager, system: IControllable);
     start(): void;
     getSnapshot(): Snapshot;
     setOverride(duration: number): void;

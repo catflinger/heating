@@ -6,10 +6,10 @@ import { ProgramSnapshot } from "../snapshots/program-snapshot";
 import { Snapshot } from "../snapshots/snapshot";
 import { DeviceStateSnapshot } from "../types";
 export declare const INJECTABLES: {
+    App: symbol;
     Boiler: symbol;
     CHPump: symbol;
     Clock: symbol;
-    ControlApi: symbol;
     ControlStrategy: symbol;
     Controller: symbol;
     ControllerSettings: symbol;
@@ -17,9 +17,11 @@ export declare const INJECTABLES: {
     Environment: symbol;
     EnvironmentSettings: symbol;
     HWPump: symbol;
-    Override: symbol;
+    OverrideApi: symbol;
+    OverrideManager: symbol;
     Program: symbol;
     ProgramApi: symbol;
+    ProgramConfigApi: symbol;
     ProgramFactory: symbol;
     ProgramManager: symbol;
     ProgramStore: symbol;
@@ -90,6 +92,7 @@ export interface IProgram {
 }
 export interface IProgramManager {
     currentProgram: IProgram;
+    configIsValid(config: ProgramConfig): boolean;
     createProgram(src: any): IProgram;
     getProgram(id: string): IProgram;
     getConfig(): ProgramConfig;
@@ -112,7 +115,7 @@ export interface IProgramStore {
     getPrograms(): IProgram[];
     savePrograms(programs: IProgram[]): void;
 }
-export interface IOverride {
+export interface IOverrideManager {
     refresh(): void;
     getSnapshot(): OverrideSnapshot;
     setOverride(duration: number): void;

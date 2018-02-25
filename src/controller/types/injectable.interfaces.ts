@@ -10,10 +10,10 @@ import { DeviceStateSnapshot } from "../types";
  * Symbolic names for types to be used in IoC injection
  */
 export const INJECTABLES = {
+    App: Symbol("App"),
     Boiler: Symbol("Boiler"),
     CHPump: Symbol("CHPump"),
     Clock: Symbol("Clock"),
-    ControlApi: Symbol("controlApi"),
     ControlStrategy: Symbol("ControlStrategy"),
     Controller: Symbol("Controller"),
     ControllerSettings: Symbol("ControllerSettings"),
@@ -21,9 +21,11 @@ export const INJECTABLES = {
     Environment: Symbol("Environment"),
     EnvironmentSettings: Symbol("EnvironmentSettings"),
     HWPump: Symbol("HWPump"),
-    Override: Symbol("Override"),
+    OverrideApi: Symbol("OverrideApi"),
+    OverrideManager: Symbol("OverrideManager"),
     Program: Symbol("Program"),
     ProgramApi: Symbol("programApi"),
+    ProgramConfigApi: Symbol("ProgramConfigApi"),
     ProgramFactory: Symbol("ProgramFactory"),
     ProgramManager: Symbol("ProgramManager"),
     ProgramStore: Symbol("ProgramStore"),
@@ -165,11 +167,12 @@ export interface IProgram {
  */
 export interface IProgramManager {
 
-    //saturdayProgram: IProgram;
-    //sundayProgram: IProgram;
-    //weekdayProgram: IProgram;
+    // saturdayProgram: IProgram;
+    // sundayProgram: IProgram;
+    // weekdayProgram: IProgram;
     currentProgram: IProgram;
 
+    configIsValid(config: ProgramConfig): boolean;
     createProgram(src: any): IProgram;
     getProgram(id: string): IProgram;
     getConfig(): ProgramConfig;
@@ -204,14 +207,14 @@ export interface IProgramStore {
 /**
  *  interface for setting overrides
  */
-export interface IOverride {
+export interface IOverrideManager {
     // removes any expired overrides
     refresh(): void;
 
     // return the current override state
     getSnapshot(): OverrideSnapshot;
 
-    // creates a new override or extends an existing override
+    // creates a new override
     setOverride(duration: number): void;
 
     // removes any override

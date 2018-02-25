@@ -39,16 +39,6 @@ export class ProgramManager implements IProgramManager {
         }
     }
 
-    // public get weekdayProgram(): IProgram {
-    //     return this._programs[ProgramMode.Weekday];
-    // }
-    // public get saturdayProgram(): IProgram {
-    //     return this._programs[ProgramMode.Saturday];
-    // }
-    // public get sundayProgram(): IProgram {
-    //     return this._programs[ProgramMode.Sunday];
-    // }
-
     public listPrograms(): IProgram[] {
         return this._programs;
     }
@@ -75,13 +65,21 @@ export class ProgramManager implements IProgramManager {
         return Object.assign(new ProgramConfig(), this._config);
     }
 
-    public setConfig(config: ProgramConfig) {
+    public configIsValid(config: ProgramConfig): boolean {
+        if (!this.getProgram(config.saturdayProgramId)) {
+            return false;
+        }
+        if (!this.getProgram(config.sundayProgramId)) {
+            return false;
+        }
+        if (!this.getProgram(config.weekdayProgramId)) {
+            return false;
+        }
+        return true;
+    }
 
-        // check that a program with this id exists before using it
-        // if (!this.getProgram(id)) {
-        //     throw new Error("program not found");
-        // }
-        // this._config.activeProgramIds[mode] = id;
+    public setConfig(config: ProgramConfig) {
+        this._config = config;
         this.save();
     }
 

@@ -1,11 +1,11 @@
 import { Container, interfaces } from "inversify";
 import "reflect-metadata";
-import { IControlStrategy, IController, IControllerSettings, IEnvironment, IOverride, IProgram, ISwitchable, INJECTABLES, IControllable, IProgramManager, IProgramStore } from "../../src/controller/types";
+import { IControlStrategy, IController, IControllerSettings, IEnvironment, IOverrideManager, IProgram, ISwitchable, INJECTABLES, IControllable, IProgramManager, IProgramStore } from "../../src/controller/types";
 
 import { MockControlStrategy, MockDevice,MockEnvironment } from "./mocks";
 import { MockClock } from "../common/mock-clock";
 import { Program } from "../../src/controller/program";
-import { Override } from "../../src/controller/override";
+import { OverrideManager } from "../../src/controller/override-manager";
 import { System } from "../../src/controller/system";
 import { MockControllerSettings } from "./mock-controller-settings";
 import { ProgramManager } from "../../src/controller/program-manager";
@@ -16,7 +16,7 @@ import { ProgramStore } from "../../src/controller/program-store";
 export const container = new Container();
 
 container.bind<number>(INJECTABLES.SlotsPerDay).toConstantValue(10);
-container.bind<IOverride>(INJECTABLES.Override).to(Override).inSingletonScope();
+container.bind<IOverrideManager>(INJECTABLES.OverrideManager).to(OverrideManager).inSingletonScope();
 container.bind<MockControlStrategy>(INJECTABLES.ControlStrategy).to(MockControlStrategy).inSingletonScope();
 container.bind<IControllerSettings>(INJECTABLES.ControllerSettings).to(MockControllerSettings).inSingletonScope();
 container.bind<IEnvironment>(INJECTABLES.Environment).to(MockEnvironment).inSingletonScope();

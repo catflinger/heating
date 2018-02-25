@@ -1,33 +1,29 @@
 import * as bodyParser from "body-parser";
 import * as Debug from "debug";
 import * as express from "express";
-import { inject, injectable } from "inversify";
+import { Container, inject, injectable } from "inversify";
 
-import { ControlApi } from "./api/control-api";
 import { ProgramApi } from "./api/program-api";
+import { ProgramConfigApi } from "./api/program-config-api";
 import { StatusApi } from "./api/status-api";
 
 import { Controller } from "../controller/controller";
 import { Snapshot } from "../controller/snapshots/snapshot";
 import { IApi, IController, INJECTABLES } from "../controller/types";
-import { container } from "../inversify.config.dev";
 
 const debug = Debug("app");
 
-class App {
+@injectable()
+export class App {
     public express: express.Application;
 
-    private controller: IController;
-    private controlApi: IApi;
-    private statusApi: IApi;
-    private programApi: IApi;
-
-    constructor() {
-        this.controller = container.get<IController>(INJECTABLES.Controller);
-        this.controlApi = container.get<IApi>(INJECTABLES.ControlApi);
-        this.programApi = container.get<IApi>(INJECTABLES.ProgramApi);
-        this.statusApi = container.get<IApi>(INJECTABLES.StatusApi);
-    }
+    constructor(
+        @inject(INJECTABLES.Controller) private controller: IController,
+        @inject(INJECTABLES.ProgramConfigApi) private configApi: IApi,
+        @inject(INJECTABLES.StatusApi) private statusApi: IApi,
+        @inject(INJECTABLES.ProgramApi) private programApi: IApi,
+        @inject(INJECTABLES.OverrideApi) private overrideApi: IApi,
+    ) {}
 
     public start(): express.Application {
         // save a copy of express as a class member for convenience
@@ -37,8 +33,9 @@ class App {
         const router: express.Router = express.Router();
 
         this.statusApi.addRoutes(router);
-        this.controlApi.addRoutes(router);
+        this.configApi.addRoutes(router);
         this.programApi.addRoutes(router);
+        this.overrideApi.addRoutes(router);
 
         // start the controller: this initialises digital outputpins and starts the environment polling
         this.controller.start();
@@ -64,5 +61,3 @@ class App {
         return this.express;
     }
 }
-
-export default new App().start();

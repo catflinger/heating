@@ -1,5 +1,5 @@
-import { IControllerSettings, OverrideSnapshot, INJECTABLES, IOverride } from "../../src/controller/types";
-import { Override } from "../../src/controller/override";
+import { IControllerSettings, OverrideSnapshot, INJECTABLES, IOverrideManager } from "../../src/controller/types";
+import { OverrideManager } from "../../src/controller/override-manager";
 import { container } from "./inversify.config.test";
 
 import { MockClock } from "../common/mock-clock";
@@ -8,7 +8,7 @@ import "mocha";
 
 const expect = chai.expect;
 
-let override: IOverride = container.get<IOverride>(INJECTABLES.Override);
+let override: IOverrideManager = container.get<IOverrideManager>(INJECTABLES.OverrideManager);
 let clock: MockClock = container.get<MockClock>(INJECTABLES.Clock);
 
 describe("Override", () => {

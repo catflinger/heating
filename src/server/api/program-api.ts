@@ -68,13 +68,14 @@ export class ProgramApi implements IApi {
                         program: program.toStorable(),
                     });
                     this.utils.dumpTextFile("program.json", result);
-                    res.json(result);
+
+                    return res.json(result);
                 } else {
-                    res.status(404).send("program not found");
+                    return res.status(404).send("program not found");
                 }
 
             } catch (e) {
-                res.status(500).send("could not process this request " + e);
+                return res.status(500).send("could not process this request " + e);
             }
         });
 
@@ -83,26 +84,21 @@ export class ProgramApi implements IApi {
 
             try {
                 this.programManager.updateProgram(req.body);
+                return res.json({result: true});
             } catch (e) {
-                res.status(500).send("could not process this request " + e);
+                return res.status(500).send("could not process this request " + e);
             }
-
-            res.json({result: true});
         });
 
         router.put("/program", (req, res, next) => {
             debug("PUT: program");
 
-            let program: IProgram;
-
             try {
-                program = this.programManager.createProgram(req.body);
+                const program = this.programManager.createProgram(req.body);
+                return res.json(program.toStorable());
             } catch (e) {
-                res.status(500).send("could not process this request " + e);
+                return res.status(500).send("could not process this request " + e);
             }
-
-            res.json(program.toStorable());
-
         });
 
         router.delete("/program/:program_id", (req, res, next) => {
@@ -112,11 +108,10 @@ export class ProgramApi implements IApi {
 
             try {
                 this.programManager.removeProgram(id);
+                return res.json({result: true});
             } catch (e) {
-                res.status(500).send("could not process this request " + e);
+                return res.status(500).send("could not process this request " + e);
             }
-
-            res.json({result: true});
         });
     }
 }

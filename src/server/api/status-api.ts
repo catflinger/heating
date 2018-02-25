@@ -31,18 +31,19 @@ export class StatusApi implements IApi {
                 // define of API response as a wrapped array
                 const result: any = { items: [] };
 
-                result.items.push(this.controlResponse);
-                result.items.push(this.deviceResponse);
-                result.items.push(this.envResponse);
-                result.items.push(this.overrideResponse);
-                result.items.push(this.programResponse);
+                result.items.push(this.controlResponse(snapshot));
+                result.items.push(this.deviceResponse(snapshot));
+                result.items.push(this.envResponse(snapshot));
+                result.items.push(this.overrideResponse(snapshot));
+                result.items.push(this.programResponse(snapshot));
 
                 // send the response
                 this.utils.dumpTextFile("status.json", result);
-                res.json(result);
+
+                return res.json(result);
 
             } catch (e) {
-                res.status(500).send("could not process this request " + e);
+                return res.status(500).send("could not process this request " + e);
             }
         });
 
@@ -65,16 +66,6 @@ export class StatusApi implements IApi {
         router.get("/status/program", (req, res, next) => {
             this.sendGetResponse(this.programResponse, req, res, next);
         });
-
-        router.post("/status/*", (req, res, next) => {
-            res.status(405).send("method not allowed");
-        });
-        router.put("/status/*", (req, res, next) => {
-            res.status(405).send("method not allowed");
-        });
-        router.delete("/status/*", (req, res, next) => {
-            res.status(405).send("method not allowed");
-        });
     }
 
     private sendGetResponse(write: (snapshot: Snapshot) => any, req: any, res: any, next: any): void {
@@ -92,10 +83,10 @@ export class StatusApi implements IApi {
 
             // send the response
             this.utils.dumpTextFile("status.json", result);
-            res.json(result);
+            return res.json(result);
 
         } catch (e) {
-            res.status(500).send("could not process this request " + e);
+            return res.status(500).send("could not process this request " + e);
         }
     }
 

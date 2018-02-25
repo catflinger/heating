@@ -19,52 +19,41 @@ export class OverrideApi implements IApi {
 
     public addRoutes(router: Router): void {
 
-        router.get("/override/:id", (req, res, next) => {
-            debug("GET/id: override");
-
-            // define of API response
-            res.json(this.controller.getSnapshot().override);
-        });
-
         router.get("/override", (req, res, next) => {
             debug("GET: override");
-
-            // define of API response
-            res.json({ overrides: [this.controller.getSnapshot().override] });
-        });
-
-        router.post("/override/:id", (req, res, next) => {
-            debug("POST: boost set");
-
-            /* body content -
-            {
-                "status": 1,
-                "duration": 4
-            }
-            */
-
-            const duration: number = Validate.isNumber(req.body.duration, "Invalid data for heating boost duration");
-
-            if (isNaN(duration) || !isFinite(duration) || duration < 0) {
-                res.status(400).send("value out of range for override duration");
-            } else {
-                this.controller.setOverride(duration);
-
+            try {
                 // define of API response
-                const result: any = { result: "OK"};
-                this.utils.dumpTextFile("override-set.json", JSON.stringify(result));
-                res.json(result);
+                return res.json({ items: [this.controller.getSnapshot().override] });
+            } catch (e) {
+                return res.status(500).send("could not process this request " + e);
             }
         });
 
-        router.post("/override/*", (req, res, next) => {
-            res.status(405).send("method not allowed");
-        });
-        router.put("/override/*", (req, res, next) => {
-            res.status(405).send("method not allowed");
-        });
-        router.delete("/override/*", (req, res, next) => {
-            res.status(405).send("method not allowed");
+        router.put("/override", (req, res, next) => {
+            debug("PUT: override");
+            try {
+                // validate the data
+                const duration: number = Validate.isNumber(req.body.duration, "Invalid data for heating boost duration");
+                
+                if (isNaN(duration) || !isFinite(duration) || duration < 0) {
+                    return res.status(400).send("value out of range for override duration");
+                }
+
+                try {
+                     this.controller.setOverride(duration);
+
+                    // define of API response
+                    const result: any = { result: "OK" };
+                    this.utils.dumpTextFile("override-set.json", JSON.stringify(result));
+                    
+                    return res.json(result);
+
+                } catch (e) {
+                    return res.status(500).send("could not process this request " + e);
+                }
+            } catch (e) {
+                return res.status(401).send("could not process this request " + e);
+            }
         });
     }
 }

@@ -16,7 +16,7 @@ import {
     IControlStrategy,
     IEnvironment,
     INJECTABLES,
-    IOverride,
+    IOverrideManager,
     IProgram,
     IProgramManager,
     OverrideSnapshot,
@@ -37,7 +37,7 @@ export class Controller implements IController {
         @inject(INJECTABLES.Environment) private environment: IEnvironment,
         @inject(INJECTABLES.ProgramManager) private _programManager: IProgramManager,
         @inject(INJECTABLES.Clock) private clock: IClock,
-        @inject(INJECTABLES.Override) private override: IOverride,
+        @inject(INJECTABLES.OverrideManager) private override: IOverrideManager,
         @inject(INJECTABLES.System) private system: IControllable) {
 
         this.programManager.init();

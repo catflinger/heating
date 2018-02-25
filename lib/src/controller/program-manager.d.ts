@@ -11,6 +11,7 @@ export declare class ProgramManager implements IProgramManager {
     listPrograms(): IProgram[];
     readonly currentProgram: IProgram;
     getConfig(): ProgramConfig;
+    configIsValid(config: ProgramConfig): boolean;
     setConfig(config: ProgramConfig): void;
     getProgram(id: string): IProgram;
     createProgram(src: any): IProgram;

@@ -1,10 +1,15 @@
 import * as Debug from "debug";
 import * as http from "http";
-import expressApp from "./server/app";
+
+import { INJECTABLES } from "./controller/types";
+import { container } from "./inversify.config.dev";
+import { App } from "./server/app";
 
 // const port = normalizePort(process.env.PORT || 3000);
 const port = 3000;
 const debug = Debug("app");
+
+const expressApp = container.get<App>(INJECTABLES.App).start();
 
 expressApp.set("port", port);
 
