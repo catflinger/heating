@@ -5,7 +5,9 @@ import { ProgramManager } from "../../src/controller/program-manager";
 import { container } from "./inversify.config.test";
 import * as fs from "fs";
 import * as Path from "path";
-import { clean } from "../common/clean";
+import { IClean, TestingInjectables } from "../common/injectables-test";
+
+container.get<IClean>(TestingInjectables.Clean).clean({});
 
 import * as chai from "chai";
 import "mocha";
@@ -18,8 +20,6 @@ let slotsPerDay = container.get<number>(INJECTABLES.SlotsPerDay);
 
 const minHWTemp = 40;
 const maxHWTemp = 50;
-
-clean(settings);
 
 function getProgramPath(id: string): string {
     return Path.join(settings.programStoreDir, "programs", id + ".json");

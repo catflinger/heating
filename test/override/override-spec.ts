@@ -49,26 +49,13 @@ describe("Override", () => {
         expect(snap.state).to.equal(true);
     });
 
-
-    it("should extend an override", () => {
-        clock.setSlotNumber(3);
-        override.setOverride(2);
-
-        const snap: OverrideSnapshot = override.getSnapshot();
-        expect(snap).not.to.be.null;
-
-        expect(snap.duration).to.equal(4);
-        expect(snap.start).to.equal(2);
-        expect(snap.state).to.equal(true);
-    });
-
     it("should not remove a current override", () => {
         override.refresh();
 
         const snap: OverrideSnapshot = override.getSnapshot();
         expect(snap).not.to.be.null;
 
-        expect(snap.duration).to.equal(4);
+        expect(snap.duration).to.equal(2);
         expect(snap.start).to.equal(2);
         expect(snap.state).to.equal(true);
     });

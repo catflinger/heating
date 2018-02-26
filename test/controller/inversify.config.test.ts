@@ -12,8 +12,13 @@ import { ProgramManager } from "../../src/controller/program-manager";
 import { Switchable } from "../../src/controller/switchable";
 import { Controller } from "../../src/controller/controller";
 import { ProgramStore } from "../../src/controller/program-store";
+import { TestingInjectables, IClean } from "../common/injectables-test";
+import { Clean } from "../common/clean";
 
 export const container = new Container();
+
+// testing modules
+container.bind<IClean>(TestingInjectables.Clean).to(Clean).inSingletonScope();
 
 container.bind<number>(INJECTABLES.SlotsPerDay).toConstantValue(10);
 container.bind<IOverrideManager>(INJECTABLES.OverrideManager).to(OverrideManager).inSingletonScope();

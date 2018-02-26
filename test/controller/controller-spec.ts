@@ -3,7 +3,9 @@ import { Controller } from "../../src/controller/controller";
 import { container } from "./inversify.config.test";
 import { MockEnvironment, MockControlStrategy, MockDevice } from "./mocks";
 import { MockClock } from "../common/mock-clock";
-import { clean } from "../common/clean";
+import { IClean, TestingInjectables } from "../common/injectables-test";
+
+container.get<IClean>(TestingInjectables.Clean).clean({});
 
 
 import * as chai from "chai";
@@ -27,8 +29,6 @@ chPump.name = "chPump";
 const hwTempBelowThreshold = 30;
 const hwTempInsideThreshold = 45;
 const hwTempAboveThreshold = 55;
-
-clean(settings);
 
 // everything at or returned to starting values
 // note: this state should only exist temporarily at start-up

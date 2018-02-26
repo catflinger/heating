@@ -4,6 +4,9 @@ import { container } from "./inversify.config.test";
 
 import * as chai from "chai";
 import "mocha";
+import { IClean, TestingInjectables } from "../common/injectables-test";
+
+container.get<IClean>(TestingInjectables.Clean).clean({});
 
 const expect = chai.expect;
 

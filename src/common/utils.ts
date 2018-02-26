@@ -18,8 +18,7 @@ export class Utils {
                     Path.join(this.settings.debugDir, name),
                     data);
             }
-        } catch 
-        {
+        } catch {
             // is it worth reporting any errors here? If so how and where to?
         }
     }

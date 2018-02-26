@@ -34,18 +34,21 @@ export class OverrideApi implements IApi {
             try {
                 // validate the data
                 const duration: number = Validate.isNumber(req.body.duration, "Invalid data for heating boost duration");
-                
+
                 if (isNaN(duration) || !isFinite(duration) || duration < 0) {
                     return res.status(400).send("value out of range for override duration");
                 }
 
                 try {
-                     this.controller.setOverride(duration);
+                    this.controller.setOverride(duration);
 
                     // define of API response
-                    const result: any = { result: "OK" };
+                    const result: any = {
+                        result: "OK",
+                    };
+
                     this.utils.dumpTextFile("override-set.json", JSON.stringify(result));
-                    
+
                     return res.json(result);
 
                 } catch (e) {

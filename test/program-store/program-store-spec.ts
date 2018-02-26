@@ -3,7 +3,10 @@ import { IControllerSettings, IProgram, IProgramStore, ProgramConfig, INJECTABLE
 import { Program } from "../../src/controller/program";
 import { ProgramStore } from "../../src/controller/program-store";
 import { container } from "./inversify.config.test";
-import { clean } from "../common/clean";
+import { IClean, TestingInjectables } from "../common/injectables-test";
+
+const clean: IClean = container.get<IClean>(TestingInjectables.Clean);
+clean.clean({});
 
 import * as fs from "fs";
 import * as Path from "path";
@@ -20,7 +23,6 @@ let slotsPerDay = container.get<number>(INJECTABLES.SlotsPerDay);
 const minHWTemp = 40;
 const maxHWTemp = 50;
 
-clean(settings);
 
 let latestFilePath: string = Path.join(settings.programStoreDir, "programs.json");
 let programsDir: string = Path.join(settings.programStoreDir, "programs");
@@ -37,7 +39,7 @@ describe("program-store", () => {
             expect(() => { container.get<IProgramStore>(INJECTABLES.ProgramStore) }).to.throw;
         });
 
-        clean(settings);
+        clean.clean({});
 
         it("should load with existing config", () => {
             // add some default config

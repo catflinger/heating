@@ -42,8 +42,13 @@ import { ProgramApi } from "../../../src/server/api/program-api";
 import { ProgramConfigApi } from "../../../src/server/api/program-config-api";
 import { StatusApi } from "../../../src/server/api/status-api";
 import { App } from "../../../src/server/app";
+import { TestingInjectables, IClean } from "../../common/injectables-test";
+import { Clean } from "../../common/clean";
 
 export const container = new Container();
+
+// testing modules
+container.bind<IClean>(TestingInjectables.Clean).to(Clean).inSingletonScope();
 
 // constants
 container.bind<number>(INJECTABLES.SlotsPerDay).toConstantValue(10);

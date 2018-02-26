@@ -6,11 +6,11 @@ var chai = require('chai');
 
 import { App } from '../../../src/server/app';
 import { INJECTABLES, IControllerSettings } from '../../../src/controller/types';
-import { clean } from "../../common/clean";
+
+import { IClean, TestingInjectables } from "../../common/injectables-test";
+container.get<IClean>(TestingInjectables.Clean).clean({});
 
 let settings = container.get<IControllerSettings>(INJECTABLES.ControllerSettings);
-clean(settings);
-
 let app = container.get<App>(INJECTABLES.App).start();
 
 chai.use(require("chai-http"));
