@@ -5,9 +5,14 @@ export class ProgramSnapshot {
     // threshold value for hot water
     private _minHwTemp: number;
     private _maxHwTemp: number;
+
+    private _id: string;
+    private _name: string;
     private _slotsPerDay: number;
 
-    constructor(minHwTemp: number, maxHwTemp: number, slots: boolean[], slotsPerDay: number) {
+    constructor(id: string, name: string, minHwTemp: number, maxHwTemp: number, slots: boolean[], slotsPerDay: number) {
+        this._id = id;
+        this._name = name;
         this._maxHwTemp = maxHwTemp;
         this._minHwTemp = minHwTemp;
         slots.forEach((slot) => this._slots.push(slot));
@@ -24,6 +29,14 @@ export class ProgramSnapshot {
 
     public get slots(): boolean[] {
         return this._slots;
+    }
+
+    public get id(): string {
+        return this._id;
+    }
+
+    public get name(): string {
+        return this._name;
     }
 
     public get slotsPerDay(): number {

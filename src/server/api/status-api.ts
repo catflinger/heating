@@ -114,33 +114,21 @@ export class StatusApi implements IApi {
     private envResponse(snapshot: Snapshot): any {
         return {
             id: "env",
-            snapshot: {
-                sensors: snapshot.environment.sensors,
-            },
+            snapshot: snapshot.environment,
         };
     }
 
     private overrideResponse(snapshot: Snapshot): any {
         return {
             id: "override",
-            snapshot: snapshot.override ? {
-                date: snapshot.override.date,
-                duration: snapshot.override.duration,
-                start: snapshot.override.start,
-                state: snapshot.override.state,
-            } : null,
+            snapshots: snapshot.overrides,
         };
     }
 
     private programResponse(snapshot: Snapshot): any {
         return {
             id: "program",
-            snapshot: {
-                hwmax: snapshot.program.maxHwTemp,
-                hwmin: snapshot.program.minHwTemp,
-                slots: snapshot.program.slots,
-                slotsPerDay: snapshot.program.slotsPerDay,
-            },
+            snapshot,
         };
     }
 }

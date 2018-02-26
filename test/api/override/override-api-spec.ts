@@ -31,14 +31,14 @@ describe("Override API' get /api/override", () => {
             .then((res: any) => {
                 expect(res.body.items).not.to.be.undefined;
                 expect(Array.isArray(res.body.items)).to.be.true;;
-                expect(res.body.items.length).to.equal(1);
+                expect(res.body.items.length).to.equal(0);
             });
     });
 });
 
 describe("Override API' put /api/override", () => {
 
-    it('should be json', () => {
+    it('response should be json', () => {
         return chai.request(app).put('/api/override')
         .send({
             "status": 1,
@@ -49,4 +49,11 @@ describe("Override API' put /api/override", () => {
             expect(res.type).to.eql('application/json');
         });
     });
+
+    it('should now return one override', () => {
+        return chai.request(app).get('/api/override')
+            .then((res: any) => {
+                expect(res.body.items.length).to.equal(1);
+            });
+    });    
 });

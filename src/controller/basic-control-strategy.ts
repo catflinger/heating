@@ -7,6 +7,7 @@ import {
     IControlStrategy,
     INJECTABLES,
     IProgram,
+    OverrideSnapshot,
     Snapshot,
 } from "./types";
 
@@ -29,19 +30,19 @@ export class BasicControlStrategy implements IControlStrategy {
 
         if (hwTemperature < currentState.program.minHwTemp ||
             (hwTemperature < currentState.program.maxHwTemp &&
-             currentState.control.hotWater)) {
+                currentState.control.hotWater)) {
             water = true;
         }
 
         // now set the heating, simple and straightforward
         heating = currentState.program.slots[currentSlot];
 
-        // if there is an override apply it
-        const ov = currentState.override;
-
-        if (ov && currentSlot >= ov.start && currentSlot < ov.start + ov.duration) {
-            heating = ov.state;
-        }
+        // if there are any overrides apply them
+        currentState.overrides.forEach((ov) => {
+            if (currentSlot >= ov.start && currentSlot < ov.start + ov.duration) {
+                heating = ov.state;
+            }
+        });
 
         return new ControlStateSnapshot(heating, water);
     }

@@ -37,7 +37,7 @@ export class Controller implements IController {
         @inject(INJECTABLES.Environment) private environment: IEnvironment,
         @inject(INJECTABLES.ProgramManager) private _programManager: IProgramManager,
         @inject(INJECTABLES.Clock) private clock: IClock,
-        @inject(INJECTABLES.OverrideManager) private override: IOverrideManager,
+        @inject(INJECTABLES.OverrideManager) private overrideManager: IOverrideManager,
         @inject(INJECTABLES.System) private system: IControllable) {
 
         this.programManager.init();
@@ -67,7 +67,7 @@ export class Controller implements IController {
         const dev: DeviceStateSnapshot = this.system.getDeviceState();
 
         debug ("getting override state snapshot");
-        const ov: OverrideSnapshot = this.override.getSnapshot();
+        const ov: OverrideSnapshot[] = this.overrideManager.getSnapshot();
 
         debug ("getting program state snapshot");
         const prog: ProgramSnapshot = this.programManager.currentProgram.getSnapshot();
@@ -77,13 +77,13 @@ export class Controller implements IController {
 
     // reveal for setOveride
     public setOverride(duration: number): void {
-        this.override.setOverride(duration);
+        this.overrideManager.setOverride(duration);
         this.refresh();
     }
 
     // reveal for clearOveride
     public clearOverride(): void {
-        this.override.clearOverride();
+        this.overrideManager.clearOverride();
         this.refresh();
     }
 
@@ -99,7 +99,7 @@ export class Controller implements IController {
         this.clock.tick();
 
         // remove any expired overrides
-        this.override.refresh();
+        this.overrideManager.refresh();
 
         this.environment.refresh();
 

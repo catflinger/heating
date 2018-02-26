@@ -8,20 +8,20 @@ export class Snapshot {
     private _control: ControlStateSnapshot;
     private _environment: EnvironmentSnapshot;
     private _device: DeviceStateSnapshot;
-    private _override: OverrideSnapshot;
+    private _overrides: OverrideSnapshot[];
     private _program: ProgramSnapshot;
 
     constructor(control: ControlStateSnapshot,
                 environment: EnvironmentSnapshot,
                 device: DeviceStateSnapshot,
-                override: OverrideSnapshot,
+                overrides: OverrideSnapshot[],
                 program: ProgramSnapshot) {
 
         this._control = control;
         this._environment = environment;
         this._device = device;
-        this._override = override;
         this._program = program;
+        this._overrides = overrides;
     }
 
     public get control(): ControlStateSnapshot {
@@ -36,8 +36,8 @@ export class Snapshot {
         return this._device;
     }
 
-    public get override(): OverrideSnapshot {
-        return this._override;
+    public get overrides(): OverrideSnapshot[] {
+        return this._overrides;
     }
 
     public get program(): ProgramSnapshot {

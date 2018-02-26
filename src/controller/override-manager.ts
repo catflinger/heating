@@ -60,12 +60,10 @@ export class OverrideManager implements IOverrideManager {
     }
 
     // get any current and active override for today (may return null)
-    public getSnapshot(): OverrideSnapshot {
-        if (this.overrides.length > 0) {
-            return this.overrides[0].clone();
-        } else {
-            return null;
-        }
+    public getSnapshot(): OverrideSnapshot[] {
+        const result: OverrideSnapshot[] = [];
+        this.overrides.forEach((override) => result.push(override.clone()));
+        return result;
     }
 
     public setOverride(duration: number): void {

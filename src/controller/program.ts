@@ -37,7 +37,7 @@ export class Program implements IProgram {
     }
 
     public getSnapshot(): ProgramSnapshot {
-        return new ProgramSnapshot(this._minHwTemp, this._maxHwTemp, this._slots, this.slotsPerDay);
+        return new ProgramSnapshot(this._id, this._name, this._minHwTemp, this._maxHwTemp, this._slots, this.slotsPerDay);
     }
 
     public get minHWTemp(): number {

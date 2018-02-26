@@ -23,7 +23,7 @@ export class OverrideApi implements IApi {
             debug("GET: override");
             try {
                 // define of API response
-                return res.json({ items: [this.controller.getSnapshot().override] });
+                return res.json({ items: this.controller.getSnapshot().overrides });
             } catch (e) {
                 return res.status(500).send("could not process this request " + e);
             }
@@ -56,6 +56,25 @@ export class OverrideApi implements IApi {
                 }
             } catch (e) {
                 return res.status(401).send("could not process this request " + e);
+            }
+        });
+
+        router.delete("/override", (req, res, next) => {
+            debug("DELETE: override");
+            try {
+                this.controller.clearOverride();
+
+                // define of API response
+                const result: any = {
+                    result: "OK",
+                };
+
+                this.utils.dumpTextFile("override-delete.json", JSON.stringify(result));
+
+                return res.json(result);
+
+            } catch (e) {
+                return res.status(500).send("could not process this request " + e);
             }
         });
     }

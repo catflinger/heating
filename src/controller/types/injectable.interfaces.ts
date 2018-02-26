@@ -212,7 +212,7 @@ export interface IOverrideManager {
     refresh(): void;
 
     // return the current override state
-    getSnapshot(): OverrideSnapshot;
+    getSnapshot(): OverrideSnapshot[];
 
     // creates a new override
     setOverride(duration: number): void;
