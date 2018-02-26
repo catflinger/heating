@@ -34,8 +34,7 @@ export class StatusApi implements IApi {
                 result.items.push(this.controlResponse(snapshot));
                 result.items.push(this.deviceResponse(snapshot));
                 result.items.push(this.envResponse(snapshot));
-                result.items.push(this.overrideResponse(snapshot));
-                result.items.push(this.programResponse(snapshot));
+                result.items.push(this.controllerResponse(snapshot));
 
                 // send the response
                 this.utils.dumpTextFile("status.json", result);
@@ -59,12 +58,8 @@ export class StatusApi implements IApi {
             this.sendGetResponse(this.deviceResponse, req, res, next);
         });
 
-        router.get("/status/override", (req, res, next) => {
-            this.sendGetResponse(this.overrideResponse, req, res, next);
-        });
-
-        router.get("/status/program", (req, res, next) => {
-            this.sendGetResponse(this.programResponse, req, res, next);
+        router.get("/status/controller", (req, res, next) => {
+            this.sendGetResponse(this.controllerResponse, req, res, next);
         });
     }
 
@@ -115,17 +110,10 @@ export class StatusApi implements IApi {
         };
     }
 
-    private overrideResponse(snapshot: Snapshot): any {
+    private controllerResponse(snapshot: Snapshot): any {
         return {
-            id: "override",
-            snapshots: snapshot.controller.overrides,
-        };
-    }
-
-    private programResponse(snapshot: Snapshot): any {
-        return {
-            id: "program",
-            snapshot,
+            id: "controller",
+            snapshots: snapshot.controller,
         };
     }
 }
