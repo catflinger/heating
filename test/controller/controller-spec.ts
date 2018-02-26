@@ -44,7 +44,7 @@ function compareState(expected: any, actual: Snapshot) {
     expect(actual.device.boiler).to.equal(expected.device.boiler, "incorrect value for boiler state");
     expect(actual.device.hwPump).to.equal(expected.device.hwPump, "incorrect value for hw pump state");
     expect(actual.device.chPump).to.equal(expected.device.chPump, "incorrect value for ch pump state");
-    expect(actual.environment.hwTemperature).to.equal(expected.environment.hwTemperature, "failed to return correct environment");
+    expect(actual.environment.sensors.find((s)=> s.id == "hw").reading).to.equal(expected.environment.hwTemperature, "failed to return correct environment");
 }
 
 describe("controller", () => {

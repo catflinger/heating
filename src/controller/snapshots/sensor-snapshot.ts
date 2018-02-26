@@ -2,19 +2,13 @@
 import { ISensor } from "../types";
 
 export class SensorSnapshot {
-    private _id: string;
-    private _reading: number;
 
-    constructor(sensor: ISensor) {
-        this._reading = sensor.reading;
-        this._id = sensor.id;
+    constructor(
+        public id: string,
+        public reading: number) {
     }
 
-    public get reading(): number {
-        return this._reading;
-    }
-
-    public get id(): string {
-        return this._id;
+    public clone(): SensorSnapshot {
+        return new SensorSnapshot(this.id, this.reading);
     }
 }

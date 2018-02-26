@@ -8,7 +8,6 @@ import "mocha";
 
 const expect = chai.expect;
 
-let settings: IControllerSettings;
 let program: IProgram;
 let max: number;
 let min: number;
@@ -20,7 +19,6 @@ const maxHWTemp = 50;
 describe("program", () => {
 
     before(() => {
-        settings = container.get<IControllerSettings>(INJECTABLES.ControllerSettings);
 
         const json: string = '{"id":"id123","name":"some name","hwmax":50,"hwmin":40,"slots":[true,false,true,false,true,false,false,false,false,false]}';
         program = container.get<IProgram>(INJECTABLES.Program);

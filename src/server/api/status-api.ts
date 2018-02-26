@@ -93,10 +93,7 @@ export class StatusApi implements IApi {
     private controlResponse(snapshot: Snapshot): any {
         return {
             id: "control",
-            snapshot: {
-                heating: snapshot.control.heating,
-                water: snapshot.control.hotWater,
-            },
+            snapshot: snapshot.control,
         };
     }
 
@@ -121,7 +118,7 @@ export class StatusApi implements IApi {
     private overrideResponse(snapshot: Snapshot): any {
         return {
             id: "override",
-            snapshots: snapshot.overrides,
+            snapshots: snapshot.controller.overrides,
         };
     }
 

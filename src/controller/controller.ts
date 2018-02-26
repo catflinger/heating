@@ -23,6 +23,8 @@ import {
     Snapshot,
 } from "./types";
 
+import { ControllerSnapshot } from "./snapshots/controllerSnapshot";
+
 const debug = Debug("app");
 
 @injectable()
@@ -57,22 +59,13 @@ export class Controller implements IController {
     }
 
     public getSnapshot(): Snapshot {
-        debug ("getting control state snapshot");
-        const cs: ControlStateSnapshot = this.currentControlState.clone();
-
-        debug ("getting environment state snapshot");
-        const env: EnvironmentSnapshot = this.environment.getSnapshot();
-
-        debug ("getting device state snapshot");
-        const dev: DeviceStateSnapshot = this.system.getDeviceState();
-
-        debug ("getting override state snapshot");
-        const ov: OverrideSnapshot[] = this.overrideManager.getSnapshot();
-
-        debug ("getting program state snapshot");
-        const prog: ProgramSnapshot = this.programManager.currentProgram.getSnapshot();
-
-        return new Snapshot(cs, env, dev, ov, prog);
+        return new Snapshot(
+            this.currentControlState.clone(),
+            this.environment.getSnapshot(),
+            this.system.getDeviceState(),
+            new ControllerSnapshot(
+                this.overrideManager.getSnapshot(),
+                this.programManager.currentProgram.getSnapshot()));
     }
 
     // reveal for setOveride

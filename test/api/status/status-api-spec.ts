@@ -40,7 +40,7 @@ describe("Status API' get /api/status", () => {
                 expect(res.body.items).not.to.be.undefined;
                 expect(Array.isArray(res.body.items)).to.be.true;;
                 expect(res.body.items.length).to.equal(5);
-                
+
                 expect(res.body.items[0].id).to.equal("control");
                 expect(res.body.items[1].id).to.equal("device");
                 expect(res.body.items[2].id).to.equal("env");
@@ -58,7 +58,7 @@ describe("Status API' post /api/status", () => {
                 throw new Error("should error");
             })
             .catch((res: any) => {
-                expect(res.status).to.equal(404);            
+                expect(res.status).to.equal(404);
             });
     });
 });
@@ -71,7 +71,7 @@ describe("Status API' put /api/status", () => {
                 throw new Error("should error");
             })
             .catch((res: any) => {
-                expect(res.status).to.equal(404);            
+                expect(res.status).to.equal(404);
             });
     });
 });
@@ -84,7 +84,29 @@ describe("Status API' delete /api/status", () => {
                 throw new Error("should error");
             })
             .catch((res: any) => {
-                expect(res.status).to.equal(404);            
+                expect(res.status).to.equal(404);
+            });
+    });
+});
+
+describe("Status API' get /api/status/control", () => {
+
+    it('should be json', () => {
+        return chai.request(app).get('/api/status/control')
+            .then((res: any) => {
+                expect(res.status).to.equal(200);
+                expect(res.type).to.eql('application/json');
+            });
+    });
+
+    it('should contain data', () => {
+        return chai.request(app).get('/api/status/control')
+            .then((res: any) => {
+                expect(res.body.items).to.be.undefined;
+                expect(res.body.id).to.equal("control");
+                expect(res.body.snapshot).not.to.be.undefined;
+                expect(res.body.snapshot.heating).not.to.be.undefined;
+                expect(typeof res.body.snapshot.heating).to.equal("boolean");
             });
     });
 });

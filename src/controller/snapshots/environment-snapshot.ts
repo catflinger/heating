@@ -5,24 +5,13 @@ import { ISensor } from "../types";
 import { SensorSnapshot } from "./sensor-snapshot";
 
 export class EnvironmentSnapshot {
-    private snapshots: SensorSnapshot[] = [];
 
-    constructor(sensors: ISensor[]) {
-        sensors.forEach((sensor) =>
-        this.snapshots.push(new SensorSnapshot(sensor)));
+    constructor(public sensors: SensorSnapshot[]) {
     }
 
-    public get sensors(): SensorSnapshot[] {
-        return this.snapshots;
-    }
-
-    public get hwTemperature(): number {
-        let result: number;
-        try {
-            result = this.sensors.find((s) => s.id === "hw").reading;
-        } catch {
-            result = NaN;
-        }
-        return result;
+    public clone(): EnvironmentSnapshot {
+        const sensors: SensorSnapshot[] = [];
+        this.sensors.forEach((sensor) => sensors.push(sensor.clone()));
+        return new EnvironmentSnapshot(sensors);
     }
 }

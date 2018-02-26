@@ -23,7 +23,7 @@ export class OverrideApi implements IApi {
             debug("GET: override");
             try {
                 // define of API response
-                return res.json({ items: this.controller.getSnapshot().overrides });
+                return res.json({ items: this.controller.getSnapshot().controller.overrides });
             } catch (e) {
                 return res.status(500).send("could not process this request " + e);
             }

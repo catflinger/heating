@@ -11,7 +11,8 @@ import {
     ISensor,
     Snapshot, 
     ControlStateSnapshot, 
-    DeviceStateSnapshot } from "../../src/controller/types";
+    DeviceStateSnapshot, 
+    SensorSnapshot} from "../../src/controller/types";
 import { ProgramSnapshot } from "../../src/controller/snapshots/program-snapshot";
 
 @injectable()
@@ -42,7 +43,9 @@ export class MockEnvironment implements IEnvironment {
     }
     
     public getSnapshot(): EnvironmentSnapshot {
-        return new EnvironmentSnapshot([this.hwSensor]);
+        const snaps: SensorSnapshot[] = [];
+        snaps.push(new SensorSnapshot(this.hwSensor.id, this.hwSensor.reading));
+        return new EnvironmentSnapshot(snaps);
     }
 
     public setHWTemperature(temp: number) {

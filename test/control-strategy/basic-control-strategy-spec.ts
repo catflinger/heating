@@ -180,61 +180,124 @@ const hwTempAboveThreshold = 55;
 const snapshot_Default: any = {
     control: { heating: false, hotWater: false },
     device: { boiler: false, hwPump: false, chPump: false },
-    environment: { hwTemperature: hwTempBelowThreshold },
-    program: program.getSnapshot(),
-    overrides: [],
+    environment: {
+        sensors: [ 
+            {
+                id: "hw",
+                reading: hwTempBelowThreshold 
+            }
+        ]
+    },
+    controller: {
+        activeProgram: program.getSnapshot(),
+        overrides: [],
+    }
 }
 
 // hot water cool
 const snapshot_Cool: any = {
     control: { heating: false, hotWater: true },
     device: { boiler: true, hwPump: true, chPump: false },
-    environment: { hwTemperature: hwTempBelowThreshold },
-    program: program.getSnapshot(),
-    overrides: [],
+    environment: {
+        sensors: [ 
+            {
+                id: "hw",
+                reading: hwTempBelowThreshold 
+            }
+        ]
+    },
+    controller: {
+        activeProgram: program.getSnapshot(),
+        overrides: [],
+    }
 }
 
 // hot water being heated
 const snapshot_BeingHeated: any = {
     control: { heating: false, hotWater: true },
     device: { boiler: true, hwPump: true, chPump: false },
-    environment: { hwTemperature: hwTempInsideThreshold },
-    program: program.getSnapshot(),
-    overrides: [],
+    environment: {
+        sensors: [ 
+            {
+                id: "hw",
+                reading: hwTempInsideThreshold 
+            }
+        ]
+    },
+    controller: {
+        activeProgram: program.getSnapshot(),
+        overrides: [],
+    }
 }
 
 // hot water fully heated
 const snapshot_FullyHeated: any = {
     control: { heating: false, hotWater: false },
     device: { boiler: false, hwPump: false, chPump: false },
-    environment: { hwTemperature: hwTempAboveThreshold },
-    program: program.getSnapshot(),
-    overrides: [],
+    environment: {
+        sensors: [ 
+            {
+                id: "hw",
+                reading: hwTempAboveThreshold 
+            }
+        ]
+    },
+    controller: {
+        activeProgram: program.getSnapshot(),
+        overrides: [],
+    }
 }
 
 // hot water cooling
 const snapshot_Cooling: any = {
     control: { heating: false, hotWater: false },
     device: { boiler: false, hwPump: false, chPump: false },
-    environment: { hwTemperature: hwTempInsideThreshold },
-    program: program.getSnapshot(),
-    overrides: [],
+    environment: {
+        sensors: [ 
+            {
+                id: "hw",
+                reading: hwTempInsideThreshold 
+            }
+        ]
+    },
+    controller: {
+        activeProgram: program.getSnapshot(),
+        overrides: [],
+    }
 }
 
 // override heating ON, hw high
 const snapshot_Override_ON: any = {
     control: { heating: false, hotWater: false },
     device: { boiler: false, hwPump: false, chPump: false },
-    environment: { hwTemperature: hwTempAboveThreshold },
-    overrides: [{ start: 1, duration: 3, state: true }],
-    program: program.getSnapshot(),
+    environment: {
+        sensors: [ 
+            {
+                id: "hw",
+                reading: hwTempAboveThreshold 
+            }
+        ]
+    },
+    controller: {
+        activeProgram: program.getSnapshot(),
+        overrides: [{ start: 1, duration: 3, state: true }],
+    }
 }
 
 // override heating OFF, hw low
 const snapshot_Override_OFF: any = {
     control: { heating: false, hotWater: false },
     device: { boiler: false, hwPump: false, chPump: false },
-    environment: { hwTemperature: hwTempBelowThreshold },
-    overrides: [{ start: 1, duration: 3, state: false }],
-    program: program.getSnapshot(),
+    environment: {
+        sensors: [ 
+            {
+                id: "hw",
+                reading: hwTempBelowThreshold 
+            }
+        ]
+    },
+    controller: {
+        activeProgram: program.getSnapshot(),
+        overrides: [{ start: 1, duration: 3, state: false }],
+    }
 }
