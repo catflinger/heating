@@ -24,13 +24,7 @@ export class ProgramConfigApi implements IApi {
         router.get("/program-config", (req, res, next) => {
             debug("GET: program-config");
             try {
-                const result: ApiResponse = new ApiResponse();
-                const item = new ApiResponseItem();
-                item.name = "control";
-                item.value = {
-                    config: this.controller.programManager.getConfig(),
-                };
-                result.items.push(item);
+                const result: any = this.controller.programManager.getConfig();
 
                 return res.json(result);
 

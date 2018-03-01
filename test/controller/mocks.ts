@@ -29,6 +29,7 @@ export class MockControlStrategy implements IControlStrategy {
 class MockSensor implements ISensor {
     reading: number = 45;
     id: string = "hw";
+    description: string = "hot water";
     read(): void {
         throw new Error("Method not implemented.");
     }
@@ -44,7 +45,7 @@ export class MockEnvironment implements IEnvironment {
     
     public getSnapshot(): EnvironmentSnapshot {
         const snaps: SensorSnapshot[] = [];
-        snaps.push(new SensorSnapshot(this.hwSensor.id, this.hwSensor.reading));
+        snaps.push(new SensorSnapshot(this.hwSensor.id, this.hwSensor.description, this.hwSensor.reading));
         return new EnvironmentSnapshot(snaps);
     }
 

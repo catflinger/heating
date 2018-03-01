@@ -29,6 +29,7 @@ export const INJECTABLES = {
     ProgramFactory: Symbol("ProgramFactory"),
     ProgramManager: Symbol("ProgramManager"),
     ProgramStore: Symbol("ProgramStore"),
+    SensorApi: Symbol("SensorApi"),
     SlotsPerDay: Symbol("SlotsPerDay"),
     StatusApi: Symbol("statusApi"),
     System: Symbol("System"),
@@ -253,5 +254,6 @@ export interface IEnvironmentSettings {
 export interface ISensor {
     reading: number;
     id: string;
+    description: string;
     read(): void;
 }

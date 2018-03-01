@@ -33,11 +33,10 @@ export class StatusApi implements IApi {
 
                 result.items.push(this.controlResponse(snapshot));
                 result.items.push(this.deviceResponse(snapshot));
-                result.items.push(this.envResponse(snapshot));
-                result.items.push(this.controllerResponse(snapshot));
+                result.items.push(this.activeProgramResponse(snapshot));
 
                 // send the response
-                this.utils.dumpTextFile("status.json", result);
+                this.utils.dumpTextFile("status.json", JSON.stringify(result, null, 1));
 
                 return res.json(result);
 
@@ -50,16 +49,12 @@ export class StatusApi implements IApi {
             this.sendGetResponse(this.controlResponse, req, res, next);
         });
 
-        router.get("/status/env", (req, res, next) => {
-            this.sendGetResponse(this.envResponse, req, res, next);
-        });
-
         router.get("/status/device", (req, res, next) => {
             this.sendGetResponse(this.deviceResponse, req, res, next);
         });
 
-        router.get("/status/controller", (req, res, next) => {
-            this.sendGetResponse(this.controllerResponse, req, res, next);
+        router.get("/status/activeProgram", (req, res, next) => {
+            this.sendGetResponse(this.activeProgramResponse, req, res, next);
         });
     }
 
@@ -103,17 +98,10 @@ export class StatusApi implements IApi {
         };
     }
 
-    private envResponse(snapshot: Snapshot): any {
+    private activeProgramResponse(snapshot: Snapshot): any {
         return {
-            id: "env",
-            snapshot: snapshot.environment,
-        };
-    }
-
-    private controllerResponse(snapshot: Snapshot): any {
-        return {
-            id: "controller",
-            snapshots: snapshot.controller,
+            id: "activeProgram",
+            snapshot: snapshot.controller.activeProgram,
         };
     }
 }

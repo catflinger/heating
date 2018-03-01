@@ -34,14 +34,7 @@ export class ProgramApi implements IApi {
                     programs.push(p.toStorable());
                 });
 
-                const result = {
-                    config: {
-                        saturday: this.programManager.getConfig().saturdayProgramId,
-                        sunday: this.programManager.getConfig().sundayProgramId,
-                        weekday: this.programManager.getConfig().weekdayProgramId,
-                    },
-                    programs,
-                };
+                const result = { items: programs };
 
                 this.utils.dumpTextFile("programs.json", JSON.stringify(result));
                 res.json(result);

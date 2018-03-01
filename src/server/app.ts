@@ -23,6 +23,7 @@ export class App {
         @inject(INJECTABLES.StatusApi) private statusApi: IApi,
         @inject(INJECTABLES.ProgramApi) private programApi: IApi,
         @inject(INJECTABLES.OverrideApi) private overrideApi: IApi,
+        @inject(INJECTABLES.SensorApi) private sensorApi: IApi,
     ) {}
 
     public start(): express.Application {
@@ -36,6 +37,7 @@ export class App {
         this.configApi.addRoutes(router);
         this.programApi.addRoutes(router);
         this.overrideApi.addRoutes(router);
+        this.sensorApi.addRoutes(router);
 
         // start the controller: this initialises digital outputpins and starts the environment polling
         this.controller.start();

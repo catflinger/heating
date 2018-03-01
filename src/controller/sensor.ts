@@ -13,6 +13,7 @@ export class Sensor implements ISensor {
 
     constructor(private settings: IEnvironmentSettings,
                 private _id: string,
+                private _description: string,
                 private deviceId: string) {
 
         this.lastReading = NaN;
@@ -44,5 +45,9 @@ export class Sensor implements ISensor {
 
     public get id(): string {
         return this._id;
+    }
+
+    public get description(): string {
+        return this._description;
     }
 }

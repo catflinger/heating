@@ -40,13 +40,14 @@ import { System } from "./controller/system";
 import { OverrideApi } from "./server/api/override-api";
 import { ProgramApi } from "./server/api/program-api";
 import { ProgramConfigApi } from "./server/api/program-config-api";
+import { SensorApi } from "./server/api/sensor-api";
 import { StatusApi } from "./server/api/status-api";
 import { App } from "./server/app";
 
 export const container = new Container();
 
 // constants
-container.bind<number>(INJECTABLES.SlotsPerDay).toConstantValue(10);
+container.bind<number>(INJECTABLES.SlotsPerDay).toConstantValue(6 * 24);
 
 // singletons
 container.bind<App>(INJECTABLES.App).to(App).inSingletonScope();
@@ -70,6 +71,7 @@ container.bind<IApi>(INJECTABLES.ProgramConfigApi).to(ProgramConfigApi).inSingle
 container.bind<IApi>(INJECTABLES.ProgramApi).to(ProgramApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.StatusApi).to(StatusApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.OverrideApi).to(OverrideApi).inSingletonScope();
+container.bind<IApi>(INJECTABLES.SensorApi).to(SensorApi).inSingletonScope();
 
 // discrete instances
 container.bind<IProgram>(INJECTABLES.Program).to(Program);

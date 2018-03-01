@@ -36,6 +36,7 @@ import { StatusApi } from "./server/api/status-api";
 
 import { Utils } from "./common/utils";
 import { OverrideApi } from "./server/api/override-api";
+import { SensorApi } from "./server/api/sensor-api";
 import { App } from "./server/app";
 
 export const container = new Container();
@@ -66,6 +67,7 @@ container.bind<IApi>(INJECTABLES.ProgramConfigApi).to(ProgramConfigApi).inSingle
 container.bind<IApi>(INJECTABLES.ProgramApi).to(ProgramApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.StatusApi).to(StatusApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.OverrideApi).to(OverrideApi).inSingletonScope();
+container.bind<IApi>(INJECTABLES.SensorApi).to(SensorApi).inSingletonScope();
 
 // discrete instances
 container.bind<IProgram>(INJECTABLES.Program).to(Program);
