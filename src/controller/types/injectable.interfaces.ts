@@ -3,7 +3,7 @@ import { ControlStateSnapshot } from "../snapshots/controlstate-snapshot";
 import { EnvironmentSnapshot } from "../snapshots/environment-snapshot";
 import { OverrideSnapshot } from "../snapshots/override-snapshot";
 import { ProgramSnapshot } from "../snapshots/program-snapshot";
-import { Snapshot } from "../snapshots/snapshot";
+import { SummarySnapshot } from "../snapshots/summary-snapshot";
 import { DeviceStateSnapshot } from "../types";
 
 /**
@@ -58,7 +58,7 @@ export interface IController {
     start(): void;
 
     // provides raw data on state of the heating system and environment
-    getSnapshot(): Snapshot;
+    getSnapshot(): SummarySnapshot;
 
     // creates a new override or extends an existing override
     setOverride(duration: number): void;
@@ -81,7 +81,7 @@ export interface IControllable {
  * interface for control strategies
  */
 export interface IControlStrategy {
-    calculateControlState(currentState: Snapshot): ControlStateSnapshot;
+    calculateControlState(currentState: SummarySnapshot): ControlStateSnapshot;
 }
 
 /**

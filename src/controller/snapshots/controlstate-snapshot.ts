@@ -1,16 +1,39 @@
+import { ISnapshot } from "./snapshot";
+
 /**
  * data class to encapsulate control state
  */
-export class ControlStateSnapshot {
+export class ControlStateSnapshot implements ISnapshot<ControlStateSnapshot> {
+    private _heating: boolean;
+    private _hotWater: boolean;
 
-    constructor(
-        public heating: boolean,
-        public hotWater: boolean) {
+    constructor(heating: boolean, hotWater: boolean) {
+        this._heating = heating;
+        this._hotWater = hotWater;
     }
 
     public clone(): ControlStateSnapshot {
         return new ControlStateSnapshot(
-            this.heating,
-            this.hotWater);
+            this._heating,
+            this._hotWater);
+    }
+
+    public get heating(): boolean {
+        return this._heating;
+    }
+
+    public get hotWater(): boolean {
+        return this._hotWater;
+    }
+
+    public toStorable(): any {
+        return {
+            heating: this._heating,
+            hotWater: this._hotWater,
+        };
+    }
+
+    public toJson(): string {
+        return JSON.stringify(this.toStorable());
     }
 }

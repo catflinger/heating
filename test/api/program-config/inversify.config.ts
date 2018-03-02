@@ -44,6 +44,7 @@ import { StatusApi } from "../../../src/server/api/status-api";
 import { App } from "../../../src/server/app";
 import { TestingInjectables, IClean } from "../../common/injectables-test";
 import { Clean } from "../../common/clean";
+import { SensorApi } from "../../../src/server/api/sensor-api";
 
 export const container = new Container();
 
@@ -75,6 +76,7 @@ container.bind<IApi>(INJECTABLES.ProgramConfigApi).to(ProgramConfigApi).inSingle
 container.bind<IApi>(INJECTABLES.ProgramApi).to(ProgramApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.StatusApi).to(StatusApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.OverrideApi).to(OverrideApi).inSingletonScope();
+container.bind<IApi>(INJECTABLES.SensorApi).to(SensorApi).inSingletonScope();
 
 // discrete instances
 container.bind<IProgram>(INJECTABLES.Program).to(Program);

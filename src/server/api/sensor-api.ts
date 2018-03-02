@@ -26,15 +26,8 @@ export class SensorApi implements IApi {
             debug("GET: sensors");
 
             try {
-                const sensors: any[] = [];
-
-                // make a list of program data to return
-                this.environment.getSnapshot().sensors.forEach((s) => {
-                    sensors.push(s);
-                });
-
                 const result = {
-                    items: sensors,
+                    items: this.environment.getSnapshot().sensorsToStoreable(),
                 };
 
                 this.utils.dumpTextFile("sensors.json", JSON.stringify(result));

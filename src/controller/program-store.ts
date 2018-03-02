@@ -87,7 +87,7 @@ export class ProgramStore implements IProgramStore {
         fs.readdirSync(path.join(this.settings.programStoreDir, "programs"))
             .forEach((f: string) => {
                 if (f.endsWith(this._ext)) {
-                    fs.unlink(path.join(this.settings.programStoreDir, f));
+                    fs.unlinkSync(path.join(this.settings.programStoreDir, "programs", f));
                 }
             });
 

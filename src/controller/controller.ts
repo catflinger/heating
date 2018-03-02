@@ -20,10 +20,10 @@ import {
     IProgram,
     IProgramManager,
     OverrideSnapshot,
-    Snapshot,
+    SummarySnapshot,
 } from "./types";
 
-import { ControllerSnapshot } from "./snapshots/controllerSnapshot";
+import { ControllerSnapshot } from "./snapshots/controller-snapshot";
 
 const debug = Debug("app");
 
@@ -58,8 +58,8 @@ export class Controller implements IController {
         }
     }
 
-    public getSnapshot(): Snapshot {
-        return new Snapshot(
+    public getSnapshot(): SummarySnapshot {
+        return new SummarySnapshot(
             this.currentControlState.clone(),
             this.environment.getSnapshot(),
             this.system.getDeviceState(),

@@ -26,22 +26,10 @@ describe('program-config api GET', () => {
             });
     });
 
-    it('should return one item', () => {
-        return chai.request(app).get('/api/program-config')
-            .then((res: any) => {
-                expect(res.body.items).not.to.be.undefined;
-                expect(Array.isArray(res.body.items)).to.be.true;;
-                expect(res.body.items.length).to.equal(1);
-                
-                expect(res.body.items[0].name).to.equal("control");
-                expect(res.body.items[0].value).not.to.be.undefined;
-            });
-    });
-
     it('should return program config', () => {
         return chai.request(app).get('/api/program-config')
             .then((res: any) => {
-                let config = res.body.items[0].value.config;
+                let config = res.body;
                 expect(config).not.to.be.undefined;
                 expect(config.saturdayProgramId).not.to.be.undefined;
                 expect(config.sundayProgramId).not.to.be.undefined;
@@ -53,7 +41,6 @@ describe('program-config api GET', () => {
 describe('program-config api PUT', () => {
 
     //find a suitable program to test happy path
-    
 
     it('should be reject bad data', () => {
         return chai.request(app).put('/api/program-config')

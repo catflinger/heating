@@ -8,7 +8,7 @@ import { ProgramConfigApi } from "./api/program-config-api";
 import { StatusApi } from "./api/status-api";
 
 import { Controller } from "../controller/controller";
-import { Snapshot } from "../controller/snapshots/snapshot";
+import { SummarySnapshot } from "../controller/snapshots/summary-snapshot";
 import { IApi, IController, INJECTABLES } from "../controller/types";
 
 const debug = Debug("app");
@@ -44,12 +44,13 @@ export class App {
 
         this.express.use((req, res, next) => {
             res.header("Access-Control-Allow-Origin", "*");
+            res.header("Access-Control-Allow-Methods", "HEAD, GET, PUT, POST, DELETE, OPTIONS");
             res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
             next();
         });
 
         this.express.use(bodyParser.json({
-            limit: 100,
+            limit: 10000,
         }));
 
         // tell express to use the router for the API

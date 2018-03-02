@@ -1,4 +1,4 @@
-import { IController, IEnvironment, IControllerSettings, IProgram, ISwitchable, Sensors, Snapshot, INJECTABLES } from "../../src/controller/types";
+import { IController, IEnvironment, IControllerSettings, IProgram, ISwitchable, Sensors, SummarySnapshot, INJECTABLES } from "../../src/controller/types";
 import { Controller } from "../../src/controller/controller";
 import { container } from "./inversify.config.test";
 import { MockEnvironment, MockControlStrategy, MockDevice } from "./mocks";
@@ -30,23 +30,6 @@ const hwTempBelowThreshold = 30;
 const hwTempInsideThreshold = 45;
 const hwTempAboveThreshold = 55;
 
-// everything at or returned to starting values
-// note: this state should only exist temporarily at start-up
-const testDataDefault: any = {
-    control: { heating: false, hotWater: false },
-    device: { boiler: false, hwPump: false, chPump: false },
-    environment: { hwTemperature: hwTempBelowThreshold }
-}
-
-function compareState(expected: any, actual: Snapshot) {
-    expect(actual.control.heating).to.equal(expected.control.heating, "incorrect value for heating state");
-    expect(actual.control.hotWater).to.equal(expected.control.hotWater, "incorrect value for water state");
-    expect(actual.device.boiler).to.equal(expected.device.boiler, "incorrect value for boiler state");
-    expect(actual.device.hwPump).to.equal(expected.device.hwPump, "incorrect value for hw pump state");
-    expect(actual.device.chPump).to.equal(expected.device.chPump, "incorrect value for ch pump state");
-    expect(actual.environment.sensors.find((s)=> s.id == "hw").reading).to.equal(expected.environment.hwTemperature, "failed to return correct environment");
-}
-
 describe("controller", () => {
 
     it("should construct", () => {
@@ -59,9 +42,14 @@ describe("controller", () => {
 
     it("should return summary info", () => {
         mockEnvironment.setHWTemperature(30);
-        const summary: Snapshot = controller.getSnapshot();
-        compareState(testDataDefault, summary);
-    });
+        const summary: SummarySnapshot = controller.getSnapshot();
+        expect(summary.control.heating).to.equal(false, "incorrect value for heating state");
+        expect(summary.control.hotWater).to.equal(false, "incorrect value for water state");
+        expect(summary.device.boiler).to.equal(false, "incorrect value for boiler state");
+        expect(summary.device.hwPump).to.equal(false, "incorrect value for hw pump state");
+        expect(summary.device.chPump).to.equal(false, "incorrect value for ch pump state");
+        expect(summary.environment.getSensor("hw").reading).to.equal(hwTempBelowThreshold, "failed to return correct environment");
+        });
 
     it("should not set an override with bad data", () => {       
         expect( () => controller.setOverride(undefined)).to.throw;
@@ -70,7 +58,7 @@ describe("controller", () => {
     });
 
     it("should correctly map control state to device state", () => {
-        let summary: Snapshot;
+        let summary: SummarySnapshot;
         
         //off
         mockStrategy.water = false;

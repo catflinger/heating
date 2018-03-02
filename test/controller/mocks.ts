@@ -9,7 +9,7 @@ import {
     IProgram, 
     ISwitchable, 
     ISensor,
-    Snapshot, 
+    SummarySnapshot, 
     ControlStateSnapshot, 
     DeviceStateSnapshot, 
     SensorSnapshot} from "../../src/controller/types";
@@ -21,7 +21,7 @@ export class MockControlStrategy implements IControlStrategy {
     public heating: boolean = false; //mock result, to be set by tests
 
     // returns whatever the test has set in the water and heating members
-    calculateControlState(currentState: Snapshot): ControlStateSnapshot {
+    calculateControlState(currentState: SummarySnapshot): ControlStateSnapshot {
         return new ControlStateSnapshot(this.heating, this.water);
     }  
 }

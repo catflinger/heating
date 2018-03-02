@@ -7,7 +7,8 @@ import {
     IControlStrategy,
     INJECTABLES,
     IProgram,
-    Snapshot,
+    SummarySnapshot,
+    OverrideSnapshot,
 } from "../../src/controller/types";
 
 import { container } from "./inversify.config.test";
@@ -181,16 +182,18 @@ const snapshot_Default: any = {
     control: { heating: false, hotWater: false },
     device: { boiler: false, hwPump: false, chPump: false },
     environment: {
-        sensors: [ 
-            {
+        getSensor: (id: string) => { 
+            return {
                 id: "hw",
                 reading: hwTempBelowThreshold 
             }
-        ]
+        }
     },
     controller: {
         activeProgram: program.getSnapshot(),
-        overrides: [],
+        forEachOverride: function (f: (item: OverrideSnapshot) => void): void {
+            //nothing to do
+        }, 
     }
 }
 
@@ -199,34 +202,38 @@ const snapshot_Cool: any = {
     control: { heating: false, hotWater: true },
     device: { boiler: true, hwPump: true, chPump: false },
     environment: {
-        sensors: [ 
-            {
+        getSensor: (id: string) => { 
+            return {
                 id: "hw",
                 reading: hwTempBelowThreshold 
             }
-        ]
+        }
     },
     controller: {
         activeProgram: program.getSnapshot(),
-        overrides: [],
+        forEachOverride: function (f: (item: OverrideSnapshot) => void): void {
+            //nothing to do
+        }, 
     }
-}
+};
 
 // hot water being heated
 const snapshot_BeingHeated: any = {
     control: { heating: false, hotWater: true },
     device: { boiler: true, hwPump: true, chPump: false },
     environment: {
-        sensors: [ 
-            {
+        getSensor: (id: string) => { 
+            return {
                 id: "hw",
                 reading: hwTempInsideThreshold 
             }
-        ]
+        }
     },
     controller: {
         activeProgram: program.getSnapshot(),
-        overrides: [],
+        forEachOverride: function (f: (item: OverrideSnapshot) => void): void {
+            //nothing to do
+        }, 
     }
 }
 
@@ -235,16 +242,18 @@ const snapshot_FullyHeated: any = {
     control: { heating: false, hotWater: false },
     device: { boiler: false, hwPump: false, chPump: false },
     environment: {
-        sensors: [ 
-            {
+        getSensor: (id: string) => { 
+            return {
                 id: "hw",
                 reading: hwTempAboveThreshold 
             }
-        ]
+        }
     },
     controller: {
         activeProgram: program.getSnapshot(),
-        overrides: [],
+        forEachOverride: function (f: (item: OverrideSnapshot) => void): void {
+            //nothing to do
+        }, 
     }
 }
 
@@ -253,16 +262,18 @@ const snapshot_Cooling: any = {
     control: { heating: false, hotWater: false },
     device: { boiler: false, hwPump: false, chPump: false },
     environment: {
-        sensors: [ 
-            {
+        getSensor: (id: string) => { 
+            return {
                 id: "hw",
                 reading: hwTempInsideThreshold 
             }
-        ]
+        }
     },
     controller: {
         activeProgram: program.getSnapshot(),
-        overrides: [],
+        forEachOverride: function (f: (item: OverrideSnapshot) => void): void {
+            //nothing to do
+        }, 
     }
 }
 
@@ -271,16 +282,19 @@ const snapshot_Override_ON: any = {
     control: { heating: false, hotWater: false },
     device: { boiler: false, hwPump: false, chPump: false },
     environment: {
-        sensors: [ 
-            {
+        getSensor: (id: string) => { 
+            return {
                 id: "hw",
                 reading: hwTempAboveThreshold 
             }
-        ]
+        }
     },
     controller: {
         activeProgram: program.getSnapshot(),
-        overrides: [{ start: 1, duration: 3, state: true }],
+
+        forEachOverride: function (f: (item: OverrideSnapshot) => void): void {
+            f(new OverrideSnapshot(1, 3, true, new Date()));
+        }, 
     }
 }
 
@@ -289,15 +303,17 @@ const snapshot_Override_OFF: any = {
     control: { heating: false, hotWater: false },
     device: { boiler: false, hwPump: false, chPump: false },
     environment: {
-        sensors: [ 
-            {
+        getSensor: (id: string) => { 
+            return {
                 id: "hw",
                 reading: hwTempBelowThreshold 
             }
-        ]
+        }
     },
     controller: {
         activeProgram: program.getSnapshot(),
-        overrides: [{ start: 1, duration: 3, state: false }],
+        forEachOverride: function (f: (item: OverrideSnapshot) => void): void {
+            f(new OverrideSnapshot(1, 3, false, new Date()));
+        }, 
     }
 }

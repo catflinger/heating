@@ -30,7 +30,7 @@ describe("Status API' get /api/status", () => {
             .then((res: any) => {
                 expect(res.body.items).not.to.be.undefined;
                 expect(Array.isArray(res.body.items)).to.be.true;;
-                expect(res.body.items.length).to.equal(4);
+                expect(res.body.items.length).to.equal(3);
             });
     });
 
@@ -39,12 +39,11 @@ describe("Status API' get /api/status", () => {
             .then((res: any) => {
                 expect(res.body.items).not.to.be.undefined;
                 expect(Array.isArray(res.body.items)).to.be.true;;
-                expect(res.body.items.length).to.equal(4);
+                expect(res.body.items.length).to.equal(3);
 
                 expect(res.body.items[0].id).to.equal("control");
                 expect(res.body.items[1].id).to.equal("device");
-                expect(res.body.items[2].id).to.equal("env");
-                expect(res.body.items[3].id).to.equal("controller");
+                expect(res.body.items[2].id).to.equal("activeProgram");
             });
     });
 });
@@ -102,10 +101,8 @@ describe("Status API' get /api/status/control", () => {
         return chai.request(app).get('/api/status/control')
             .then((res: any) => {
                 expect(res.body.items).to.be.undefined;
-                expect(res.body.id).to.equal("control");
-                expect(res.body.snapshot).not.to.be.undefined;
-                expect(res.body.snapshot.heating).not.to.be.undefined;
-                expect(typeof res.body.snapshot.heating).to.equal("boolean");
+                expect(res.body.heating).not.to.be.undefined;
+                expect(typeof res.body.heating).to.equal("boolean");
             });
     });
 });

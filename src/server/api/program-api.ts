@@ -90,6 +90,7 @@ export class ProgramApi implements IApi {
                 const program = this.programManager.createProgram(req.body);
                 return res.json(program.toStorable());
             } catch (e) {
+                debug("PUT ERROR: " + e);
                 return res.status(500).send("could not process this request " + e);
             }
         });
@@ -97,7 +98,7 @@ export class ProgramApi implements IApi {
         router.delete("/program/:program_id", (req, res, next) => {
             debug("DELETE: program");
 
-            const id: string = req.query.get("program_id");
+            const id: string = req.params.program_id;
 
             try {
                 this.programManager.removeProgram(id);

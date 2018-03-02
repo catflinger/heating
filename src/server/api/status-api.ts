@@ -3,7 +3,7 @@ import { Router } from "express";
 import { inject, injectable } from "inversify";
 
 import { Utils } from "../../common/utils";
-import { IApi, IController, INJECTABLES, Snapshot } from "../../controller/types";
+import { IApi, IController, INJECTABLES, SummarySnapshot } from "../../controller/types";
 
 const debug = Debug("app");
 
@@ -26,14 +26,24 @@ export class StatusApi implements IApi {
             res.header("Pragma", "no-cache");
 
             try {
-                const snapshot: Snapshot = this.controller.getSnapshot();
+                const snapshot: SummarySnapshot = this.controller.getSnapshot();
 
                 // define of API response as a wrapped array
-                const result: any = { items: [] };
-
-                result.items.push(this.controlResponse(snapshot));
-                result.items.push(this.deviceResponse(snapshot));
-                result.items.push(this.activeProgramResponse(snapshot));
+                const result: any = {
+                    items: [
+                        {
+                            id: "control",
+                            snapshot: snapshot.control.toStorable(),
+                        },
+                        {
+                            id: "device",
+                            snapshot: snapshot.device.toStorable(),
+                        },
+                        {
+                            id: "activeProgram",
+                            snapshot: snapshot.controller.activeProgram.toStorable(),
+                        },
+                ] };
 
                 // send the response
                 this.utils.dumpTextFile("status.json", JSON.stringify(result, null, 1));
@@ -58,7 +68,7 @@ export class StatusApi implements IApi {
         });
     }
 
-    private sendGetResponse(write: (snapshot: Snapshot) => any, req: any, res: any, next: any): void {
+    private sendGetResponse(write: (snapshot: SummarySnapshot) => any, req: any, res: any, next: any): void {
         debug("GET: system status");
 
         res.header("Cache-Control", "private, no-cache, no-store, must-revalidate");
@@ -66,7 +76,7 @@ export class StatusApi implements IApi {
         res.header("Pragma", "no-cache");
 
         try {
-            const snapshot: Snapshot = this.controller.getSnapshot();
+            const snapshot: SummarySnapshot = this.controller.getSnapshot();
 
             // define of API response as a plain object
             const result = write(snapshot);
@@ -80,28 +90,15 @@ export class StatusApi implements IApi {
         }
     }
 
-    private controlResponse(snapshot: Snapshot): any {
-        return {
-            id: "control",
-            snapshot: snapshot.control,
-        };
+    private controlResponse(snapshot: SummarySnapshot): any {
+        return snapshot.control.toStorable();
     }
 
-    private deviceResponse(snapshot: Snapshot): any {
-        return {
-            id: "device",
-            snapshot: {
-                boiler: snapshot.device.boiler,
-                chPump: snapshot.device.chPump,
-                hwPump: snapshot.device.hwPump,
-            },
-        };
+    private deviceResponse(snapshot: SummarySnapshot): any {
+        return snapshot.device.toStorable();
     }
 
-    private activeProgramResponse(snapshot: Snapshot): any {
-        return {
-            id: "activeProgram",
-            snapshot: snapshot.controller.activeProgram,
-        };
+    private activeProgramResponse(snapshot: SummarySnapshot): any {
+        return snapshot.controller.activeProgram.toStorable();
     }
 }
