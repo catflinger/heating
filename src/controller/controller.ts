@@ -59,6 +59,7 @@ export class Controller implements IController {
     }
 
     public getSnapshot(): SummarySnapshot {
+
         return new SummarySnapshot(
             this.currentControlState.clone(),
             this.environment.getSnapshot(),

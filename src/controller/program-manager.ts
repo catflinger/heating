@@ -58,6 +58,7 @@ export class ProgramManager implements IProgramManager {
                 id = this._config.weekdayProgramId;
                 break;
         }
+
         return this.getProgram(id);
     }
 
@@ -114,7 +115,7 @@ export class ProgramManager implements IProgramManager {
 
         if (idx >= 0) {
             // remove existing program from the program array
-            this._programs = this._programs.splice(idx, 1);
+            this._programs.splice(idx, 1);
 
             // add updated program back in
             this._programs.push(program);
@@ -138,7 +139,7 @@ export class ProgramManager implements IProgramManager {
         // remove from the program array
         const idx = this._programs.findIndex((p) => p.id === id);
         if (idx >= 0) {
-            this._programs = this._programs.splice(idx, 1);
+            this._programs.splice(idx, 1);
         }
 
         this.save();

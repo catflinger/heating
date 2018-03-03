@@ -44,7 +44,7 @@ export class ProgramConfigApi implements IApi {
                 config.weekdayProgramId = req.body.weekdayProgramId;
 
                 if (!this.controller.programManager.configIsValid(config)) {
-                    return res.status(401).send("invalid request");
+                    return res.status(422).send("program config invalid");
                 }
 
             } catch (e) {

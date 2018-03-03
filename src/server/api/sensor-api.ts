@@ -41,7 +41,7 @@ export class SensorApi implements IApi {
         router.get("/sensor/:sensor_id", (req, res, next) => {
             debug("GET: sensor/:sensor_id");
 
-            const programId: string = req.params.program_id;
+            const programId: string = req.params.sensor_id;
 
             try {
                 throw new Error("api not implemented yet!");

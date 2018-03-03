@@ -47,20 +47,14 @@ export class ProgramApi implements IApi {
         router.get("/program/:program_id", (req, res, next) => {
             debug("GET: program:program_id");
 
-            res.header("Cache-Control", "private, no-cache, no-store, must-revalidate");
-            res.header("Expires", "-1");
-            res.header("Pragma", "no-cache");
-
             const programId: string = req.params.program_id;
 
             try {
                 const program: IProgram = this.programManager.getProgram(programId);
 
                 if (program) {
-                    const result: string = JSON.stringify({
-                        program: program.toStorable(),
-                    });
-                    this.utils.dumpTextFile("program.json", result);
+                    const result: any = program.toStorable();
+                    this.utils.dumpTextFile("program.json", JSON.stringify(result));
 
                     return res.json(result);
                 } else {
