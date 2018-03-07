@@ -10,11 +10,11 @@ export class ControllerSettings implements IControllerSettings {
     }
 
     public get programStoreDir(): string {
-        return path.join(__dirname, "data");
+        return path.join(__dirname, "../../../data");
     }
 
     public get debugDir(): string {
-        return path.join(__dirname, "debug");
+        return path.join(__dirname, "../../../debug");
     }
 
     public get boilerPath(): string {

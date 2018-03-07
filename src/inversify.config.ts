@@ -19,16 +19,21 @@ import {
     IOverrideManager,
     IProgram,
     IProgramManager,
+    IProgramStore,
     ISwitchable,
 } from "./controller/types";
 
 import { BasicControlStrategy } from "./controller/basic-control-strategy";
 import { Clock } from "./controller/clock";
 import { Controller } from "./controller/controller";
+import { Boiler } from "./controller/devices/boiler";
+import { CHPump } from "./controller/devices/ch-pump";
+import { HWPump } from "./controller/devices/hw-pump";
 import { Environment } from "./controller/environment";
 import { OverrideManager } from "./controller/override-manager";
 import { Program } from "./controller/program";
 import { ProgramManager } from "./controller/program-manager";
+import { ProgramStore } from "./controller/program-store";
 import { System } from "./controller/system";
 import { ProgramApi } from "./server/api/program-api";
 import { ProgramConfigApi } from "./server/api/program-config-api";
@@ -41,13 +46,8 @@ import { App } from "./server/app";
 
 export const container = new Container();
 
-// server config
-container.bind<IApi>(INJECTABLES.ProgramApi).to(ProgramApi).inSingletonScope();
-container.bind<IApi>(INJECTABLES.ProgramApi).to(ProgramApi).inSingletonScope();
-container.bind<IApi>(INJECTABLES.StatusApi).to(StatusApi).inSingletonScope();
-
 // constants
-container.bind<number>(INJECTABLES.SlotsPerDay).toConstantValue(10);
+container.bind<number>(INJECTABLES.SlotsPerDay).toConstantValue(6 * 24);
 
 // singletons
 container.bind<App>(INJECTABLES.App).to(App).inSingletonScope();
@@ -57,9 +57,13 @@ container.bind<IControllerSettings>(INJECTABLES.ControllerSettings).to(Controlle
 container.bind<IEnvironment>(INJECTABLES.Environment).to(Environment).inSingletonScope();
 container.bind<IEnvironmentSettings>(INJECTABLES.EnvironmentSettings).to(EnvironmentSettings).inSingletonScope();
 container.bind<IProgramManager>(INJECTABLES.ProgramManager).to(ProgramManager).inSingletonScope();
+container.bind<IProgramStore>(INJECTABLES.ProgramStore).to (ProgramStore).inSingletonScope();
 container.bind<IClock>(INJECTABLES.Clock).to(Clock).inSingletonScope();
 container.bind<IControllable>(INJECTABLES.System).to(System).inSingletonScope();
 container.bind<IOverrideManager>(INJECTABLES.OverrideManager).to(OverrideManager).inSingletonScope();
+container.bind<ISwitchable>(INJECTABLES.Boiler).to(Boiler).inSingletonScope();
+container.bind<ISwitchable>(INJECTABLES.CHPump).to(CHPump).inSingletonScope();
+container.bind<ISwitchable>(INJECTABLES.HWPump).to(HWPump).inSingletonScope();
 container.bind<Utils>(INJECTABLES.Utils).to(Utils).inSingletonScope();
 
 // server config

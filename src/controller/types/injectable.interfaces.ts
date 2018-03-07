@@ -31,7 +31,7 @@ export const INJECTABLES = {
     ProgramStore: Symbol("ProgramStore"),
     SensorApi: Symbol("SensorApi"),
     SlotsPerDay: Symbol("SlotsPerDay"),
-    StatusApi: Symbol("statusApi"),
+    StatusApi: Symbol("StatusApi"),
     System: Symbol("System"),
     Utils: Symbol("Utils"),
 };
