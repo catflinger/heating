@@ -43,6 +43,10 @@ export class StatusApi implements IApi {
                             id: "activeProgram",
                             snapshot: snapshot.controller.activeProgram.toStorable(),
                         },
+                        {
+                            id: "overrides",
+                            snapshot: snapshot.controller.overridesToStoreable(),
+                        },
                 ] };
 
                 // send the response
