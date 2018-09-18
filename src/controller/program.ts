@@ -69,7 +69,7 @@ export class Program implements IProgram {
     }
 
     public setHWTemps(min: number, max: number) {
-        if (min > 10 && max > 10 && min < 60 && max < 60 && max - min > 5) {
+        if (min > 10 && max > 10 && min < 60 && max < 60 && max - min >= 5) {
             this._minHwTemp = min;
             this._maxHwTemp = max;
         } else {

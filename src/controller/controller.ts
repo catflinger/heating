@@ -47,13 +47,13 @@ export class Controller implements IController {
     }
 
     public start(): void {
-        this.environment.refresh();
+        this.refresh();
 
         if (this.settings.startPolling) {
-            debug ("starting environment polling...");
+            debug ("starting polling...");
 
             setInterval(() => {
-                this.environment.refresh();
+                this.refresh();
             } , 10000);
         }
     }
@@ -86,8 +86,10 @@ export class Controller implements IController {
         return this._programManager;
     }
 
-    // TO DO TODO : make this private
+    // TO DO : make this private
     public refresh(): void {
+
+        // debug ("polling...");
 
         // move the clock on
         this.clock.tick();
