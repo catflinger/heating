@@ -1,14 +1,10 @@
 import {
     ControlStateSnapshot,
-    DeviceStateSnapshot,
-    EnvironmentSnapshot,
-    IClock,
-    IControllerSettings,
     IControlStrategy,
     INJECTABLES,
     IProgram,
-    SummarySnapshot,
     OverrideSnapshot,
+    SensorSnapshot,
 } from "../../src/controller/types";
 
 import { container } from "./inversify.config.test";
@@ -25,7 +21,22 @@ let program: IProgram = programFactory();
 let clock: MockClock = container.get<MockClock>(INJECTABLES.Clock);
 
 const json: string = '{"id": "id123", "name": "some name or other", "hwmax":50,"hwmin":40,"slots":[true,false,true,false,true,false,false,false,false,false]}';
-program.loadFromJson(json);
+program.loadFromSnapshot(JSON.parse(json));
+
+function runTest(data: any): ControlStateSnapshot {
+    const sensors: SensorSnapshot[] = [];
+
+    for(let s of data.sensors) {
+        sensors.push(new SensorSnapshot(s.id, "", s.reading));
+    }
+    
+    return bcs.calculateControlState(
+        sensors,
+        program.getSnapshot(),
+        new ControlStateSnapshot(data.control.heating, data.control.hotWater),
+        data.overrides
+    );
+}
 
 describe("BasicControlStrategy", () => {
 
@@ -36,42 +47,42 @@ describe("BasicControlStrategy", () => {
         });
 
         it("should heat the water when at startup defaults", () => {
-            let result: ControlStateSnapshot = bcs.calculateControlState(snapshot_Default)
+            let result: ControlStateSnapshot = runTest(snapshot_Default);
             // temp is too low so boiler should be on
             expect(result.hotWater).to.be.true;
             expect(result.heating).to.be.true;
         });
 
         it("should heat the water when cool", () => {
-            let result: ControlStateSnapshot = bcs.calculateControlState(snapshot_Cool)
+            let result: ControlStateSnapshot = runTest(snapshot_Cool)
             // temp is too low so boiler should be on
             expect(result.hotWater).to.be.true;
             expect(result.heating).to.be.true;
         });
 
         it("should heat the water when already warm", () => {
-            let result: ControlStateSnapshot = bcs.calculateControlState(snapshot_BeingHeated)
+            let result: ControlStateSnapshot = runTest(snapshot_BeingHeated)
             // temp is still below upper threshold so boiler should be on
             expect(result.hotWater).to.be.true;
             expect(result.heating).to.be.true;
         });
 
         it("should not heat the water when already hot", () => {
-            let result: ControlStateSnapshot = bcs.calculateControlState(snapshot_FullyHeated)
+            let result: ControlStateSnapshot = runTest(snapshot_FullyHeated)
             // temp is high so boiler should be off
             expect(result.hotWater).to.be.false;
             expect(result.heating).to.be.true;
         });
 
         it("should not heat the water when warm but cooling fom hot", () => {
-            let result: ControlStateSnapshot = bcs.calculateControlState(snapshot_Cooling)
+            let result: ControlStateSnapshot = runTest(snapshot_Cooling)
             // temp is between thresholds on the way down so boiler should be off
             expect(result.hotWater).to.be.false;
             expect(result.heating).to.be.true;
         });
 
         it("should heat the water when cool again", () => {
-            let result: ControlStateSnapshot = bcs.calculateControlState(snapshot_Cool)
+            let result: ControlStateSnapshot = runTest(snapshot_Cool)
             // temp is low again so boiler should be back on
             expect(result.hotWater).to.be.true;
             expect(result.heating).to.be.true;
@@ -81,13 +92,13 @@ describe("BasicControlStrategy", () => {
     describe("when controlling heating", () => {
         before(() => {
             const data: any = {id: "id123", name: "some name or other", "hwmax":50,"hwmin":40,"slots":[true,false,true,false,true,false,false,false,false,false]};
-            program.loadFrom(data);
+            program.loadFromSnapshot(JSON.parse(data));
             clock.setSlotNumber(0);
         });
 
         it("should turn heating on (clock at lower bound)", () => {
             clock.setSlotNumber(0);
-            let result: ControlStateSnapshot = bcs.calculateControlState(snapshot_Cool)
+            let result: ControlStateSnapshot = runTest(snapshot_Cool)
             // temp is low again so boiler should be on
             expect(result.hotWater).to.be.true;
             expect(result.heating).to.be.true;
@@ -96,7 +107,7 @@ describe("BasicControlStrategy", () => {
         it("should turn heating off", () => {
             clock.setSlotNumber(1);
 
-            let result: ControlStateSnapshot = bcs.calculateControlState(snapshot_Cool)
+            let result: ControlStateSnapshot = runTest(snapshot_Cool)
             // temp is low again so boiler should be on
             expect(result.hotWater).to.be.true;
             expect(result.heating).to.be.false;
@@ -104,7 +115,7 @@ describe("BasicControlStrategy", () => {
 
         it("should turn heating off (clock at higher bound)", () => {
             clock.setSlotNumber(9);
-            let result: ControlStateSnapshot = bcs.calculateControlState(snapshot_Cool)
+            let result: ControlStateSnapshot = runTest(snapshot_Cool)
             // temp is low again so boiler should be on
             expect(result.hotWater).to.be.true;
             expect(result.heating).to.be.false;
@@ -114,13 +125,13 @@ describe("BasicControlStrategy", () => {
     describe("when override is present it should", () => {
         before(() => {
             const data: any = {id: "id123", name: "some name or other", "hwmax":50,"hwmin":40,"slots":[true,true,true,true,true,true,false,false,false,false]};
-            program.loadFrom(data);
+            program.loadFromSnapshot(JSON.parse(data));
             clock.setSlotNumber(0);
         });
 
         it("should not override program OFF (clock below lower bound)", () => {
             clock.setSlotNumber(0);
-            let result: ControlStateSnapshot = bcs.calculateControlState(snapshot_Override_OFF)
+            let result: ControlStateSnapshot = runTest(snapshot_Override_OFF)
             // temp is low again so hot water should be on
             expect(result.hotWater).to.be.true;
             expect(result.heating).to.be.true;
@@ -128,7 +139,7 @@ describe("BasicControlStrategy", () => {
 
         it("should override program OFF (clock at lower bound)", () => {
             clock.setSlotNumber(1);
-            let result: ControlStateSnapshot = bcs.calculateControlState(snapshot_Override_OFF)
+            let result: ControlStateSnapshot = runTest(snapshot_Override_OFF)
             // temp is low again so hot water should be on
             expect(result.hotWater).to.be.true;
             expect(result.heating).to.be.false;
@@ -136,7 +147,7 @@ describe("BasicControlStrategy", () => {
 
         it("should override program ON (clock at lower bound)", () => {
             clock.setSlotNumber(1);
-            let result: ControlStateSnapshot = bcs.calculateControlState(snapshot_Override_ON)
+            let result: ControlStateSnapshot = runTest(snapshot_Override_ON)
             // temp is high so hot water should be off
             expect(result.hotWater).to.be.false;
             expect(result.heating).to.be.true;
@@ -144,7 +155,7 @@ describe("BasicControlStrategy", () => {
 
         it("should override program OFF (clock at mid value)", () => {
             clock.setSlotNumber(2);
-            let result: ControlStateSnapshot = bcs.calculateControlState(snapshot_Override_OFF)
+            let result: ControlStateSnapshot = runTest(snapshot_Override_OFF)
             // temp is low again so hot water should be on
             expect(result.hotWater).to.be.true;
             expect(result.heating).to.be.false;
@@ -152,7 +163,7 @@ describe("BasicControlStrategy", () => {
 
         it("should override program OFF (clock at upper bound)", () => {
             clock.setSlotNumber(3);
-            let result: ControlStateSnapshot = bcs.calculateControlState(snapshot_Override_OFF)
+            let result: ControlStateSnapshot = runTest(snapshot_Override_OFF)
             // temp is low again so hot water should be on
             expect(result.hotWater).to.be.true;
             expect(result.heating).to.be.false;
@@ -160,7 +171,7 @@ describe("BasicControlStrategy", () => {
 
         it("should not override program OFF (clock above upper bound)", () => {
             clock.setSlotNumber(4);
-            let result: ControlStateSnapshot = bcs.calculateControlState(snapshot_Override_OFF)
+            let result: ControlStateSnapshot = runTest(snapshot_Override_OFF)
             // temp is low again so hot water should be on
             expect(result.hotWater).to.be.true;
             expect(result.heating).to.be.true;
@@ -181,139 +192,54 @@ const hwTempAboveThreshold = 55;
 const snapshot_Default: any = {
     control: { heating: false, hotWater: false },
     device: { boiler: false, hwPump: false, chPump: false },
-    environment: {
-        getSensor: (id: string) => { 
-            return {
-                id: "hw",
-                reading: hwTempBelowThreshold 
-            }
-        }
-    },
-    controller: {
-        activeProgram: program.getSnapshot(),
-        forEachOverride: function (f: (item: OverrideSnapshot) => void): void {
-            //nothing to do
-        }, 
-    }
+    sensors: [{id: "hw", reading: hwTempBelowThreshold }],
+    overrides: []
 }
 
 // hot water cool
 const snapshot_Cool: any = {
     control: { heating: false, hotWater: true },
     device: { boiler: true, hwPump: true, chPump: false },
-    environment: {
-        getSensor: (id: string) => { 
-            return {
-                id: "hw",
-                reading: hwTempBelowThreshold 
-            }
-        }
-    },
-    controller: {
-        activeProgram: program.getSnapshot(),
-        forEachOverride: function (f: (item: OverrideSnapshot) => void): void {
-            //nothing to do
-        }, 
-    }
+    sensors: [{id: "hw", reading: hwTempBelowThreshold }],
+    overrides: []
 };
 
 // hot water being heated
 const snapshot_BeingHeated: any = {
     control: { heating: false, hotWater: true },
     device: { boiler: true, hwPump: true, chPump: false },
-    environment: {
-        getSensor: (id: string) => { 
-            return {
-                id: "hw",
-                reading: hwTempInsideThreshold 
-            }
-        }
-    },
-    controller: {
-        activeProgram: program.getSnapshot(),
-        forEachOverride: function (f: (item: OverrideSnapshot) => void): void {
-            //nothing to do
-        }, 
-    }
+    sensors: [{id: "hw", reading: hwTempInsideThreshold }],
+    overrides: []
 }
 
 // hot water fully heated
 const snapshot_FullyHeated: any = {
     control: { heating: false, hotWater: false },
     device: { boiler: false, hwPump: false, chPump: false },
-    environment: {
-        getSensor: (id: string) => { 
-            return {
-                id: "hw",
-                reading: hwTempAboveThreshold 
-            }
-        }
-    },
-    controller: {
-        activeProgram: program.getSnapshot(),
-        forEachOverride: function (f: (item: OverrideSnapshot) => void): void {
-            //nothing to do
-        }, 
-    }
+    sensors: [{id: "hw", reading: hwTempAboveThreshold }],
+    overrides: []
 }
 
 // hot water cooling
 const snapshot_Cooling: any = {
     control: { heating: false, hotWater: false },
     device: { boiler: false, hwPump: false, chPump: false },
-    environment: {
-        getSensor: (id: string) => { 
-            return {
-                id: "hw",
-                reading: hwTempInsideThreshold 
-            }
-        }
-    },
-    controller: {
-        activeProgram: program.getSnapshot(),
-        forEachOverride: function (f: (item: OverrideSnapshot) => void): void {
-            //nothing to do
-        }, 
-    }
+    sensors: [{id: "hw", reading: hwTempInsideThreshold }],
+    overrides: []
 }
 
 // override heating ON, hw high
 const snapshot_Override_ON: any = {
     control: { heating: false, hotWater: false },
     device: { boiler: false, hwPump: false, chPump: false },
-    environment: {
-        getSensor: (id: string) => { 
-            return {
-                id: "hw",
-                reading: hwTempAboveThreshold 
-            }
-        }
-    },
-    controller: {
-        activeProgram: program.getSnapshot(),
-
-        forEachOverride: function (f: (item: OverrideSnapshot) => void): void {
-            f(new OverrideSnapshot(1, 3, true, new Date()));
-        }, 
-    }
+    sensors: [{id: "hw", reading: hwTempAboveThreshold }],
+    overrides: [new OverrideSnapshot(1, 3, true, new Date())]
 }
 
 // override heating OFF, hw low
 const snapshot_Override_OFF: any = {
     control: { heating: false, hotWater: false },
     device: { boiler: false, hwPump: false, chPump: false },
-    environment: {
-        getSensor: (id: string) => { 
-            return {
-                id: "hw",
-                reading: hwTempBelowThreshold 
-            }
-        }
-    },
-    controller: {
-        activeProgram: program.getSnapshot(),
-        forEachOverride: function (f: (item: OverrideSnapshot) => void): void {
-            f(new OverrideSnapshot(1, 3, false, new Date()));
-        }, 
-    }
+    sensors: [{id: "hw", reading: hwTempBelowThreshold }],
+    overrides: [new OverrideSnapshot(1, 3, false, new Date())]
 }

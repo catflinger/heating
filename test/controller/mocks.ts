@@ -2,18 +2,15 @@ import { injectable, inject } from "inversify";
 import "reflect-metadata";
 
 import { 
-    EnvironmentSnapshot, 
     IEnvironment, 
-    IControllerSettings, 
     IControlStrategy, 
     IProgram, 
     ISwitchable, 
     ISensor,
-    SummarySnapshot, 
-    ControlStateSnapshot, 
-    DeviceStateSnapshot, 
+    ControlStateSnapshot,
+    OverrideSnapshot,
+    ProgramSnapshot ,
     SensorSnapshot} from "../../src/controller/types";
-import { ProgramSnapshot } from "../../src/controller/snapshots/program-snapshot";
 
 @injectable()
 export class MockControlStrategy implements IControlStrategy {
@@ -21,7 +18,11 @@ export class MockControlStrategy implements IControlStrategy {
     public heating: boolean = false; //mock result, to be set by tests
 
     // returns whatever the test has set in the water and heating members
-    calculateControlState(currentState: SummarySnapshot): ControlStateSnapshot {
+    calculateControlState(       
+        env: SensorSnapshot[],
+        program: ProgramSnapshot,
+        current: ControlStateSnapshot,
+        overrides: OverrideSnapshot[]): ControlStateSnapshot {
         return new ControlStateSnapshot(this.heating, this.water);
     }  
 }
@@ -43,10 +44,10 @@ export class MockEnvironment implements IEnvironment {
         // do nothing
     }
     
-    public getSnapshot(): EnvironmentSnapshot {
+    public getSnapshot(): SensorSnapshot[] {
         const snaps: SensorSnapshot[] = [];
         snaps.push(new SensorSnapshot(this.hwSensor.id, this.hwSensor.description, this.hwSensor.reading));
-        return new EnvironmentSnapshot(snaps);
+        return snaps;
     }
 
     public setHWTemperature(temp: number) {
@@ -79,7 +80,7 @@ export class MockProgram implements IProgram {
     loadDefaults(): void {
         throw new Error("Method not implemented.");
     }
-    loadFrom(): void {
+    loadFromSnapshot(src: ProgramSnapshot): void {
         throw new Error("Method not implemented.");
     }
     loadFromJson(json: string): void {

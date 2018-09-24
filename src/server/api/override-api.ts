@@ -4,7 +4,7 @@ import { inject, injectable } from "inversify";
 
 import { Utils } from "../../common/utils";
 import { Validate } from "../../common/validate";
-import { IApi, IController, INJECTABLES } from "../../controller/types";
+import { IApi, IController, INJECTABLES, IOverrideManager } from "../../controller/types";
 
 const debug = Debug("app");
 
@@ -13,6 +13,9 @@ export class OverrideApi implements IApi {
 
     @inject(INJECTABLES.Controller)
     private controller: IController;
+
+    @inject(INJECTABLES.OverrideManager)
+    private ovManager: IOverrideManager;
 
     @inject(INJECTABLES.Utils)
     private utils: Utils;
@@ -23,7 +26,7 @@ export class OverrideApi implements IApi {
             debug("GET: override");
             try {
                 // define of API response
-                return res.json({ items: this.controller.getSnapshot().controller.overridesToStoreable() });
+                return res.json({ items: this.ovManager.getSnapshot() });
             } catch (e) {
                 return res.status(500).send("could not process this request " + e);
             }

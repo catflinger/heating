@@ -1,9 +1,8 @@
-import { ISnapshot } from "./snapshot";
 
 /**
  * data class to encapsulate control state
  */
-export class ControlStateSnapshot implements ISnapshot<ControlStateSnapshot> {
+export class ControlStateSnapshot {
     private _heating: boolean;
     private _hotWater: boolean;
 

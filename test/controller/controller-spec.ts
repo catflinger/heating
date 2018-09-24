@@ -1,4 +1,4 @@
-import { IController, IEnvironment, IControllerSettings, IProgram, ISwitchable, Sensors, SummarySnapshot, INJECTABLES } from "../../src/controller/types";
+import { IController, IEnvironment, IControllerSettings, IProgram, ISwitchable, Sensors, INJECTABLES, ControlStateSnapshot } from "../../src/controller/types";
 import { Controller } from "../../src/controller/controller";
 import { container } from "./inversify.config.test";
 import { MockEnvironment, MockControlStrategy, MockDevice } from "./mocks";
@@ -40,17 +40,6 @@ describe("controller", () => {
         expect(controller).not.to.be.undefined;
     });
 
-    it("should return summary info", () => {
-        mockEnvironment.setHWTemperature(30);
-        const summary: SummarySnapshot = controller.getSnapshot();
-        expect(summary.control.heating).to.equal(false, "incorrect value for heating state");
-        expect(summary.control.hotWater).to.equal(false, "incorrect value for water state");
-        expect(summary.device.boiler).to.equal(false, "incorrect value for boiler state");
-        expect(summary.device.hwPump).to.equal(false, "incorrect value for hw pump state");
-        expect(summary.device.chPump).to.equal(false, "incorrect value for ch pump state");
-        expect(summary.environment.getSensor("hw").reading).to.equal(hwTempBelowThreshold, "failed to return correct environment");
-        });
-
     it("should not set an override with bad data", () => {       
         expect( () => controller.setOverride(undefined)).to.throw;
         expect( () => controller.setOverride(NaN)).to.throw;
@@ -58,46 +47,41 @@ describe("controller", () => {
     });
 
     it("should correctly map control state to device state", () => {
-        let summary: SummarySnapshot;
         
         //off
         mockStrategy.water = false;
         mockStrategy.heating = false;
         controller.refresh();
-        summary = controller.getSnapshot();
 
-        expect(summary.device.boiler).to.be.false;
-        expect(summary.device.hwPump).to.be.false;
-        expect(summary.device.chPump).to.be.false;
+        expect(boiler.state).to.be.false;
+        expect(hwPump.state).to.be.false;
+        expect(chPump.state).to.be.false;
 
         //hot water only
         mockStrategy.water = true;
         mockStrategy.heating = false;
         controller.refresh();
-        summary = controller.getSnapshot();
 
-        expect(summary.device.boiler).to.be.true;
-        expect(summary.device.hwPump).to.be.true;
-        expect(summary.device.chPump).to.be.false;
+        expect(boiler.state).to.be.true;
+        expect(hwPump.state).to.be.true;
+        expect(chPump.state).to.be.false;
 
         //heating only
         mockStrategy.water = false;
         mockStrategy.heating = true;
         controller.refresh();
-        summary = controller.getSnapshot();
 
-        expect(summary.device.boiler).to.be.true;
-        expect(summary.device.hwPump).to.be.false;
-        expect(summary.device.chPump).to.be.true;
+        expect(boiler.state).to.be.true;
+        expect(hwPump.state).to.be.false;
+        expect(chPump.state).to.be.true;
 
         //both
         mockStrategy.water = true;
         mockStrategy.heating = true;
         controller.refresh();
-        summary = controller.getSnapshot();
 
-        expect(summary.device.boiler).to.be.true;
-        expect(summary.device.hwPump).to.be.true;
-        expect(summary.device.chPump).to.be.true;
+        expect(boiler.state).to.be.true;
+        expect(hwPump.state).to.be.true;
+        expect(chPump.state).to.be.true;
     });
 });

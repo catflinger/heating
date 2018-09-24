@@ -92,16 +92,11 @@ export class ProgramManager implements IProgramManager {
         return this._programs.find((p) => p.id === id).getSnapshot();
     }
 
-    public createProgram(src: any): ProgramSnapshot {
-
-        // check that no id is supplied
-        if (src && src.id) {
-            throw new Error("cannot create new  program specifying specific id value");
-        }
+    public createProgram(src: ProgramSnapshot): ProgramSnapshot {
 
         // create the new program and save it to disk
         const program: IProgram = this.programFactory();
-        program.loadFrom(src);
+        program.loadFromSnapshot(src);
         this._programs.push(program);
 
         this.save();
@@ -109,10 +104,10 @@ export class ProgramManager implements IProgramManager {
         return program.getSnapshot();
     }
 
-    public updateProgram(data: any) {
+    public updateProgram(src: ProgramSnapshot) {
 
         const program: IProgram = this.programFactory();
-        program.loadFrom(data);
+        program.loadFromSnapshot(src);
 
         // check that a program with this id exists
         const idx = this._programs.findIndex((p) => p.id === program.id);

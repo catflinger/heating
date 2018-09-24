@@ -1,15 +1,12 @@
 import { inject, injectable } from "inversify";
 import {
     ControlStateSnapshot,
-    DeviceStateSnapshot,
-    EnvironmentSnapshot,
     IClock,
     IControlStrategy,
     INJECTABLES,
-    IProgram,
     OverrideSnapshot,
+    ProgramSnapshot,
     SensorSnapshot,
-    SummarySnapshot,
 } from "./types";
 
 @injectable()
@@ -18,7 +15,14 @@ export class BasicControlStrategy implements IControlStrategy {
     @inject(INJECTABLES.Clock)
     private clock: IClock;
 
-    public calculateControlState(currentState: SummarySnapshot): ControlStateSnapshot {
+    public calculateControlState(
+        env: SensorSnapshot[],
+        program: ProgramSnapshot,
+        current: ControlStateSnapshot,
+        overrides: OverrideSnapshot[],
+        )
+        : ControlStateSnapshot {
+
         let heating: boolean = false;
         let water: boolean = false;
         const currentSlot: number = this.clock.currentSlot;
@@ -27,19 +31,18 @@ export class BasicControlStrategy implements IControlStrategy {
         // If the temp is too low, keep trying to raise the temmperature.   If the temperature is over the minimum
         // already then keep the boiler on until it is over the maximum.  This hysteresis avoids cycling on/offf around
         // the minimum temp
-        const hwTemperature: number = currentState.environment.getSensor("hw").reading;
+        const hwTemperature: number = env.find((s) => s.id === "hw").reading;
 
-        if (hwTemperature < currentState.controller.activeProgram.minHWTemp ||
-            (hwTemperature < currentState.controller.activeProgram.maxHWTemp &&
-                currentState.control.hotWater)) {
+        if (hwTemperature < program.minHWTemp ||
+            (hwTemperature < program.maxHWTemp && current.hotWater)) {
             water = true;
         }
 
         // now set the heating, simple and straightforward
-        heating = currentState.controller.activeProgram.slots[currentSlot];
+        heating = program.slots[currentSlot];
 
         // if there are any overrides apply them
-        currentState.controller.forEachOverride((ov) => {
+        overrides.forEach((ov) => {
             if (currentSlot >= ov.start && currentSlot < ov.start + ov.duration) {
                 heating = ov.state;
             }

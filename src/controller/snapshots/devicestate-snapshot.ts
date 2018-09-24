@@ -1,9 +1,8 @@
-import { ISnapshot } from "./snapshot";
 
 /**
  * data class to encapsulate device state
  */
-export class DeviceStateSnapshot implements ISnapshot<DeviceStateSnapshot> {
+export class DeviceStateSnapshot {
 
     constructor(
         private _boiler: boolean,

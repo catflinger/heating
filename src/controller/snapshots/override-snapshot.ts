@@ -1,6 +1,5 @@
-import { ISnapshot } from "./snapshot";
 
-export class OverrideSnapshot implements ISnapshot<OverrideSnapshot> {
+export class OverrideSnapshot {
 
     constructor(
         private _start: number,

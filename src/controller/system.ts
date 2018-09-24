@@ -5,7 +5,7 @@ import { Boiler } from "./devices/boiler";
 import { CHPump } from "./devices/ch-pump";
 import { HWPump } from "./devices/hw-pump";
 import { Switchable } from "./switchable";
-import { ControlStateSnapshot, DeviceStateSnapshot, IControllable, IControllerSettings, INJECTABLES, SummarySnapshot } from "./types";
+import { ControlStateSnapshot, DeviceStateSnapshot, IControllable, IControllerSettings, INJECTABLES } from "./types";
 
 @injectable()
 export class System implements IControllable {

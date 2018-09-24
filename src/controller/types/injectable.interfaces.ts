@@ -1,10 +1,5 @@
 import { Router } from "express";
-import { ControlStateSnapshot } from "../snapshots/controlstate-snapshot";
-import { EnvironmentSnapshot } from "../snapshots/environment-snapshot";
-import { OverrideSnapshot } from "../snapshots/override-snapshot";
-import { ProgramSnapshot } from "../snapshots/program-snapshot";
-import { SummarySnapshot } from "../snapshots/summary-snapshot";
-import { DeviceStateSnapshot } from "../types";
+import { ControlStateSnapshot, DeviceStateSnapshot, OverrideSnapshot, ProgramSnapshot, SensorSnapshot } from "../types";
 
 /**
  * Symbolic names for types to be used in IoC injection
@@ -57,8 +52,7 @@ export interface IController {
     // initialses devices and begins polling the environment
     start(): void;
 
-    // provides raw data on state of the heating system and environment
-    getSnapshot(): SummarySnapshot;
+    getSnapshot(): ControlStateSnapshot;
 
     // creates a new override or extends an existing override
     setOverride(duration: number): void;
@@ -81,7 +75,12 @@ export interface IControllable {
  * interface for control strategies
  */
 export interface IControlStrategy {
-    calculateControlState(currentState: SummarySnapshot): ControlStateSnapshot;
+    calculateControlState(
+        env: SensorSnapshot[],
+        program: ProgramSnapshot,
+        current: ControlStateSnapshot,
+        overrides: OverrideSnapshot[],
+    ): ControlStateSnapshot;
 }
 
 /**
@@ -135,9 +134,6 @@ export interface IProgram {
     minHWTemp: number;
     maxHWTemp: number;
 
-    // set the min and max water temperatures as a pair
-    setHWTemps(min: number, max: number): void;
-
     // returns a read-only copy of this program
     getSnapshot(): ProgramSnapshot;
 
@@ -151,16 +147,16 @@ export interface IProgram {
     loadDefaults(): void;
 
     // deserialise from json
-    loadFromJson(json: string): void;
+    // loadFromJson(json: string): void;
 
     // serialise to json
-    toJson(): string;
+    // toJson(): string;
 
     // load form a data object
-    loadFrom(src: any): void;
+    loadFromSnapshot(src: ProgramSnapshot): void;
 
     // return a simple javascript object for storage
-    toStorable(): any;
+    // toStorable(): string;
 }
 
 /**
@@ -181,7 +177,7 @@ export interface IProgramManager {
     listPrograms(): ProgramSnapshot[];
     removeProgram(id: string): void;
     setConfig(config: ProgramConfig): void;
-    updateProgram(program: IProgram): void;
+    updateProgram(program: ProgramSnapshot): void;
 }
 
 export class ProgramConfig {
@@ -237,7 +233,7 @@ export interface ISwitchable {
  */
 export interface IEnvironment {
     // return the current environment readings
-    getSnapshot(): EnvironmentSnapshot;
+    getSnapshot(): SensorSnapshot[];
 
     // refresh the sensor readings
     refresh(): void;

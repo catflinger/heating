@@ -1,7 +1,6 @@
 import { ISensor } from "../types";
-import { ISnapshot } from "./snapshot";
 
-export class SensorSnapshot implements ISnapshot<SensorSnapshot> {
+export class SensorSnapshot {
 
     constructor(
         private _id: string,

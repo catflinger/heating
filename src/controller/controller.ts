@@ -2,13 +2,8 @@ import * as Debug from "debug";
 import { inject, injectable } from "inversify";
 import "reflect-metadata";
 
-import { BasicControlStrategy } from "./basic-control-strategy";
-import { ProgramSnapshot } from "./snapshots/program-snapshot";
-
 import {
     ControlStateSnapshot,
-    DeviceStateSnapshot,
-    EnvironmentSnapshot,
     IClock,
     IControllable,
     IController,
@@ -17,13 +12,8 @@ import {
     IEnvironment,
     INJECTABLES,
     IOverrideManager,
-    IProgram,
     IProgramManager,
-    OverrideSnapshot,
-    SummarySnapshot,
 } from "./types";
-
-import { ControllerSnapshot } from "./snapshots/controller-snapshot";
 
 const debug = Debug("app");
 
@@ -58,15 +48,8 @@ export class Controller implements IController {
         }
     }
 
-    public getSnapshot(): SummarySnapshot {
-
-        return new SummarySnapshot(
-            this.currentControlState.clone(),
-            this.environment.getSnapshot(),
-            this.system.getDeviceState(),
-            new ControllerSnapshot(
-                this.overrideManager.getSnapshot(),
-                this.programManager.currentProgram));
+    public getSnapshot(): ControlStateSnapshot {
+        return this.currentControlState.clone();
     }
 
     // reveal for setOveride
@@ -100,7 +83,11 @@ export class Controller implements IController {
         this.environment.refresh();
 
         // get the new control stat
-        this.currentControlState = this.strategy.calculateControlState(this.getSnapshot());
+        this.currentControlState = this.strategy.calculateControlState(
+            this.environment.getSnapshot(),
+            this.programManager.currentProgram,
+            this.currentControlState,
+            this.overrideManager.getSnapshot());
 
         // apply it to the system
         this.system.applyControlState(this.currentControlState.clone());

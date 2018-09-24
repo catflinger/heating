@@ -27,14 +27,7 @@ export class ProgramApi implements IApi {
             debug("GET: programs");
 
             try {
-                const programs: any[] = [];
-
-                // make a list of program data to return
-                this.controller.programManager.listPrograms().forEach((p: ProgramSnapshot) => {
-                    programs.push(p.toStorable());
-                });
-
-                const result = { items: programs };
+                const result = { items: this.controller.programManager.listPrograms() };
 
                 this.utils.dumpTextFile("programs.json", JSON.stringify(result));
                 res.json(result);
@@ -53,10 +46,9 @@ export class ProgramApi implements IApi {
                 const program: ProgramSnapshot = this.controller.programManager.getProgram(programId);
 
                 if (program) {
-                    const result: any = program.toStorable();
-                    this.utils.dumpTextFile("program.json", JSON.stringify(result));
+                    this.utils.dumpTextFile("program.json", JSON.stringify(program));
 
-                    return res.json(result);
+                    return res.json(program);
                 } else {
                     return res.status(404).send("program not found");
                 }
@@ -82,7 +74,7 @@ export class ProgramApi implements IApi {
 
             try {
                 const program = this.controller.programManager.createProgram(req.body);
-                return res.json(program.toStorable());
+                return res.json(program);
             } catch (e) {
                 debug("PUT ERROR: " + e);
                 return res.status(500).send("could not process this request " + e);

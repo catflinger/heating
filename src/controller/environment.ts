@@ -2,7 +2,7 @@ import { readFileSync } from "fs";
 import { inject, injectable } from "inversify";
 
 import { Sensor } from "./sensor";
-import { EnvironmentSnapshot, IEnvironment, IEnvironmentSettings, INJECTABLES, ISensor, SensorSnapshot } from "./types";
+import { IEnvironment, IEnvironmentSettings, INJECTABLES, ISensor, SensorSnapshot } from "./types";
 
 @injectable()
 export class Environment implements IEnvironment {
@@ -15,12 +15,12 @@ export class Environment implements IEnvironment {
         });
     }
 
-    public getSnapshot(): EnvironmentSnapshot {
+    public getSnapshot(): SensorSnapshot[] {
         const snaps: SensorSnapshot[] = [];
         this.sensors.forEach((s) =>
             snaps.push(new SensorSnapshot(s.id, s.description, s.reading)));
 
-        return new EnvironmentSnapshot(snaps);
+        return snaps;
     }
 
     public refresh(): void {

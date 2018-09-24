@@ -8,7 +8,6 @@ import { ProgramConfigApi } from "./api/program-config-api";
 import { StatusApi } from "./api/status-api";
 
 import { Controller } from "../controller/controller";
-import { SummarySnapshot } from "../controller/snapshots/summary-snapshot";
 import { IApi, IController, INJECTABLES } from "../controller/types";
 
 const debug = Debug("app");

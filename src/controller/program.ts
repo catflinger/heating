@@ -37,7 +37,7 @@ export class Program implements IProgram {
     }
 
     public getSnapshot(): ProgramSnapshot {
-        return new ProgramSnapshot(this._id, this._name, this._minHWTemp, this._maxHWTemp, this._slots, this.slotsPerDay);
+        return new ProgramSnapshot(this._id, this._name, this._minHWTemp, this._maxHWTemp, this._slots);
     }
 
     public get minHWTemp(): number {
@@ -68,15 +68,6 @@ export class Program implements IProgram {
         return this._slots;
     }
 
-    public setHWTemps(min: number, max: number) {
-        if (min > 10 && max > 10 && min < 60 && max < 60 && max - min >= 5) {
-            this._minHWTemp = min;
-            this._maxHWTemp = max;
-        } else {
-            throw new Error("HW temperature value out of range");
-        }
-    }
-
     public setRange(state: boolean[], from: number, to: number): void {
 
         this.validateSlotNumber(from, to);
@@ -103,71 +94,17 @@ export class Program implements IProgram {
         }
     }
 
-    public loadFromJson(json: string) {
-
-        if (!json || typeof json !== "string") {
-            throw new Error("Missing source string loading json.");
+    public loadFromSnapshot(src: ProgramSnapshot) {
+        if (src.id) {
+            this._id = src.id;
         }
-
-        const data = JSON.parse(json);
-        this.loadFrom(data);
-    }
-
-    public loadFrom(src: any): void {
-
-        if (typeof src !== "object") {
-            throw new Error("Missing source string loading json.");
-        }
-
-        // first validate the input string
-        if (!src) {
-            throw new Error("Missing source data loading program.");
-        }
-
-        if ((typeof src.hwmax !== "number") ||
-            (typeof src.hwmin !== "number")) {
-            throw new Error(`hwmax or hwmin not numeric loading program. [${typeof src.hwmax}] [${typeof src.hwmin}]`);
-        }
-        if (!Array.isArray(src.slots)) {
-            throw new Error("slot array missing from source data loading program.");
-        }
-
-        if (src.slots.length !== this.slotsPerDay) {
-            throw new Error("slot array wrong length in source data loading program.");
-        }
-
-        for (const slot of src.slots) {
-            if (typeof slot !== "boolean") {
-                throw new Error("slot array must contain booleans in source data loading program.");
-            }
-        }
-
-        // source data looks OK so load it
-        this.setHWTemps(src.hwmin, src.hwmax);
-
-        // if id is present and a string use it, otherwise create a new one
-        this._id = src.id && typeof src.id === "string" ? src.id : guid();
-
-        // name is optional
-        this._name = (src.name && typeof src.name === "string") ? src.name : "not named";
+        this._maxHWTemp = src.maxHWTemp;
+        this._minHWTemp = src.minHWTemp;
+        this._name = src.name;
 
         for (let i: number = 0; i < src.slots.length; i++) {
             this._slots[i] = src.slots[i];
         }
-    }
-
-    public toStorable(): any {
-        return {
-            hwmax: this.maxHWTemp,
-            hwmin: this.minHWTemp,
-            id: this._id,
-            name: this._name,
-            slots: this._slots,
-        };
-    }
-
-    public toJson(): string {
-        return JSON.stringify(this.toStorable());
     }
 
     private validateSlotNumber(...args: number[]) {

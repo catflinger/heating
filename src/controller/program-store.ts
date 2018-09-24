@@ -2,7 +2,7 @@ import * as fs from "fs";
 import { inject, injectable } from "inversify";
 import * as path from "path";
 
-import { IClock, IControllerSettings, INJECTABLES, IProgram, IProgramStore, ProgramConfig, ProgramMode } from "./types";
+import { IClock, IControllerSettings, INJECTABLES, IProgram, IProgramStore, ProgramConfig, ProgramSnapshot } from "./types";
 
 @injectable()
 export class ProgramStore implements IProgramStore {
@@ -62,8 +62,9 @@ export class ProgramStore implements IProgramStore {
             if (f.endsWith(this._ext)) {
                 const id = f.substr(0, f.length - this._ext.length);
                 const program = this.programFactory();
-                program.loadFromJson(
-                    fs.readFileSync(this.makeProgramPath(id), "utf-8"));
+                const json: string = fs.readFileSync(this.makeProgramPath(id), "utf-8");
+                const snap = ProgramSnapshot.fromJson(json);
+                program.loadFromSnapshot(snap);
                 result.push(program);
             }
         });
@@ -93,7 +94,7 @@ export class ProgramStore implements IProgramStore {
 
         // write the updated programs
         programs.forEach((p) => {
-            fs.writeFileSync(this.makeProgramPath(p.id), p.toJson());
+            fs.writeFileSync(this.makeProgramPath(p.id), JSON.stringify(p.getSnapshot()));
         });
     }
 

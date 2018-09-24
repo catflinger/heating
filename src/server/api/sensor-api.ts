@@ -27,7 +27,7 @@ export class SensorApi implements IApi {
 
             try {
                 const result = {
-                    items: this.environment.getSnapshot().sensorsToStoreable(),
+                    items: this.environment.getSnapshot(),
                 };
 
                 this.utils.dumpTextFile("sensors.json", JSON.stringify(result));

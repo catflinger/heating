@@ -3,7 +3,7 @@ import { Router } from "express";
 import { inject, injectable } from "inversify";
 
 import { Utils } from "../../common/utils";
-import { IApi, IController, INJECTABLES, SummarySnapshot } from "../../controller/types";
+import { IApi, IController, INJECTABLES, IOverrideManager, IProgramManager, ISwitchable } from "../../controller/types";
 
 const debug = Debug("app");
 
@@ -12,6 +12,21 @@ export class StatusApi implements IApi {
 
     @inject(INJECTABLES.Controller)
     private controller: IController;
+
+    @inject(INJECTABLES.ProgramManager)
+    private programManager: IProgramManager;
+
+    @inject(INJECTABLES.OverrideManager)
+    private ovManager: IOverrideManager;
+
+    @inject (INJECTABLES.Boiler)
+    private boiler: ISwitchable;
+
+    @inject (INJECTABLES.CHPump)
+    private chPump: ISwitchable;
+
+    @inject (INJECTABLES.HWPump)
+    private hwPump: ISwitchable;
 
     @inject(INJECTABLES.Utils)
     private utils: Utils;
@@ -26,26 +41,28 @@ export class StatusApi implements IApi {
             res.header("Pragma", "no-cache");
 
             try {
-                const snapshot: SummarySnapshot = this.controller.getSnapshot();
-
                 // define of API response as a wrapped array
                 const result: any = {
                     items: [
                         {
                             id: "control",
-                            snapshot: snapshot.control.toStorable(),
+                            snapshot: this.controller.getSnapshot(),
                         },
                         {
                             id: "device",
-                            snapshot: snapshot.device.toStorable(),
+                            snapshot: {
+                                boiler: this.boiler.state,
+                                chPump: this.chPump.state,
+                                hwPump: this.hwPump.state,
+                            },
                         },
                         {
                             id: "activeProgram",
-                            snapshot: snapshot.controller.activeProgram.toStorable(),
+                            snapshot: this.programManager.currentProgram,
                         },
                         {
                             id: "overrides",
-                            snapshot: snapshot.controller.overridesToStoreable(),
+                            snapshot: this.ovManager.getSnapshot(),
                         },
                 ] };
 
@@ -60,19 +77,37 @@ export class StatusApi implements IApi {
         });
 
         router.get("/status/control", (req, res, next) => {
-            this.sendGetResponse(this.controlResponse, req, res, next);
+            this.sendGetResponse(this.controller.getSnapshot(), req, res, next);
         });
 
         router.get("/status/device", (req, res, next) => {
-            this.sendGetResponse(this.deviceResponse, req, res, next);
+            this.sendGetResponse(
+                {
+                    id: "device",
+                    snapshot: {
+                        boiler: this.boiler.state,
+                        chPump: this.chPump.state,
+                        hwPump: this.hwPump.state,
+                    },
+                },
+                req,
+                res,
+                next);
         });
 
         router.get("/status/activeProgram", (req, res, next) => {
-            this.sendGetResponse(this.activeProgramResponse, req, res, next);
+            this.sendGetResponse(
+                {
+                    id: "activeProgram",
+                    snapshot: this.programManager.currentProgram,
+                },
+                req,
+                res,
+                next);
         });
     }
 
-    private sendGetResponse(write: (snapshot: SummarySnapshot) => any, req: any, res: any, next: any): void {
+    private sendGetResponse(result: any, req: any, res: any, next: any): void {
         debug("GET: system status");
 
         res.header("Cache-Control", "private, no-cache, no-store, must-revalidate");
@@ -80,29 +115,12 @@ export class StatusApi implements IApi {
         res.header("Pragma", "no-cache");
 
         try {
-            const snapshot: SummarySnapshot = this.controller.getSnapshot();
-
-            // define of API response as a plain object
-            const result = write(snapshot);
-
             // send the response
-            this.utils.dumpTextFile("status.json", result);
+            this.utils.dumpTextFile("status.json", JSON.stringify(result));
             return res.json(result);
 
         } catch (e) {
             return res.status(500).send("could not process this request " + e);
         }
-    }
-
-    private controlResponse(snapshot: SummarySnapshot): any {
-        return snapshot.control.toStorable();
-    }
-
-    private deviceResponse(snapshot: SummarySnapshot): any {
-        return snapshot.device.toStorable();
-    }
-
-    private activeProgramResponse(snapshot: SummarySnapshot): any {
-        return snapshot.controller.activeProgram.toStorable();
     }
 }
