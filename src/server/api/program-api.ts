@@ -5,9 +5,9 @@ import { inject, injectable } from "inversify";
 import { Utils } from "../../common/utils";
 import {
     IApi,
+    IController,
     INJECTABLES,
-    IProgram,
-    IProgramManager,
+    ProgramSnapshot,
 } from "../../controller/types";
 
 const debug = Debug("app");
@@ -15,8 +15,8 @@ const debug = Debug("app");
 @injectable()
 export class ProgramApi implements IApi {
 
-    @inject(INJECTABLES.ProgramManager)
-    private programManager: IProgramManager;
+    @inject(INJECTABLES.Controller)
+    private controller: IController;
 
     @inject(INJECTABLES.Utils)
     private utils: Utils;
@@ -30,7 +30,7 @@ export class ProgramApi implements IApi {
                 const programs: any[] = [];
 
                 // make a list of program data to return
-                this.programManager.listPrograms().forEach((p) => {
+                this.controller.programManager.listPrograms().forEach((p: ProgramSnapshot) => {
                     programs.push(p.toStorable());
                 });
 
@@ -50,7 +50,7 @@ export class ProgramApi implements IApi {
             const programId: string = req.params.program_id;
 
             try {
-                const program: IProgram = this.programManager.getProgram(programId);
+                const program: ProgramSnapshot = this.controller.programManager.getProgram(programId);
 
                 if (program) {
                     const result: any = program.toStorable();
@@ -70,7 +70,7 @@ export class ProgramApi implements IApi {
             debug("POST: program");
 
             try {
-                this.programManager.updateProgram(req.body);
+                this.controller.programManager.updateProgram(req.body);
                 return res.json({result: true});
             } catch (e) {
                 return res.status(500).send("could not process this request " + e);
@@ -81,7 +81,7 @@ export class ProgramApi implements IApi {
             debug("PUT: program");
 
             try {
-                const program = this.programManager.createProgram(req.body);
+                const program = this.controller.programManager.createProgram(req.body);
                 return res.json(program.toStorable());
             } catch (e) {
                 debug("PUT ERROR: " + e);
@@ -95,7 +95,7 @@ export class ProgramApi implements IApi {
             const id: string = req.params.program_id;
 
             try {
-                this.programManager.removeProgram(id);
+                this.controller.programManager.removeProgram(id);
                 return res.json({result: true});
             } catch (e) {
                 return res.status(500).send("could not process this request " + e);

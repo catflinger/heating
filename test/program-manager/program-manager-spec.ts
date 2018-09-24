@@ -1,7 +1,6 @@
 
-import { IControllerSettings, IProgram, IProgramManager, INJECTABLES } from "../../src/controller/types";
-import { Program } from "../../src/controller/program";
-import { ProgramManager } from "../../src/controller/program-manager";
+import { IControllerSettings, IProgramManager, INJECTABLES } from "../../src/controller/types";
+import { ProgramSnapshot } from "../../src/controller/snapshots/program-snapshot";
 import { container } from "./inversify.config.test";
 import * as fs from "fs";
 import * as Path from "path";
@@ -73,7 +72,7 @@ describe("program-manager", () => {
 
         it("should create a new program", () => {
             const data = { "name": "some name or other", "hwmax": 50, "hwmin": 40, "slots": [true, false, true, false, true, false, false, false, false, false] };
-            let newProg: IProgram = programManager.createProgram(data);
+            let newProg: ProgramSnapshot = programManager.createProgram(data);
             expect(typeof newProg.id).to.equal("string");
             expect(newProg.id.length).to.equal(36);
 
@@ -83,7 +82,7 @@ describe("program-manager", () => {
 
         it("should create a new program when data contains an empty id", () => {
             const data = { "id": "", "name": "some name or other", "hwmax": 50, "hwmin": 40, "slots": [true, false, true, false, true, false, false, false, false, false] };
-            let newProg: IProgram = programManager.createProgram(data);
+            let newProg: ProgramSnapshot = programManager.createProgram(data);
             expect(typeof newProg.id).to.equal("string");
             expect(newProg.id.length).to.equal(36);
         });
@@ -104,7 +103,7 @@ describe("program-manager", () => {
             programManager = container.get<IProgramManager>(INJECTABLES.ProgramManager);
             programManager.init();
 
-            let programs: IProgram[] = programManager.listPrograms();
+            let programs: ProgramSnapshot[] = programManager.listPrograms();
 
             // the tests above should have created 3 programs in total
             expect(programs.length).to.equal(3);

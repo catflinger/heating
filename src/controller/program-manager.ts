@@ -39,11 +39,15 @@ export class ProgramManager implements IProgramManager {
         }
     }
 
-    public listPrograms(): IProgram[] {
-        return this._programs;
+    public listPrograms(): ProgramSnapshot[] {
+        const result: ProgramSnapshot[] = [];
+        this._programs.forEach((p: IProgram) => {
+            result.push(p.getSnapshot());
+        });
+        return result;
     }
 
-    get currentProgram(): IProgram {
+    get currentProgram(): ProgramSnapshot {
         let id: string;
 
         // find the date and choose the right program
@@ -84,11 +88,11 @@ export class ProgramManager implements IProgramManager {
         this.save();
     }
 
-    public getProgram(id: string): IProgram {
-        return this._programs.find((p) => p.id === id);
+    public getProgram(id: string): ProgramSnapshot {
+        return this._programs.find((p) => p.id === id).getSnapshot();
     }
 
-    public createProgram(src: any): IProgram {
+    public createProgram(src: any): ProgramSnapshot {
 
         // check that no id is supplied
         if (src && src.id) {
@@ -102,7 +106,7 @@ export class ProgramManager implements IProgramManager {
 
         this.save();
 
-        return program;
+        return program.getSnapshot();
     }
 
     public updateProgram(data: any) {

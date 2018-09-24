@@ -19,8 +19,8 @@
    "id": "activeProgram",
    "snapshot": {
     "id": "bfaeeac0-d53d-4b07-ac64-9f67491c5cdb",
-    "maxHwTemp": 49,
-    "minHwTemp": 42,
+    "maxHWTemp": 49,
+    "minHWTemp": 42,
     "name": "Saturdays",
     "slotArray": [
      false,

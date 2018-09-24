@@ -19,8 +19,8 @@ export class Program implements IProgram {
     private _slots: boolean[] = [];
 
     // threshold value for hot water
-    private _minHwTemp: number;
-    private _maxHwTemp: number;
+    private _minHWTemp: number;
+    private _maxHWTemp: number;
 
     constructor(@inject(INJECTABLES.SlotsPerDay) protected slotsPerDay: number) {
         this.loadDefaults();
@@ -37,15 +37,15 @@ export class Program implements IProgram {
     }
 
     public getSnapshot(): ProgramSnapshot {
-        return new ProgramSnapshot(this._id, this._name, this._minHwTemp, this._maxHwTemp, this._slots, this.slotsPerDay);
+        return new ProgramSnapshot(this._id, this._name, this._minHWTemp, this._maxHWTemp, this._slots, this.slotsPerDay);
     }
 
     public get minHWTemp(): number {
-        return this._minHwTemp;
+        return this._minHWTemp;
     }
 
     public get maxHWTemp(): number {
-        return this._maxHwTemp;
+        return this._maxHWTemp;
     }
 
     public get id(): string {
@@ -70,8 +70,8 @@ export class Program implements IProgram {
 
     public setHWTemps(min: number, max: number) {
         if (min > 10 && max > 10 && min < 60 && max < 60 && max - min >= 5) {
-            this._minHwTemp = min;
-            this._maxHwTemp = max;
+            this._minHWTemp = min;
+            this._maxHWTemp = max;
         } else {
             throw new Error("HW temperature value out of range");
         }
@@ -92,8 +92,8 @@ export class Program implements IProgram {
 
     public loadDefaults() {
         // set default values for hot water
-        this._maxHwTemp = 50;
-        this._minHwTemp = 40;
+        this._maxHWTemp = 50;
+        this._minHWTemp = 40;
         this._name = "default";
         this._id = guid();
 

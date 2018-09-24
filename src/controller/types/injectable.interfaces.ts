@@ -51,7 +51,7 @@ export interface IApi {
  */
 export interface IController {
 
-    // TO DO: get rid of this we shouldn't need it
+    // stores and retrieves programs
     programManager: IProgramManager;
 
     // initialses devices and begins polling the environment
@@ -171,14 +171,14 @@ export interface IProgramManager {
     // saturdayProgram: IProgram;
     // sundayProgram: IProgram;
     // weekdayProgram: IProgram;
-    currentProgram: IProgram;
+    currentProgram: ProgramSnapshot;
 
     configIsValid(config: ProgramConfig): boolean;
-    createProgram(src: any): IProgram;
-    getProgram(id: string): IProgram;
+    createProgram(src: any): ProgramSnapshot;
+    getProgram(id: string): ProgramSnapshot;
     getConfig(): ProgramConfig;
     init(): void;
-    listPrograms(): IProgram[];
+    listPrograms(): ProgramSnapshot[];
     removeProgram(id: string): void;
     setConfig(config: ProgramConfig): void;
     updateProgram(program: IProgram): void;

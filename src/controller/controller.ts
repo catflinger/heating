@@ -66,7 +66,7 @@ export class Controller implements IController {
             this.system.getDeviceState(),
             new ControllerSnapshot(
                 this.overrideManager.getSnapshot(),
-                this.programManager.currentProgram.getSnapshot()));
+                this.programManager.currentProgram));
     }
 
     // reveal for setOveride

@@ -5,8 +5,8 @@ export class ProgramSnapshot implements ISnapshot<ProgramSnapshot> {
     constructor(
         private _id: string,
         private _name: string,
-        private _minHwTemp: number,
-        private _maxHwTemp: number,
+        private _minHWTemp: number,
+        private _maxHWTemp: number,
         private _slots: boolean[],
         private _slotsPerDay: number) {
     }
@@ -19,12 +19,12 @@ export class ProgramSnapshot implements ISnapshot<ProgramSnapshot> {
         return this._name;
     }
 
-    public get minHwTemp(): number {
-        return this._minHwTemp;
+    public get minHWTemp(): number {
+        return this._minHWTemp;
     }
 
-    public get maxHwTemp(): number {
-        return this._maxHwTemp;
+    public get maxHWTemp(): number {
+        return this._maxHWTemp;
     }
 
     public get slots(): boolean[] {
@@ -42,8 +42,8 @@ export class ProgramSnapshot implements ISnapshot<ProgramSnapshot> {
         return new ProgramSnapshot(
             this._id,
             this._name,
-            this._minHwTemp,
-            this._maxHwTemp,
+            this._minHWTemp,
+            this._maxHWTemp,
             slotArray,
             this._slotsPerDay);
     }
@@ -54,8 +54,8 @@ export class ProgramSnapshot implements ISnapshot<ProgramSnapshot> {
 
         return {
             id: this._id,
-            maxHwTemp: this._maxHwTemp,
-            minHwTemp: this._minHwTemp,
+            maxHWTemp: this._maxHWTemp,
+            minHWTemp: this._minHWTemp,
             name: this._name,
             slotArray,
             slotsPerDay: this._slotsPerDay,

@@ -29,8 +29,8 @@ export class BasicControlStrategy implements IControlStrategy {
         // the minimum temp
         const hwTemperature: number = currentState.environment.getSensor("hw").reading;
 
-        if (hwTemperature < currentState.controller.activeProgram.minHwTemp ||
-            (hwTemperature < currentState.controller.activeProgram.maxHwTemp &&
+        if (hwTemperature < currentState.controller.activeProgram.minHWTemp ||
+            (hwTemperature < currentState.controller.activeProgram.maxHWTemp &&
                 currentState.control.hotWater)) {
             water = true;
         }
