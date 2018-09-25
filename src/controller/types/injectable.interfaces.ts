@@ -167,7 +167,7 @@ export interface IProgramManager {
     // saturdayProgram: IProgram;
     // sundayProgram: IProgram;
     // weekdayProgram: IProgram;
-    currentProgram: ProgramSnapshot;
+    getCurrentProgram(): ProgramSnapshot;
 
     configIsValid(config: ProgramConfig): boolean;
     createProgram(src: any): ProgramSnapshot;

@@ -6,6 +6,7 @@ import * as moment from "moment";
 
 import * as chai from "chai";
 import "mocha";
+import { Moment } from "moment";
 const expect = chai.expect;
 
 let clock: MockClock = container.get<MockClock>(INJECTABLES.Clock);
@@ -32,10 +33,11 @@ describe("Clock", () => {
     });
 
     it("should test a date is for yesterday", () => {
-        let soon: Date = moment().subtract(1, "days").toDate();
+        let yesterday: moment.Moment = moment();
+        yesterday.subtract(1, "days");
 
-        expect(clock.isToday(soon)).to.be.false;
-        expect(clock.isYesterday(soon)).to.be.true;
+        expect(clock.isToday(yesterday.toDate())).to.be.false;
+        expect(clock.isYesterday(yesterday.toDate())).to.be.true;
     });
 
 });

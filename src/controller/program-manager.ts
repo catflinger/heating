@@ -47,7 +47,7 @@ export class ProgramManager implements IProgramManager {
         return result;
     }
 
-    get currentProgram(): ProgramSnapshot {
+    public getCurrentProgram(): ProgramSnapshot {
         let id: string;
 
         // find the date and choose the right program

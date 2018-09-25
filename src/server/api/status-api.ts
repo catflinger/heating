@@ -6,6 +6,7 @@ import { Utils } from "../../common/utils";
 import {
     ControlStateSnapshot,
     IApi,
+    IClock,
     IController,
     IEnvironment,
     INJECTABLES,
@@ -43,6 +44,12 @@ export class StatusApi implements IApi {
     @inject(INJECTABLES.Environment)
     private env: IEnvironment;
 
+    @inject(INJECTABLES.SlotsPerDay)
+    private slotsPerDay: number;
+
+    @inject(INJECTABLES.Clock)
+    private clock: IClock;
+
     public addRoutes(router: Router): void {
 
         router.get("/status", (req, res, next) => {
@@ -75,7 +82,7 @@ export class StatusApi implements IApi {
                         },
                         {
                             id: "activeProgram",
-                            snapshot: JSON.parse(this.programManager.currentProgram.toJson()),
+                            snapshot: this.programManager.getCurrentProgram(),
                         },
                         {
                             id: "overrides",
@@ -85,7 +92,13 @@ export class StatusApi implements IApi {
                             id: "env",
                             snapshot: this.env.getSnapshot(),
                         },
-                ] };
+                    ],
+                    setup: {
+                        currentSlot: this.clock.currentSlot,
+                        datetime: Date.now(),
+                        slotsPerDay: this.slotsPerDay,
+                    },
+                };
 
                 // send the response
                 this.utils.dumpTextFile("status.json", JSON.stringify(result, null, 1));
@@ -120,7 +133,7 @@ export class StatusApi implements IApi {
             this.sendGetResponse(
                 {
                     id: "activeProgram",
-                    snapshot: this.programManager.currentProgram,
+                    snapshot: this.programManager.getCurrentProgram(),
                 },
                 req,
                 res,

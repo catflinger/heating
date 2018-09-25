@@ -6,35 +6,39 @@ import { IClock, IControllerSettings, INJECTABLES } from "./types";
 @injectable()
 export class Clock implements IClock {
 
-    protected now: Date = new Date();
+    protected now: moment.Moment = moment();
 
     @inject(INJECTABLES.SlotsPerDay)
     protected slotsPerDay: number;
 
+    constructor() {
+        this.now = moment();
+    }
+
     public get currentSlot(): number {
-        const minutesElapsed: number = this.now.getHours() * 60 + this.now.getMinutes();
+        const minutesElapsed: number = this.now.hour() * 60 + this.now.minute();
 
         return Math.floor(minutesElapsed / this.minutesPerSlot());
     }
 
     public getDate(): Date {
-        return new Date(this.now);
+        return this.now.toDate();
     }
 
     public tick(): void {
-        this.now = new Date();
+        this.now = moment();
     }
 
     public isToday(date: Date): boolean {
-        return moment(this.now).isSame(date, "day");
+        return this.now.isSame(date, "day");
     }
 
     public get dayOfWeek(): number {
-        return moment(this.now).isoWeekday();
+        return this.now.isoWeekday();
     }
 
     public isYesterday(date: Date): boolean {
-        const yesterday = moment(this.now).subtract(1, "day");
+        const yesterday = this.now.clone().subtract(1, "day");
         return yesterday.isSame(date, "day");
     }
 

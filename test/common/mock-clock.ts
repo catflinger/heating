@@ -9,15 +9,13 @@ export class MockClock extends Clock {
     @inject(INJECTABLES.SlotsPerDay) protected slotsPerDay: number;
 
     public setSlotNumber(slot: number) {
-        this.now = moment(this.now)
+        this.now = this.now
             .startOf("day")
-            .add(slot * 24 * 60 / this.slotsPerDay, "minutes")
-            .toDate();
+            .add(slot * 24 * 60 / this.slotsPerDay, "minutes");
     }
 
     public addSlots(duration: number) {
-        this.now = moment(this.now)
-            .add(duration * 24 * 60 / this.slotsPerDay, "minutes")
-            .toDate();
+        this.now = this.now
+            .add(duration * 24 * 60 / this.slotsPerDay, "minutes");
     }
 }

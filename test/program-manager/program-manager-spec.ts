@@ -41,10 +41,10 @@ describe("program-manager", () => {
 
             // expect the default program to be loaded and active
             expect(programManager).not.to.be.undefined;
-            expect(programManager.currentProgram).not.to.be.undefined;
-            expect(programManager.currentProgram.maxHWTemp).equals(maxHWTemp);
+            expect(programManager.getCurrentProgram()).not.to.be.undefined;
+            expect(programManager.getCurrentProgram().maxHWTemp).equals(maxHWTemp);
 
-            lastProgramId = programManager.currentProgram.id;
+            lastProgramId = programManager.getCurrentProgram().id;
 
             // expect the new program so be saved
             expect(fs.existsSync(getProgramPath(lastProgramId))).to.be.true;
@@ -63,11 +63,11 @@ describe("program-manager", () => {
 
             // expect the default program to be loaded and active
             expect(programManager).not.to.be.undefined;
-            expect(programManager.currentProgram).not.to.be.undefined;
-            expect(programManager.currentProgram.maxHWTemp).equals(maxHWTemp);
+            expect(programManager.getCurrentProgram()).not.to.be.undefined;
+            expect(programManager.getCurrentProgram().maxHWTemp).equals(maxHWTemp);
 
             // expect it to have the same id as last time
-            expect(programManager.currentProgram.id).to.equal(lastProgramId);
+            expect(programManager.getCurrentProgram().id).to.equal(lastProgramId);
         });
 
         it("should create a new program", () => {

@@ -83,7 +83,7 @@ export class Controller implements IController {
         // get the new control stat
         this._currentControlState = this.strategy.calculateControlState(
             this.environment.getSnapshot(),
-            this.programManager.currentProgram,
+            this.programManager.getCurrentProgram(),
             this.getSnapshot(),
             this.overrideManager.getSnapshot());
 
