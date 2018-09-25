@@ -25,14 +25,10 @@ export class ControlStateSnapshot {
         return this._hotWater;
     }
 
-    public toStorable(): any {
-        return {
+    public toJson(): string {
+        return JSON.stringify({
             heating: this._heating,
             hotWater: this._hotWater,
-        };
-    }
-
-    public toJson(): string {
-        return JSON.stringify(this.toStorable());
+        });
     }
 }

@@ -21,7 +21,7 @@ const debug = Debug("app");
 export class Controller implements IController {
 
     // stores the control state: eg heating OFF hot water ON
-    private currentControlState: ControlStateSnapshot;
+    private _currentControlState: ControlStateSnapshot;
 
     constructor(
         @inject(INJECTABLES.ControlStrategy) private strategy: IControlStrategy,
@@ -33,7 +33,7 @@ export class Controller implements IController {
         @inject(INJECTABLES.System) private system: IControllable) {
 
         this.programManager.init();
-        this.currentControlState = new ControlStateSnapshot(false, false);
+        this._currentControlState = new ControlStateSnapshot(false, false);
     }
 
     public start(): void {
@@ -49,7 +49,7 @@ export class Controller implements IController {
     }
 
     public getSnapshot(): ControlStateSnapshot {
-        return this.currentControlState.clone();
+        return this._currentControlState.clone();
     }
 
     // reveal for setOveride
@@ -72,8 +72,6 @@ export class Controller implements IController {
     // TO DO : make this private
     public refresh(): void {
 
-        // debug ("polling...");
-
         // move the clock on
         this.clock.tick();
 
@@ -83,13 +81,13 @@ export class Controller implements IController {
         this.environment.refresh();
 
         // get the new control stat
-        this.currentControlState = this.strategy.calculateControlState(
+        this._currentControlState = this.strategy.calculateControlState(
             this.environment.getSnapshot(),
             this.programManager.currentProgram,
-            this.currentControlState,
+            this.getSnapshot(),
             this.overrideManager.getSnapshot());
 
         // apply it to the system
-        this.system.applyControlState(this.currentControlState.clone());
+        this.system.applyControlState(this.getSnapshot());
     }
 }

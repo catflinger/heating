@@ -5,10 +5,10 @@ import {
     IProgram,
     OverrideSnapshot,
     SensorSnapshot,
+    ProgramSnapshot,
 } from "../../src/controller/types";
 
 import { container } from "./inversify.config.test";
-import { BasicControlStrategy } from "../../src/controller/basic-control-strategy";
 import { MockClock } from "../common/mock-clock";
 
 import * as chai from "chai";
@@ -20,8 +20,8 @@ let programFactory: () => IProgram = container.get<() => IProgram>(INJECTABLES.P
 let program: IProgram = programFactory();
 let clock: MockClock = container.get<MockClock>(INJECTABLES.Clock);
 
-const json: string = '{"id": "id123", "name": "some name or other", "hwmax":50,"hwmin":40,"slots":[true,false,true,false,true,false,false,false,false,false]}';
-program.loadFromSnapshot(JSON.parse(json));
+const json: string = '{"id": "id123", "name": "some name or other", "maxHWTemp":50,"minHWTemp":40,"slots":[true,false,true,false,true,false,false,false,false,false]}';
+program.loadFromSnapshot(ProgramSnapshot.fromJson(json));
 
 function runTest(data: any): ControlStateSnapshot {
     const sensors: SensorSnapshot[] = [];
@@ -91,8 +91,8 @@ describe("BasicControlStrategy", () => {
 
     describe("when controlling heating", () => {
         before(() => {
-            const data: any = {id: "id123", name: "some name or other", "hwmax":50,"hwmin":40,"slots":[true,false,true,false,true,false,false,false,false,false]};
-            program.loadFromSnapshot(JSON.parse(data));
+            const data: string = '{"id": "id123", "name": "some name or other", "maxHWTemp":50,"minHWTemp":40,"slots":[true,false,true,false,true,false,false,false,false,false]}';
+            program.loadFromSnapshot(ProgramSnapshot.fromJson(data));
             clock.setSlotNumber(0);
         });
 
@@ -124,8 +124,8 @@ describe("BasicControlStrategy", () => {
 
     describe("when override is present it should", () => {
         before(() => {
-            const data: any = {id: "id123", name: "some name or other", "hwmax":50,"hwmin":40,"slots":[true,true,true,true,true,true,false,false,false,false]};
-            program.loadFromSnapshot(JSON.parse(data));
+            const data: string = '{"id": "id123", "name": "some name or other", "maxHWTemp":50,"minHWTemp":40,"slots":[true,true,true,true,true,true,false,false,false,false]}';
+            program.loadFromSnapshot(ProgramSnapshot.fromJson(data));
             clock.setSlotNumber(0);
         });
 

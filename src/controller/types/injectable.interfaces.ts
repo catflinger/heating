@@ -222,9 +222,8 @@ export interface IOverrideManager {
  * Represents an on/off switchable device such as a pump or boiler
  */
 export interface ISwitchable {
-    name: string;
-    state: boolean;
-    toggle(): void;
+    getName(): string;
+    getState(): boolean;
     switch(state: boolean): void;
 }
 

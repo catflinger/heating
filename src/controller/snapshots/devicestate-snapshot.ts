@@ -29,15 +29,15 @@ export class DeviceStateSnapshot {
         return this._chPump;
     }
 
-    public toStorable(): any {
-        return {
-            boiler: this._boiler,
-            chPump: this._chPump,
-            hwPump: this._hwPump,
-        };
-    }
+    // public toStorable(): any {
+    //     return {
+    //         boiler: this._boiler,
+    //         chPump: this._chPump,
+    //         hwPump: this._hwPump,
+    //     };
+    // }
 
-    public toJson(): string {
-        return JSON.stringify(this.toStorable());
-    }
+    // public toJson(): string {
+    //     return JSON.stringify(this.toStorable());
+    // }
 }

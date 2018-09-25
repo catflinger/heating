@@ -1,4 +1,4 @@
-import { IControllerSettings, IProgram, INJECTABLES } from "../../src/controller/types";
+import { IControllerSettings, IProgram, INJECTABLES, ProgramSnapshot } from "../../src/controller/types";
 import { Program } from "../../src/controller/program";
 import { container } from "./inversify.config.test";
 import * as fs from "fs";
@@ -20,7 +20,7 @@ describe("program", () => {
 
     before(() => {
 
-        const json: string = '{"id":"id123","name":"some name","hwmax":50,"hwmin":40,"slots":[true,false,true,false,true,false,false,false,false,false]}';
+        const json: string = '{"id":"id123","name":"some name","maxHWTemp":50,"minHWTemp":40,"slots":[true,false,true,false,true,false,false,false,false,false]}';
         program = container.get<IProgram>(INJECTABLES.Program);
         program.loadFromSnapshot(JSON.parse(json));
 
@@ -100,17 +100,19 @@ describe("program", () => {
         program.setRange([true, false], 1, 2);
 
         //serialse the program
-        const json: string = JSON.stringify(program.getSnapshot());
+        const json: string = program.getSnapshot().toJson();
 
         expect(json).to.be.not.null;
         expect(json.length).to.be.greaterThan(0, "zero length string produced");
 
         // rehydrate the json to an object
-        const obj: any = JSON.parse(json);
+        const obj: ProgramSnapshot = ProgramSnapshot.fromJson(json);
 
         // check the object contains the original program values
-        expect(obj.hwmin).to.equal(minHWTemp);
-        expect(obj.hwmax).to.equal(maxHWTemp);
+        expect(obj.id).to.equal("id123");
+        expect(obj.name).to.equal("some name");
+        expect(obj.minHWTemp).to.equal(minHWTemp);
+        expect(obj.maxHWTemp).to.equal(maxHWTemp);
         expect(obj.slots.length).to.equal(slotsPerDay);
         expect(obj.slots[1]).to.equal(true, "wrong value for slot 1");
         expect(obj.slots[2]).to.equal(false, "wrong value for slot 2");
@@ -118,52 +120,52 @@ describe("program", () => {
 
     it("shoud refuse to load from invalid JSON", () => {
         // slot array missing
-        let json: string = '{"hwmax":55,"hwmin":45}';
-        expect(() => program.loadFromSnapshot(JSON.parse(json))).to.throw();
+        let json: string = '{"maxHWTemp":55,"minHWTemp":45}';
+        expect(() => program.loadFromSnapshot(ProgramSnapshot.fromJson(json))).to.throw();
         // slot array not an array
-        json = '{"hwmax":55,"hwmin":45,"slots": "foo"}';
-        expect(() => program.loadFromSnapshot(JSON.parse(json))).to.throw();
+        json = '{"maxHWTemp":55,"minHWTemp":45,"slots": "foo"}';
+        expect(() => program.loadFromSnapshot(ProgramSnapshot.fromJson(json))).to.throw();
         // array too short
-        json = '{"hwmax":55,"hwmin":45,"slots":[true, false]}';
-        expect(() => program.loadFromSnapshot(JSON.parse(json))).to.throw();
+        // json = '{"maxHWTemp":55,"minHWTemp":45,"slots":[true, false]}';
+        // expect(() => program.loadFromSnapshot(ProgramSnapshot.fromJson(json))).to.throw();
         // array contains invalid fields
-        json = '{"hwmax":55,"hwmin":45,"slots":[1,0,true,false,true,false,false,false,false,false]}';
-        expect(() => program.loadFromSnapshot(JSON.parse(json))).to.throw();
+        json = '{"maxHWTemp":55,"minHWTemp":45,"slots":[1,0,true,false,true,false,false,false,false,false]}';
+        expect(() => program.loadFromSnapshot(ProgramSnapshot.fromJson(json))).to.throw();
 
-        // hwmin missing
-        json = '{"hwmax":45,"slots":[true,false,true,false,true,false,false,false,false,false]}';
-        expect(() => program.loadFromSnapshot(JSON.parse(json))).to.throw();
-        // hwmin not numeric
-        json = '{"hwmax":55,"hwmin":"45","slots":[true,false,true,false,true,false,false,false,false,false]}';
-        expect(() => program.loadFromSnapshot(JSON.parse(json))).to.throw();
-        // hwmin too low
-        json = '{"hwmax":55,"hwmin":0,"slots":[true,false,true,false,true,false,false,false,false,false]}';
-        expect(() => program.loadFromSnapshot(JSON.parse(json))).to.throw();
-        // hwmin too low
-        json = '{"hwmax":55,"hwmin":61,"slots":[true,false,true,false,true,false,false,false,false,false]}';
-        expect(() => program.loadFromSnapshot(JSON.parse(json))).to.throw();
+        // minHWTemp missing
+        json = '{"maxHWTemp":45,"slots":[true,false,true,false,true,false,false,false,false,false]}';
+        expect(() => program.loadFromSnapshot(ProgramSnapshot.fromJson(json))).to.throw();
+        // minHWTemp not numeric
+        json = '{"maxHWTemp":55,"minHWTemp":"45","slots":[true,false,true,false,true,false,false,false,false,false]}';
+        expect(() => program.loadFromSnapshot(ProgramSnapshot.fromJson(json))).to.throw();
+        // minHWTemp too low
+        json = '{"maxHWTemp":55,"minHWTemp":0,"slots":[true,false,true,false,true,false,false,false,false,false]}';
+        expect(() => program.loadFromSnapshot(ProgramSnapshot.fromJson(json))).to.throw();
+        // minHWTemp too low
+        json = '{"maxHWTemp":55,"minHWTemp":61,"slots":[true,false,true,false,true,false,false,false,false,false]}';
+        expect(() => program.loadFromSnapshot(ProgramSnapshot.fromJson(json))).to.throw();
 
-        // hwmax missing
-        json = '{"hwmin":45,"slots":[true,false,true,false,true,false,false,false,false,false]}';
-        expect(() => program.loadFromSnapshot(JSON.parse(json))).to.throw();
-        // hwmax not numeric
-        json = '{"hwmax":"55","hwmin":45,"slots":[true,false,true,false,true,false,false,false,false,false]}';
-        expect(() => program.loadFromSnapshot(JSON.parse(json))).to.throw();
-        // hwmax too low
-        json = '{"hwmax":0,"hwmin":45,"slots":[true,false,true,false,true,false,false,false,false,false]}';
-        expect(() => program.loadFromSnapshot(JSON.parse(json))).to.throw();
-        // hwmin too low
-        json = '{"hwmax":61,"hwmin":45,"slots":[true,false,true,false,true,false,false,false,false,false]}';
-        expect(() => program.loadFromSnapshot(JSON.parse(json))).to.throw();
+        // maxHWTemp missing
+        json = '{"minHWTemp":45,"slots":[true,false,true,false,true,false,false,false,false,false]}';
+        expect(() => program.loadFromSnapshot(ProgramSnapshot.fromJson(json))).to.throw();
+        // maxHWTemp not numeric
+        json = '{"maxHWTemp":"55","minHWTemp":45,"slots":[true,false,true,false,true,false,false,false,false,false]}';
+        expect(() => program.loadFromSnapshot(ProgramSnapshot.fromJson(json))).to.throw();
+        // maxHWTemp too low
+        json = '{"maxHWTemp":0,"minHWTemp":45,"slots":[true,false,true,false,true,false,false,false,false,false]}';
+        expect(() => program.loadFromSnapshot(ProgramSnapshot.fromJson(json))).to.throw();
+        // minHWTemp too low
+        json = '{"maxHWTemp":61,"minHWTemp":45,"slots":[true,false,true,false,true,false,false,false,false,false]}';
+        expect(() => program.loadFromSnapshot(ProgramSnapshot.fromJson(json))).to.throw();
 
-        // hwmin and max too close
-        json = '{"hwmax":45,"hwmin":45,"slots":[true,false,true,false,true,false,false,false,false,false]}';
-        expect(() => program.loadFromSnapshot(JSON.parse(json))).to.throw();
-        // hwmin and max too close
-        json = '{"hwmax":48,"hwmin":45,"slots":[true,false,true,false,true,false,false,false,false,false]}';
-        expect(() => program.loadFromSnapshot(JSON.parse(json))).to.throw();
-        // hwmin and max wrong order
-        json = '{"hwmax":45,"hwmin":55,"slots":[true,false,true,false,true,false,false,false,false,false]}';
-        expect(() => program.loadFromSnapshot(JSON.parse(json))).to.throw();
+        // minHWTemp and max too close
+        json = '{"maxHWTemp":45,"minHWTemp":45,"slots":[true,false,true,false,true,false,false,false,false,false]}';
+        expect(() => program.loadFromSnapshot(ProgramSnapshot.fromJson(json))).to.throw();
+        // minHWTemp and max too close
+        json = '{"maxHWTemp":48,"minHWTemp":45,"slots":[true,false,true,false,true,false,false,false,false,false]}';
+        expect(() => program.loadFromSnapshot(ProgramSnapshot.fromJson(json))).to.throw();
+        // minHWTemp and max wrong order
+        json = '{"maxHWTemp":45,"minHWTemp":55,"slots":[true,false,true,false,true,false,false,false,false,false]}';
+        expect(() => program.loadFromSnapshot(ProgramSnapshot.fromJson(json))).to.throw();
     });
 });

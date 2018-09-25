@@ -5,20 +5,20 @@ import { Boiler } from "./devices/boiler";
 import { CHPump } from "./devices/ch-pump";
 import { HWPump } from "./devices/hw-pump";
 import { Switchable } from "./switchable";
-import { ControlStateSnapshot, DeviceStateSnapshot, IControllable, IControllerSettings, INJECTABLES } from "./types";
+import { ControlStateSnapshot, DeviceStateSnapshot, IControllable, IControllerSettings, INJECTABLES, ISwitchable } from "./types";
 
 @injectable()
 export class System implements IControllable {
-    @inject(INJECTABLES.Boiler) private boiler: Boiler;
-    @inject(INJECTABLES.CHPump) private hwPump: CHPump;
-    @inject(INJECTABLES.HWPump) private chPump: HWPump;
+    @inject(INJECTABLES.Boiler) private boiler: ISwitchable;
+    @inject(INJECTABLES.CHPump) private chPump: ISwitchable;
+    @inject(INJECTABLES.HWPump) private hwPump: ISwitchable;
 
     public applyControlState(state: ControlStateSnapshot): void {
 
         // map the control state to individual device states
         const boilerState: boolean = (state.heating || state.hotWater);
         const hwPumpState: boolean = state.hotWater;
-        const chPumpState = state.heating;
+        const chPumpState: boolean = state.heating;
 
         // switch the devices
         this.boiler.switch(boilerState);
@@ -30,8 +30,8 @@ export class System implements IControllable {
 
         // return a snapshot of the device states (boiler on, pump off etc)
         return new DeviceStateSnapshot(
-            this.boiler.state,
-            this.hwPump.state,
-            this.chPump.state);
+            this.boiler.getState(),
+            this.hwPump.getState(),
+            this.chPump.getState());
     }
 }

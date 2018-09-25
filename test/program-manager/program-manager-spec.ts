@@ -71,7 +71,7 @@ describe("program-manager", () => {
         });
 
         it("should create a new program", () => {
-            const data = { "name": "some name or other", "hwmax": 50, "hwmin": 40, "slots": [true, false, true, false, true, false, false, false, false, false] };
+            const data = { "name": "some name or other", "maxHWTemp": 50, "minHWTemp": 40, "slots": [true, false, true, false, true, false, false, false, false, false] };
             let newProg: ProgramSnapshot = programManager.createProgram(data);
             expect(typeof newProg.id).to.equal("string");
             expect(newProg.id.length).to.equal(36);
@@ -81,14 +81,14 @@ describe("program-manager", () => {
         });
 
         it("should create a new program when data contains an empty id", () => {
-            const data = { "id": "", "name": "some name or other", "hwmax": 50, "hwmin": 40, "slots": [true, false, true, false, true, false, false, false, false, false] };
+            const data = { "id": "", "name": "some name or other", "maxHWTemp": 50, "minHWTemp": 40, "slots": [true, false, true, false, true, false, false, false, false, false] };
             let newProg: ProgramSnapshot = programManager.createProgram(data);
             expect(typeof newProg.id).to.equal("string");
             expect(newProg.id.length).to.equal(36);
         });
 
         it("should fail to create a new program when data contains a given id", () => {
-            const data = { "id": "12345", "name": "some name or other", "hwmax": 50, "hwmin": 40, "slots": [true, false, true, false, true, false, false, false, false, false] };
+            const data = { "id": "12345", "name": "some name or other", "maxHWTemp": 50, "minHWTemp": 40, "slots": [true, false, true, false, true, false, false, false, false, false] };
             expect(() => { programManager.createProgram(data) }).to.throw;
         });
     });

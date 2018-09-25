@@ -38,25 +38,17 @@ switchables.forEach((test:any) => {
         });
 
         it("should be named correctly", () => {
-            expect(test.device.name).equals(test.expectedName);
-        });
-
-        it("should toggle the state", () => {
-            expect(test.device.state).to.be.false;
-            test.device.toggle();
-            expect(test.device.state).to.be.true;
-            test.device.toggle();
-            expect(test.device.state).to.be.false;
+            expect(test.device.getName()).equals(test.expectedName);
         });
 
         it("should set the state", () => {
-            expect(test.device.state).to.be.false;
+            expect(test.device.getState()).to.be.false;
             test.device.switch(true);
-            expect(test.device.state).to.be.true;
+            expect(test.device.getState()).to.be.true;
             test.device.switch(true);
-            expect(test.device.state).to.be.true;
+            expect(test.device.getState()).to.be.true;
             test.device.switch(false);
-            expect(test.device.state).to.be.false;
+            expect(test.device.getState()).to.be.false;
         });
     });
 });

@@ -51,9 +51,9 @@ export class StatusApi implements IApi {
                         {
                             id: "device",
                             snapshot: {
-                                boiler: this.boiler.state,
-                                chPump: this.chPump.state,
-                                hwPump: this.hwPump.state,
+                                boiler: this.boiler.getState(),
+                                chPump: this.chPump.getState(),
+                                hwPump: this.hwPump.getState(),
                             },
                         },
                         {
@@ -85,9 +85,9 @@ export class StatusApi implements IApi {
                 {
                     id: "device",
                     snapshot: {
-                        boiler: this.boiler.state,
-                        chPump: this.chPump.state,
-                        hwPump: this.hwPump.state,
+                        boiler: this.boiler.getState(),
+                        chPump: this.chPump.getState(),
+                        hwPump: this.hwPump.getState(),
                     },
                 },
                 req,
@@ -117,6 +117,7 @@ export class StatusApi implements IApi {
         try {
             // send the response
             this.utils.dumpTextFile("status.json", JSON.stringify(result));
+
             return res.json(result);
 
         } catch (e) {

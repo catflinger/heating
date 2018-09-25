@@ -94,7 +94,7 @@ export class ProgramStore implements IProgramStore {
 
         // write the updated programs
         programs.forEach((p) => {
-            fs.writeFileSync(this.makeProgramPath(p.id), JSON.stringify(p.getSnapshot()));
+            fs.writeFileSync(this.makeProgramPath(p.id), p.getSnapshot().toJson());
         });
     }
 

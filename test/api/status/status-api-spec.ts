@@ -101,9 +101,8 @@ describe("Status API' get /api/status/control", () => {
     it('should contain data', () => {
         return chai.request(app).get('/api/status/control')
             .then((res: any) => {
-                expect(res.body.items).to.be.undefined;
-                expect(res.body.heating).not.to.be.undefined;
-                expect(typeof res.body.heating).to.equal("boolean");
+                expect(res.body._heating).not.to.be.undefined;
+                expect(typeof res.body._heating).to.equal("boolean");
             });
     });
 });

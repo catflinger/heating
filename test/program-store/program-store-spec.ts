@@ -53,7 +53,7 @@ describe("program-store", () => {
                 }
             };
             fs.writeFileSync(latestFilePath, JSON.stringify(defaultConfig), "utf-8");
-            fs.writeFileSync(Path.join(programsDir, program.id + ".json"), JSON.stringify(program.getSnapshot()), "utf-8");
+            fs.writeFileSync(Path.join(programsDir, program.id + ".json"), program.getSnapshot().toJson(), "utf-8");
 
             programStore = container.get<IProgramStore>(INJECTABLES.ProgramStore);
 

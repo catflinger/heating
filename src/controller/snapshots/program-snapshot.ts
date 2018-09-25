@@ -5,14 +5,14 @@ export class ProgramSnapshot {
     public static fromJson(json: string): ProgramSnapshot {
         const src = JSON.parse(json);
 
-        if ((typeof src.hwmax !== "number") ||
-            (typeof src.hwmin !== "number")) {
-            throw new Error(`hwmax or hwmin not numeric loading program. [${typeof src.hwmax}] [${typeof src.hwmin}]`);
+        if ((typeof src.maxHWTemp !== "number") ||
+            (typeof src.minHWTemp !== "number")) {
+            throw new Error("hwmax or hwmin not numeric loading program.");
         }
         if (!Array.isArray(src.slots)) {
             throw new Error("slot array missing from source data loading program.");
         }
-        if (src.hwmin < 10 || src.hwmax < 10 || src.hwmin > 60 || src.hwmax > 60 || src.hwmax - src.hwmin < 5) {
+        if (src.minHWTemp < 10 || src.maxHWTemp < 10 || src.minHWTemp > 60 || src.maxHWTemp > 60 || src.maxHWTemp - src.minHWTemp < 5) {
             throw new Error("HW temperature value out of range");
         }
 
@@ -37,8 +37,8 @@ export class ProgramSnapshot {
         return new ProgramSnapshot(
             id,
             name,
-            src.hwmin,
-            src.hwmax,
+            src.minHWTemp,
+            src.maxHWTemp,
             slots,
         );
     }
@@ -72,18 +72,13 @@ export class ProgramSnapshot {
         return this._slots;
     }
 
-    public clone(): ProgramSnapshot {
-        const slotArray: boolean[] = [];
-
-        for (const slot of this.slots) {
-            slotArray.push(slot);
-        }
-
-        return new ProgramSnapshot(
-            this._id,
-            this._name,
-            this._minHWTemp,
-            this._maxHWTemp,
-            slotArray);
+    public toJson(): string {
+        return JSON.stringify({
+            id: this.id,
+            maxHWTemp: this.maxHWTemp,
+            minHWTemp: this.minHWTemp,
+            name: this.name,
+            slots: this.slots,
+        });
     }
 }

@@ -23,6 +23,7 @@ export class MockControlStrategy implements IControlStrategy {
         program: ProgramSnapshot,
         current: ControlStateSnapshot,
         overrides: OverrideSnapshot[]): ControlStateSnapshot {
+
         return new ControlStateSnapshot(this.heating, this.water);
     }  
 }
@@ -106,30 +107,71 @@ export class MockProgram implements IProgram {
 }
 
 @injectable()
-export class MockDevice implements ISwitchable {
-    private _name: string = "un-named device";
-    private _state: boolean = false;
+export class MockBoiler implements ISwitchable {
+    private name: string;
+    private state: boolean;
 
-    public init(): void {
-    }
-
-    public get name(): string {
-        return this._name;
-    }
-    
-    public set name(str: string) {
-        this._name = str;
-    }
-    
-    public get state(): boolean {
-        return this._state;
+    public getName(): string {
+        return this.name;
     }
 
-    toggle(): void {
-        this._state = !this.state;
+    public getState(): boolean {
+        console.log("reading boiler state " + this.state);
+        return this.state;
+    }
+
+    public switch(state: boolean): void {
+        this.state = state;
+    }
+    constructor() {
+        this.name = "Boiler";
+        this.state = false;
+    }
+}
+
+@injectable()
+export class MockCHPump implements ISwitchable {
+    private name: string;
+    private state: boolean;
+
+    public getName(): string {
+        return this.name;
+    }
+
+    public getState(): boolean {
+        console.log("reading heating pump state " + this.state);
+        return this.state;
     }
 
     switch(state: boolean): void {
-        this._state = state;
+        this.state = state;
+    }
+    constructor() {
+        this.name = "CHPump";
+        this.state = false;
     }
 }
+
+@injectable()
+export class MockHWPump implements ISwitchable {
+    private name: string;
+    private state: boolean;
+
+    public getName(): string {
+        return this.name;
+    }
+
+    public getState(): boolean {
+        console.log("reading hot water pump state " + this.state);
+        return this.state;
+    }
+
+    switch(state: boolean): void {
+        this.state = state;
+    }
+    constructor() {
+        this.name = "HWPump";
+        this.state = false;
+    }
+}
+
