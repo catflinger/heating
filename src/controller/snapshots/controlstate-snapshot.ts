@@ -3,32 +3,21 @@
  * data class to encapsulate control state
  */
 export class ControlStateSnapshot {
-    private _heating: boolean;
-    private _hotWater: boolean;
+    public heating: boolean;
+    public hotWater: boolean;
 
     constructor(heating: boolean, hotWater: boolean) {
-        this._heating = heating;
-        this._hotWater = hotWater;
+        this.heating = heating;
+        this.hotWater = hotWater;
     }
 
     public clone(): ControlStateSnapshot {
         return new ControlStateSnapshot(
-            this._heating,
-            this._hotWater);
-    }
-
-    public get heating(): boolean {
-        return this._heating;
-    }
-
-    public get hotWater(): boolean {
-        return this._hotWater;
+            this.heating,
+            this.hotWater);
     }
 
     public toJson(): string {
-        return JSON.stringify({
-            heating: this._heating,
-            hotWater: this._hotWater,
-        });
+        return JSON.stringify(this);
     }
 }

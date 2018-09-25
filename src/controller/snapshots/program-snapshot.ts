@@ -44,41 +44,15 @@ export class ProgramSnapshot {
     }
 
     constructor(
-        private _id: string,
-        private _name: string,
-        private _minHWTemp: number,
-        private _maxHWTemp: number,
-        private _slots: boolean[],
+        public id: string,
+        public name: string,
+        public minHWTemp: number,
+        public maxHWTemp: number,
+        public slots: boolean[],
     ) {
     }
 
-    public get id(): string {
-        return this._id;
-    }
-
-    public get name(): string {
-        return this._name;
-    }
-
-    public get minHWTemp(): number {
-        return this._minHWTemp;
-    }
-
-    public get maxHWTemp(): number {
-        return this._maxHWTemp;
-    }
-
-    public get slots(): boolean[] {
-        return this._slots;
-    }
-
     public toJson(): string {
-        return JSON.stringify({
-            id: this.id,
-            maxHWTemp: this.maxHWTemp,
-            minHWTemp: this.minHWTemp,
-            name: this.name,
-            slots: this.slots,
-        });
+        return JSON.stringify(this);
     }
 }
