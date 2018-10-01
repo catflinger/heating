@@ -116,7 +116,6 @@ export class MockBoiler implements ISwitchable {
     }
 
     public getState(): boolean {
-        console.log("reading boiler state " + this.state);
         return this.state;
     }
 
@@ -139,7 +138,6 @@ export class MockCHPump implements ISwitchable {
     }
 
     public getState(): boolean {
-        console.log("reading heating pump state " + this.state);
         return this.state;
     }
 
@@ -162,7 +160,6 @@ export class MockHWPump implements ISwitchable {
     }
 
     public getState(): boolean {
-        console.log("reading hot water pump state " + this.state);
         return this.state;
     }
 

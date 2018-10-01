@@ -21,6 +21,7 @@ import {
     IProgramManager,
     IProgramStore,
     ISwitchable,
+    ILogger,
 } from "../../../src/controller/types";
 
 import { Utils } from "../../../src/common/utils";
@@ -45,6 +46,8 @@ import { App } from "../../../src/server/app";
 import { TestingInjectables, IClean } from "../../common/injectables-test";
 import { Clean } from "../../common/clean";
 import { SensorApi } from "../../../src/server/api/sensor-api";
+import { LoggerApi } from "../../../src/server/api/logger-api";
+import { Logger } from "../../../src/logger/logger";
 
 export const container = new Container();
 
@@ -70,6 +73,7 @@ container.bind<ISwitchable>(INJECTABLES.Boiler).to(Boiler).inSingletonScope();
 container.bind<ISwitchable>(INJECTABLES.CHPump).to(CHPump).inSingletonScope();
 container.bind<ISwitchable>(INJECTABLES.HWPump).to(HWPump).inSingletonScope();
 container.bind<Utils>(INJECTABLES.Utils).to(Utils).inSingletonScope();
+container.bind<ILogger>(INJECTABLES.Logger).to(Logger).inSingletonScope();
 
 // server config
 container.bind<IApi>(INJECTABLES.ProgramConfigApi).to(ProgramConfigApi).inSingletonScope();
@@ -77,6 +81,7 @@ container.bind<IApi>(INJECTABLES.ProgramApi).to(ProgramApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.StatusApi).to(StatusApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.OverrideApi).to(OverrideApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.SensorApi).to(SensorApi).inSingletonScope();
+container.bind<IApi>(INJECTABLES.LogApi).to(LoggerApi).inSingletonScope();
 
 // discrete instances
 container.bind<IProgram>(INJECTABLES.Program).to(Program);

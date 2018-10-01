@@ -5,11 +5,13 @@ import {IControllerSettings, INJECTABLES } from "../../../src/controller/types";
 @injectable()
 export class ControllerSettings implements IControllerSettings {
 
-    public startPolling: boolean = true;
+    public startPolling: boolean = false;
+    public startLogging: boolean = false;
 
     public programStoreDir: string = path.join(__dirname, "data");
 
     public debugDir: string = path.join(__dirname, "data", "debug");
+    public logDir: string = path.join(__dirname, "data", "log");
 
     public boilerPath: string = path.join(__dirname, "data", "gpio", "gpio16", "value");
     public chPumpPath: string = path.join(__dirname, "data", "gpio", "gpio20", "value");

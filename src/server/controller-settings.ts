@@ -9,12 +9,20 @@ export class ControllerSettings implements IControllerSettings {
         return true;
     }
 
+    public get startLogging(): boolean {
+        return true;
+    }
+
     public get programStoreDir(): string {
         return path.join(__dirname, "../../../data");
     }
 
     public get debugDir(): string {
         return path.join(__dirname, "../../../debug");
+    }
+
+    public get logDir(): string {
+        return path.join(__dirname, "../../../log");
     }
 
     public get boilerPath(): string {

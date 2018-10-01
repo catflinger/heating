@@ -6,9 +6,11 @@ import * as path from "path";
 export class MockControllerSettings implements IControllerSettings {
 
     startPolling: boolean = false;
+    startLogging: boolean = false;
     
     programStoreDir: string = path.join(__dirname, "data");
     debugDir: string = path.join(__dirname, "..", "..", "..", "test", "debug");
+    logDir: string = path.join(__dirname, "..", "..", "..", "test", "log");
 
     boilerPath: string = path.join(__dirname, "data", "gpio", "gpio16", "value");
     chPumpPath: string = path.join(__dirname, "data", "gpio", "gpio20", "value");

@@ -16,6 +16,8 @@ export const INJECTABLES = {
     Environment: Symbol("Environment"),
     EnvironmentSettings: Symbol("EnvironmentSettings"),
     HWPump: Symbol("HWPump"),
+    LogApi: Symbol("LogApi"),
+    Logger: Symbol("Logger"),
     OverrideApi: Symbol("OverrideApi"),
     OverrideManager: Symbol("OverrideManager"),
     Program: Symbol("Program"),
@@ -95,7 +97,9 @@ export interface IControllerSettings {
     hwPumpPath: string;
     chPumpPath: string;
     programStoreDir: string;
+    logDir: string;
     startPolling: boolean;
+    startLogging: boolean;
 }
 
 /**
@@ -251,4 +255,12 @@ export interface ISensor {
     id: string;
     description: string;
     read(): void;
+}
+
+export interface ILogger {
+    start(): void;
+    stop(): void;
+    getLogfileName(): string;
+    writeLogEntry(): void;
+    housekeep(): void;
 }

@@ -8,7 +8,7 @@ import { ProgramConfigApi } from "./api/program-config-api";
 import { StatusApi } from "./api/status-api";
 
 import { Controller } from "../controller/controller";
-import { IApi, IController, INJECTABLES } from "../controller/types";
+import { IApi, IController, ILogger, INJECTABLES } from "../controller/types";
 
 const debug = Debug("app");
 
@@ -18,11 +18,13 @@ export class App {
 
     constructor(
         @inject(INJECTABLES.Controller) private controller: IController,
+        @inject(INJECTABLES.Logger) private logger: ILogger,
         @inject(INJECTABLES.ProgramConfigApi) private configApi: IApi,
         @inject(INJECTABLES.StatusApi) private statusApi: IApi,
         @inject(INJECTABLES.ProgramApi) private programApi: IApi,
         @inject(INJECTABLES.OverrideApi) private overrideApi: IApi,
         @inject(INJECTABLES.SensorApi) private sensorApi: IApi,
+        @inject(INJECTABLES.LogApi) private loggerApi: IApi,
     ) {}
 
     public start(): express.Application {
@@ -37,9 +39,13 @@ export class App {
         this.programApi.addRoutes(router);
         this.overrideApi.addRoutes(router);
         this.sensorApi.addRoutes(router);
+        this.loggerApi.addRoutes(router);
 
         // start the controller: this initialises digital outputpins and starts the environment polling
         this.controller.start();
+
+        this.logger.writeLogEntry();
+        this.logger.start();
 
         this.express.use((req, res, next) => {
             res.header("Access-Control-Allow-Origin", "*");
