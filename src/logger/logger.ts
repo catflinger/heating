@@ -93,10 +93,10 @@ export class Logger implements ILogger {
                 data.push(moment().format("YYYY-MM-DD hh:mm:ss"));
                 data.push(control.heating ? "1" : "0");
                 data.push(control.hotWater ? "1" : "0");
-                data.push(env.find((s) => s.id === "hw").reading.toString());
-                data.push(env.find((s) => s.id === "bedroom").reading.toString());
-                data.push(env.find((s) => s.id === "loft").reading.toString());
-                data.push(env.find((s) => s.id === "garage").reading.toString());
+                data.push(env.find((s) => s.id === "hw").reading.toFixed(1));
+                data.push(env.find((s) => s.id === "bedroom").reading.toFixed(1));
+                data.push(env.find((s) => s.id === "loft").reading.toFixed(1));
+                data.push(env.find((s) => s.id === "garage").reading.toFixed(1));
 
                 const entry: string = data.join(",") + "\n";
 
