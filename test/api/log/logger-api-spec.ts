@@ -17,8 +17,8 @@ const expect = chai.expect;
 
 describe("Logger API get /api/log", () => {
 
-    it('should be text', () => {
-        return chai.request(app).get('/api/log')
+    it('should be text/csv', () => {
+        return chai.request(app).get('/api/log/current.csv')
             .then((res: any) => {
                 expect(res.status).to.equal(200);
                 expect(res.type).to.eql('text/csv');
@@ -26,10 +26,21 @@ describe("Logger API get /api/log", () => {
     });
 
     it('should contain records', () => {
-        return chai.request(app).get('/api/log')
+        return chai.request(app).get('/api/log/current.csv')
             .then((res: any) => {
                 let data = readFileSync(filepath, "utf-8");
                 expect(res.text).to.equal(data);
             });
     });
+});
+describe("Logger API get /api/log-list", () => {
+
+    it('should be json', () => {
+        return chai.request(app).get('/api/log')
+            .then((res: any) => {
+                expect(res.status).to.equal(200);
+                expect(res.type).to.eql('application/json');
+            });
+    });
+
 });

@@ -26,17 +26,38 @@ export class LoggerApi implements IApi {
             debug("GET: log");
 
             try {
-                res.sendFile(this. logger.getLogfileName());
+                this.logger.getLogList((err, list) => {
+                    if (!err) {
+                        res.json(list);
+                    } else {
+                        res.status(500).send("could not get a log file list");
+                    }
+                });
             } catch (e) {
                 res.status(500).send("could not process this request " + e);
             }
         });
 
-        router.delete("/log", (req, res, next) => {
-            debug("DELETE: sensor/:sensor_id");
+        router.get("/log/:id", (req, res, next) => {
+            debug("GET: log/:id");
 
             try {
-                throw new Error("api not implemented yet!");
+                if (req.params.id === "current.csv") {
+                    res.sendFile(this. logger.getLogfileName());
+                    return;
+                } else {
+                    throw new Error("retrieval by id not implemented yet!");
+                }
+            } catch (e) {
+                res.status(500).send("could not process this request " + e);
+            }
+        });
+
+        router.delete("/log/:id", (req, res, next) => {
+            debug("DELETE: log/:id");
+
+            try {
+                throw new Error("log delete not implemented yet!");
             } catch (e) {
                 return res.status(500).send("could not process this request " + e);
             }

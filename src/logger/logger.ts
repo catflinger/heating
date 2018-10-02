@@ -4,6 +4,8 @@ import * as moment from "moment";
 import { Job, scheduleJob } from "node-schedule";
 import * as path from "path";
 
+import { ILogLogstCallback, LogInfo } from "./log-info";
+
 import {
     ControlStateSnapshot,
     IController,
@@ -37,7 +39,7 @@ export class Logger implements ILogger {
 
         // schedule housekeep at just after midnight every day
         this.housekeepingJob = scheduleJob("02 00 * * *", () => {
-            this.writeLogEntry();
+            this.housekeep();
         });
     }
 
@@ -55,6 +57,28 @@ export class Logger implements ILogger {
 
     public getLogfileName(): string {
         return this.logFileName;
+    }
+
+    public getLogList(callback: ILogLogstCallback): void {
+        const results: LogInfo[] = [];
+
+        try {
+            fs.readdir(this.settings.logDir, { withFileTypes: true }, (err, files) => {
+                if (err) {
+                    callback(err, []);
+                } else {
+                    files.forEach((file: fs.Dirent) => {
+                        if (file.isFile()) {
+                            results.push(new LogInfo(file.name, new Date(), 0));
+                        }
+                    });
+                    callback(null, results);
+                    return;
+                }
+            });
+        } catch (err) {
+            callback(err, []);
+        }
     }
 
     public writeLogEntry(): void {
@@ -93,13 +117,12 @@ export class Logger implements ILogger {
 
     public housekeep(): void {
 
+        this.lock = true;
+
         // TO DO: remove very old log files
         try {
-
             const currentName: string = this.getLogfileName();
             const newName: string = moment().format("YYYYMMDD-hhmmss") + ".csv";
-
-            this.lock = true;
 
             fs.access("", fs.constants.F_OK, (err1) => {
                 if (!err1) {
@@ -107,16 +130,15 @@ export class Logger implements ILogger {
                         if (err2) {
                             // TO DO: where to report this?
                         }
-                        this.lock = false;
                     });
                 } else {
                     // TO DO: where to report this?
                 }
-
-                this.lock = false;
             });
         } catch {
             // TO DO: where to report this?
         }
+
+        this.lock = false;
     }
 }

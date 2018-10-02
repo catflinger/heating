@@ -1,5 +1,11 @@
 import { Router } from "express";
-import { ControlStateSnapshot, DeviceStateSnapshot, OverrideSnapshot, ProgramSnapshot, SensorSnapshot } from "../types";
+import { ILogLogstCallback } from "../../logger/log-info";
+import {
+    ControlStateSnapshot,
+    DeviceStateSnapshot,
+    OverrideSnapshot,
+    ProgramSnapshot,
+    SensorSnapshot } from "../types";
 
 /**
  * Symbolic names for types to be used in IoC injection
@@ -263,4 +269,5 @@ export interface ILogger {
     getLogfileName(): string;
     writeLogEntry(): void;
     housekeep(): void;
+    getLogList(callback: ILogLogstCallback): void;
 }

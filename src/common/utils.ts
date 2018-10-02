@@ -16,7 +16,10 @@ export class Utils {
             if (dump.enabled) {
                 Fs.writeFile(
                     Path.join(this.settings.debugDir, name),
-                    data);
+                    data,
+                    (err) => {
+                        // what do do here?  is it worth reporting?
+                    });
             }
         } catch {
             // is it worth reporting any errors here? If so how and where to?
