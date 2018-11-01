@@ -1,10 +1,13 @@
 import { Container, interfaces } from "inversify";
+import * as path from "path";
 import { IController, IControllerSettings, IEnvironment, IOverrideManager, IProgram, ISwitchable, INJECTABLES, IControllable, IProgramManager, IProgramStore, ILogger } from "../../src/controller/types";
 
 import { MockController, MockControllerSettings, MockEnvironment } from "./mocks";
 import { Logger } from "../../src/logger/logger";
 
 export const container = new Container();
+
+container.bind<string>(INJECTABLES.AppRootDir).toConstantValue(path.join(__dirname, "data"));
 
 // testing modules
 container.bind<IControllerSettings>(INJECTABLES.ControllerSettings).to(MockControllerSettings).inSingletonScope();

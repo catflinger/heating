@@ -1,4 +1,5 @@
 import { Container, interfaces } from "inversify";
+import * as path from "path";
 import "reflect-metadata";
 import { IControllerSettings, IProgram, INJECTABLES, IProgramManager, IClock, IProgramStore } from "../../src/controller/types";
 import { Program } from "../../src/controller/program"; 
@@ -16,7 +17,8 @@ container.bind<IClean>(TestingInjectables.Clean).to(Clean).inSingletonScope();
 
 // constants
 container.bind<number>(INJECTABLES.SlotsPerDay).toConstantValue(10);
-
+container.bind<string>(INJECTABLES.AppRootDir).toConstantValue(path.join(__dirname, "data"));
+container.bind<string>(INJECTABLES.GpioRootDir).toConstantValue(path.join(__dirname, "data", "gpio"));
 // singletons
 container.bind<IControllerSettings>(INJECTABLES.ControllerSettings).to(MockControllerSettings).inSingletonScope();
 container.bind<IClock>(INJECTABLES.Clock).to(MockClock).inSingletonScope();

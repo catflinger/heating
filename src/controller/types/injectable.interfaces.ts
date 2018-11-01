@@ -12,6 +12,7 @@ import {
  */
 export const INJECTABLES = {
     App: Symbol("App"),
+    AppRootDir: Symbol("AppRootDir"),
     Boiler: Symbol("Boiler"),
     CHPump: Symbol("CHPump"),
     Clock: Symbol("Clock"),
@@ -21,6 +22,7 @@ export const INJECTABLES = {
     DigitalOutput: Symbol("DigitalOutput"),
     Environment: Symbol("Environment"),
     EnvironmentSettings: Symbol("EnvironmentSettings"),
+    GpioRootDir: Symbol("GpioRootDir"),
     HWPump: Symbol("HWPump"),
     LogApi: Symbol("LogApi"),
     Logger: Symbol("Logger"),
@@ -253,13 +255,14 @@ export interface IEnvironment {
  */
 export interface IEnvironmentSettings {
     oneWireDirectory: string;
-    sensors: any[];
+    sensorSettings: any;
 }
 
 export interface ISensor {
     reading: number;
     id: string;
     description: string;
+    role: string;
     read(): void;
 }
 

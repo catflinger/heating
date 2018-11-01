@@ -1,9 +1,16 @@
-import { injectable } from "inversify";
+import { inject, injectable } from "inversify";
+// import { INJECT_TAG } from "inversify/dts/constants/metadata_keys";
 import * as path from "path";
-import { IControllerSettings } from "../controller/types";
+import { IControllerSettings, INJECTABLES } from "../controller/types";
 
 @injectable()
 export class ControllerSettings implements IControllerSettings {
+
+    @inject(INJECTABLES.AppRootDir)
+    private appRoot: string;
+
+    @inject(INJECTABLES.GpioRootDir)
+    private gpioRootDir: string;
 
     public get startPolling(): boolean {
         return true;
@@ -14,27 +21,27 @@ export class ControllerSettings implements IControllerSettings {
     }
 
     public get programStoreDir(): string {
-        return path.join(__dirname, "../../../data");
+        return path.join(this.appRoot, "data");
     }
 
     public get debugDir(): string {
-        return path.join(__dirname, "../../../debug");
+        return path.join(this.appRoot, "debug");
     }
 
     public get logDir(): string {
-        return path.join(__dirname, "../../../log");
+        return path.join(this.appRoot, "log");
     }
 
     public get boilerPath(): string {
-        return "/sys/class/gpio/gpio16/value";
+        return path.join(this.gpioRootDir, "gpio16", "value");
     }
 
     public get hwPumpPath(): string {
-        return "/sys/class/gpio/gpio20/value";
+        return path.join(this.gpioRootDir, "gpio20", "value");
     }
 
     public get chPumpPath(): string {
-        return "/sys/class/gpio/gpio21/value";
+        return path.join(this.gpioRootDir, "gpio21", "value");
     }
 
     public get slotsPerDay(): number {

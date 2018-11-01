@@ -2,6 +2,7 @@ import * as bodyParser from "body-parser";
 import * as Debug from "debug";
 import * as express from "express";
 import { Container, inject, injectable } from "inversify";
+import * as path from "path";
 
 import { ProgramApi } from "./api/program-api";
 import { ProgramConfigApi } from "./api/program-config-api";
@@ -25,6 +26,7 @@ export class App {
         @inject(INJECTABLES.OverrideApi) private overrideApi: IApi,
         @inject(INJECTABLES.SensorApi) private sensorApi: IApi,
         @inject(INJECTABLES.LogApi) private loggerApi: IApi,
+        @inject(INJECTABLES.AppRootDir) private appRootDir: string,
     ) {}
 
     public start(): express.Application {
@@ -62,7 +64,7 @@ export class App {
         this.express.use("/api/", router);
 
         // tell express to use the wwwroot folder for serving staic files
-        const wwwroot: string = __dirname + "/../../../wwwroot";
+        const wwwroot: string = path.join(this.appRootDir, "..", "..", "wwwroot");
         this.express.use(express.static(wwwroot));
         debug("Serving static content from " + wwwroot);
 

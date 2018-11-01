@@ -6,17 +6,19 @@ import { IEnvironmentSettings } from "../../../src/controller/types";
 export class EnvironmentSettings implements IEnvironmentSettings {
 
     public get oneWireDirectory(): string {
-        return __dirname +  "/data/gpio";
+        throw new Error("method not implemented");
     }
 
-    public get sensors(): any[] {
-        return [
-            {id: "hw", deviceId: "28.60418F060000"},
-            {id: "bedroom", deviceId: "28.68A98F060000"},
-            {id: "garage", deviceId: "28.71CE8F060000"},
-            {id: "loft", deviceId: "28.8F528F060000"},
-            {id: "other1", deviceId: "28.9F5991060000"},
-            {id: "other2", deviceId: "28.9FD18F060000"},
-        ];
+    public get sensorSettings(): any {
+        return {
+            sensors: [
+                {description: "hw", id: "28.60418F060000", role: "hw"},
+                {description: "bedroom", id: "28.68A98F060000"},
+                {description: "garage", id: "28.71CE8F060000"},
+                {description: "loft", id: "28.8F528F060000"},
+                {description: "other1", id: "28.9F5991060000"},
+                {description: "other2", id: "28.9FD18F060000"},
+            ],
+        };
     }
 }

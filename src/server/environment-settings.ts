@@ -1,20 +1,43 @@
-import { injectable } from "inversify";
-import { IEnvironmentSettings } from "../controller/types";
+import * as fs from "fs";
+import { inject, injectable } from "inversify";
+import * as path from "path";
+
+import { IEnvironmentSettings, INJECTABLES } from "../controller/types";
 
 @injectable()
 export class EnvironmentSettings implements IEnvironmentSettings {
 
+    @inject(INJECTABLES.AppRootDir)
+    private appRoot: string;
+
     public get oneWireDirectory(): string {
-        // return __dirname +  "/../../../test/environment/data";
         return "/mnt/1wire";
     }
 
-    public get sensors(): any[] {
-        return [
-            {id: "hw", description: "hot water", deviceId: "28.8284600300003A"},
-            {id: "bedroom", description: "bedroom", deviceId: "28.8681C50300001C"},
-            {id: "garage", description: "garage", deviceId: "28.615CC503000002"},
-            {id: "loft", description: "loft", deviceId: "28.22BB490300006E"},
-        ];
+    public get sensorSettings(): any {
+        let result: any;
+
+        // look for a previously saved config file
+        if (fs.existsSync(this.configFile)) {
+            result = JSON.parse(fs.readFileSync(this.configFile, "utf-8"));
+
+        } else {
+            // if not found use the default in the environment settings
+            result = {
+                sensors: [
+                    {
+                        description: "hot water",
+                        id: "28.8284600300003A",
+                        role: "hw",
+                    },
+                ],
+            };
+        }
+
+        return result;
+    }
+
+    private get configFile(): string {
+        return path.join(this.appRoot, "data", "sensor-config.json");
     }
 }

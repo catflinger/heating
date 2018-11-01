@@ -21,7 +21,6 @@ export class Logger implements ILogger {
     private loggingJob: Job;
     private housekeepingJob: Job;
     private logFileName: string;
-    private lock: boolean = false;
 
     constructor(
         @inject(INJECTABLES.Controller) private controller: IController,
@@ -84,32 +83,30 @@ export class Logger implements ILogger {
     public writeLogEntry(): void {
 
         try {
-            if (!this.lock) {
-                const control: ControlStateSnapshot = this.controller.getSnapshot();
-                const env: SensorSnapshot[] = this.envController.getSnapshot();
+            const control: ControlStateSnapshot = this.controller.getSnapshot();
+            const env: SensorSnapshot[] = this.envController.getSnapshot();
 
-                const data: string[] = [];
+            const data: string[] = [];
 
-                data.push(moment().format("YYYY-MM-DD hh:mm:ss"));
-                data.push(control.heating ? "1" : "0");
-                data.push(control.hotWater ? "1" : "0");
-                data.push(env.find((s) => s.id === "hw").reading.toFixed(1));
-                data.push(env.find((s) => s.id === "bedroom").reading.toFixed(1));
-                data.push(env.find((s) => s.id === "loft").reading.toFixed(1));
-                data.push(env.find((s) => s.id === "garage").reading.toFixed(1));
+            data.push(moment().format("YYYY-MM-DD HH:mm:ss"));
+            data.push(control.heating ? "1" : "0");
+            data.push(control.hotWater ? "1" : "0");
+            data.push(env.find((s) => s.id === "hw").reading.toFixed(1));
+            data.push(env.find((s) => s.id === "bedroom").reading.toFixed(1));
+            data.push(env.find((s) => s.id === "loft").reading.toFixed(1));
+            data.push(env.find((s) => s.id === "garage").reading.toFixed(1));
 
-                const entry: string = data.join(",") + "\n";
+            const entry: string = data.join(",") + "\n";
 
-                fs.appendFile(
-                    this.getLogfileName(),
-                    entry,
-                    "utf-8",
-                    (err) => {
-                        if (err) {
-                            // should this be reported somewhere?
-                        }
-                    });
-            }
+            fs.appendFile(
+                this.getLogfileName(),
+                entry,
+                "utf-8",
+                (err) => {
+                    if (err) {
+                        // should this be reported somewhere?
+                    }
+                });
         } catch {
             // TO DO: where to report this?
         }
@@ -117,14 +114,12 @@ export class Logger implements ILogger {
 
     public housekeep(): void {
 
-        this.lock = true;
-
         // TO DO: remove very old log files
         try {
             const currentName: string = this.getLogfileName();
-            const newName: string = moment().format("YYYYMMDD-hhmmss") + ".csv";
+            const newName: string = path.join(this.settings.logDir, moment().format("YYYYMMDD-hhmmss") + ".csv");
 
-            fs.access("", fs.constants.F_OK, (err1) => {
+            fs.access(currentName, fs.constants.F_OK, (err1) => {
                 if (!err1) {
                     fs.rename(currentName, newName, (err2) => {
                         if (err2) {
@@ -138,7 +133,5 @@ export class Logger implements ILogger {
         } catch {
             // TO DO: where to report this?
         }
-
-        this.lock = false;
     }
 }

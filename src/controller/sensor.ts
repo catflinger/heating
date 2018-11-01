@@ -14,7 +14,7 @@ export class Sensor implements ISensor {
     constructor(private settings: IEnvironmentSettings,
                 private _id: string,
                 private _description: string,
-                private deviceId: string) {
+                private _role: string) {
 
         this.lastReading = NaN;
     }
@@ -23,9 +23,9 @@ export class Sensor implements ISensor {
         let result: number;
 
         try {
-            debug("Reading sensor " + this.deviceId);
+            debug("Reading sensor " + this.id);
 
-            const path: string = this.settings.oneWireDirectory + "/" + this.deviceId + "/temperature";
+            const path: string = this.settings.oneWireDirectory + "/" + this.id + "/temperature";
 
             debug("Reading sensor path " + path);
             const data: string = readFileSync(path, "utf8");
@@ -33,7 +33,7 @@ export class Sensor implements ISensor {
             result = Number.parseFloat(data);
 
         } catch (exp) {
-            debug("Reading sensor failed " + this.deviceId + " " + exp);
+            debug("Reading sensor failed " + this.id + " " + exp);
             result = NaN;
         }
         this.lastReading = result;
@@ -49,5 +49,9 @@ export class Sensor implements ISensor {
 
     public get description(): string {
         return this._description;
+    }
+
+    public get role(): string {
+        return this._role;
     }
 }

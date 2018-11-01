@@ -8,7 +8,8 @@ import {
     ControlStateSnapshot,
     SensorSnapshot,
     IControllerSettings,
-    IProgramManager} from "../../../src/controller/types";
+    IProgramManager,
+    INJECTABLES} from "../../../src/controller/types";
 
 @injectable()
 export class MockController implements IController {
@@ -37,10 +38,10 @@ export class MockEnvironment implements IEnvironment {
     
     getSnapshot(): SensorSnapshot[] {
         const snapshots: SensorSnapshot[] = [
-            new SensorSnapshot("hw", "", 54.1),
-            new SensorSnapshot("bedroom", "", 18),
-            new SensorSnapshot("loft", "", 12),
-            new SensorSnapshot("garage", "", 13),
+            new SensorSnapshot("hw", "", 54.1, "hw"),
+            new SensorSnapshot("bedroom", "", 18, null),
+            new SensorSnapshot("loft", "", 12, null),
+            new SensorSnapshot("garage", "", 13, null),
         ];
 
         return snapshots;
@@ -53,8 +54,11 @@ export class MockEnvironment implements IEnvironment {
 
 @injectable()
 export class MockControllerSettings implements IControllerSettings {
+    constructor(
+        @inject(INJECTABLES.AppRootDir) private appRoot: string,
+    ) {}
 
-    logDir: string = path.join(__dirname, "..", "..", "data", "log");
+    logDir: string = path.join(this.appRoot, "log");
 
     maxOverrideDuration: number;    boilerPath: string;
     debugDir: string;

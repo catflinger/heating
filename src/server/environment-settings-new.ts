@@ -9,14 +9,16 @@ export class EnvironmentSettings implements IEnvironmentSettings {
         return "/mnt/1wire";
     }
 
-    public get sensors(): any[] {
-        return [
-            {id: "hw", description: "hot water", deviceId: "28.60418F060000"},
-            {id: "bedroom", description: "bedroom", deviceId: "28.68A98F060000"},
-            {id: "garage", description: "garage", deviceId: "28.71CE8F060000"},
-            {id: "loft", description: "loft", deviceId: "28.8F528F060000"},
-            {id: "other1", description: "unknown", deviceId: "28.9F5991060000"},
-            {id: "other2", description: "unknown", deviceId: "28.9FD18F060000"},
-        ];
+    public get sensorSettings(): any {
+        return {
+            sensors: [
+                {id: "28.60418F060000", description: "hot water", role: "hw"},
+                {id: "28.68A98F060000", description: "bedroom"},
+                {id: "28.71CE8F060000", description: "garage"},
+                {id: "28.8F528F060000", description: "loft"},
+                {id: "28.9F5991060000", description: "unknown"},
+                {id: "28.9FD18F060000", description: "unknown"},
+            ],
+        };
     }
 }

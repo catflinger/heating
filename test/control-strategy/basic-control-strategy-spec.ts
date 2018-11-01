@@ -27,7 +27,7 @@ function runTest(data: any): ControlStateSnapshot {
     const sensors: SensorSnapshot[] = [];
 
     for(let s of data.sensors) {
-        sensors.push(new SensorSnapshot(s.id, "", s.reading));
+        sensors.push(new SensorSnapshot(s.id, "", s.reading, s.role));
     }
     
     return bcs.calculateControlState(
@@ -192,7 +192,7 @@ const hwTempAboveThreshold = 55;
 const snapshot_Default: any = {
     control: { heating: false, hotWater: false },
     device: { boiler: false, hwPump: false, chPump: false },
-    sensors: [{id: "hw", reading: hwTempBelowThreshold }],
+    sensors: [{id: "hw", reading: hwTempBelowThreshold, role: "hw" }],
     overrides: []
 }
 
@@ -200,7 +200,7 @@ const snapshot_Default: any = {
 const snapshot_Cool: any = {
     control: { heating: false, hotWater: true },
     device: { boiler: true, hwPump: true, chPump: false },
-    sensors: [{id: "hw", reading: hwTempBelowThreshold }],
+    sensors: [{id: "hw", reading: hwTempBelowThreshold, role: "hw" }],
     overrides: []
 };
 
@@ -208,7 +208,7 @@ const snapshot_Cool: any = {
 const snapshot_BeingHeated: any = {
     control: { heating: false, hotWater: true },
     device: { boiler: true, hwPump: true, chPump: false },
-    sensors: [{id: "hw", reading: hwTempInsideThreshold }],
+    sensors: [{id: "hw", reading: hwTempInsideThreshold, role: "hw" }],
     overrides: []
 }
 
@@ -216,7 +216,7 @@ const snapshot_BeingHeated: any = {
 const snapshot_FullyHeated: any = {
     control: { heating: false, hotWater: false },
     device: { boiler: false, hwPump: false, chPump: false },
-    sensors: [{id: "hw", reading: hwTempAboveThreshold }],
+    sensors: [{id: "hw", reading: hwTempAboveThreshold, role: "hw" }],
     overrides: []
 }
 
@@ -224,7 +224,7 @@ const snapshot_FullyHeated: any = {
 const snapshot_Cooling: any = {
     control: { heating: false, hotWater: false },
     device: { boiler: false, hwPump: false, chPump: false },
-    sensors: [{id: "hw", reading: hwTempInsideThreshold }],
+    sensors: [{id: "hw", reading: hwTempInsideThreshold, role: "hw" }],
     overrides: []
 }
 
@@ -232,7 +232,7 @@ const snapshot_Cooling: any = {
 const snapshot_Override_ON: any = {
     control: { heating: false, hotWater: false },
     device: { boiler: false, hwPump: false, chPump: false },
-    sensors: [{id: "hw", reading: hwTempAboveThreshold }],
+    sensors: [{id: "hw", reading: hwTempAboveThreshold, role: "hw" }],
     overrides: [new OverrideSnapshot(1, 3, true, new Date())]
 }
 
@@ -240,6 +240,6 @@ const snapshot_Override_ON: any = {
 const snapshot_Override_OFF: any = {
     control: { heating: false, hotWater: false },
     device: { boiler: false, hwPump: false, chPump: false },
-    sensors: [{id: "hw", reading: hwTempBelowThreshold }],
+    sensors: [{id: "hw", reading: hwTempBelowThreshold, role: "hw" }],
     overrides: [new OverrideSnapshot(1, 3, false, new Date())]
 }

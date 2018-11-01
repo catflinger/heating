@@ -1,4 +1,5 @@
 import { Container, interfaces } from "inversify";
+import * as path from "path";
 import "reflect-metadata";
 
 import { ControllerSettings } from "./server/controller-settings";
@@ -50,6 +51,8 @@ export const container = new Container();
 
 // constants
 container.bind<number>(INJECTABLES.SlotsPerDay).toConstantValue(6 * 24);
+container.bind<string>(INJECTABLES.AppRootDir).toConstantValue(path.join(__dirname, "..", ".."));
+container.bind<string>(INJECTABLES.GpioRootDir).toConstantValue(path.join("/sys/class/gpio"));
 
 // singletons
 container.bind<App>(INJECTABLES.App).to(App).inSingletonScope();

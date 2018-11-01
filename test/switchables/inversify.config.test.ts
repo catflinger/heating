@@ -1,4 +1,5 @@
 import { Container } from "inversify";
+import * as path from "path";
 
 import { IControllerSettings, IDigitalOutput, ISwitchable, INJECTABLES } from "../../src/controller/types";
 import { MockControllerSettings } from "./mock-controller-settings";
@@ -15,6 +16,8 @@ container.bind<IClean>(TestingInjectables.Clean).to(Clean).inSingletonScope();
 
 // constants
 container.bind<number>(INJECTABLES.SlotsPerDay).toConstantValue(10);
+container.bind<string>(INJECTABLES.AppRootDir).toConstantValue(path.join(__dirname, "data"));
+container.bind<string>(INJECTABLES.GpioRootDir).toConstantValue(path.join(__dirname, "data", "gpio"));
 
 // singletons
 container.bind<IControllerSettings>(INJECTABLES.ControllerSettings).to(MockControllerSettings).inSingletonScope();

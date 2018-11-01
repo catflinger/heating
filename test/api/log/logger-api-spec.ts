@@ -15,7 +15,7 @@ let filepath = logger.getLogfileName();
 chai.use(require("chai-http"));
 const expect = chai.expect;
 
-describe("Logger API get /api/log", () => {
+describe("Logger API get /api/log/:id", () => {
 
     it('should be text/csv', () => {
         return chai.request(app).get('/api/log/current.csv')
@@ -33,7 +33,8 @@ describe("Logger API get /api/log", () => {
             });
     });
 });
-describe("Logger API get /api/log-list", () => {
+
+describe("Logger API get /api/log", () => {
 
     it('should be json', () => {
         return chai.request(app).get('/api/log')

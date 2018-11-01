@@ -1,16 +1,20 @@
-import { injectable } from "inversify";
+import { inject, injectable } from "inversify";
 import {IControllerSettings, INJECTABLES } from "../../src/controller/types";
 import * as path from "path";
 
 @injectable()
 export class MockControllerSettings implements IControllerSettings {
+    constructor(
+        @inject(INJECTABLES.AppRootDir) private appRootDir: string,
+        @inject(INJECTABLES.GpioRootDir) private gpioRootDir: string,
+    ) {}
 
     startPolling: boolean = false;
     startLogging: boolean = false;
     
-    programStoreDir: string = path.join(__dirname, "data");
-    debugDir: string = path.join(__dirname, "..", "..", "..", "test", "debug");
-    logDir: string = path.join(__dirname, "..", "..", "..", "test", "log");
+    programStoreDir: string = this.appRootDir;
+    debugDir: string = path.join(this.appRootDir, "debug");
+    logDir: string = path.join(this.appRootDir, "log");
 
     boilerPath: "";
     chPumpPath: "";

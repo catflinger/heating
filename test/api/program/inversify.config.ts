@@ -1,4 +1,5 @@
 import { Container, interfaces } from "inversify";
+import * as path from "path";
 import "reflect-metadata";
 
 import { ControllerSettings } from "./controller-settings";
@@ -56,6 +57,8 @@ container.bind<IClean>(TestingInjectables.Clean).to(Clean).inSingletonScope();
 
 // constants
 container.bind<number>(INJECTABLES.SlotsPerDay).toConstantValue(10);
+container.bind<string>(INJECTABLES.AppRootDir).toConstantValue(path.join(__dirname, "data"));
+container.bind<string>(INJECTABLES.GpioRootDir).toConstantValue(path.join(__dirname, "data", "gpio"));
 
 // singletons
 container.bind<App>(INJECTABLES.App).to(App).inSingletonScope();

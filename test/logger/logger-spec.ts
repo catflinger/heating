@@ -11,7 +11,7 @@ const expect = chai.expect;
 const logger: Logger = container.get<Logger>(INJECTABLES.Logger);
 const settings: IControllerSettings = container.get<IControllerSettings>(INJECTABLES.ControllerSettings);
 
-const expStr = "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},1,1,54.1,18,12,13(\r|\n|\r\n)";
+const expStr = "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},1,1,54.1,18\.0,12\.0,13\.0(\r|\n|\r\n)";
 const oneRecord: RegExp = new RegExp(expStr);
 const twoRecord:RegExp = new RegExp(expStr + expStr);
 

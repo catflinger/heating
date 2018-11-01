@@ -1,4 +1,5 @@
 import { Container, interfaces } from "inversify";
+import * as path from "path";
 import "reflect-metadata";
 import { IController, IControllerSettings, IEnvironment, IOverrideManager, IProgram, ISwitchable, INJECTABLES, IControllable, IProgramManager, IProgramStore } from "../../src/controller/types";
 
@@ -20,6 +21,10 @@ export const container = new Container();
 container.bind<IClean>(TestingInjectables.Clean).to(Clean).inSingletonScope();
 
 container.bind<number>(INJECTABLES.SlotsPerDay).toConstantValue(10);
+container.bind<string>(INJECTABLES.AppRootDir).toConstantValue(path.join(__dirname, "data"));
+container.bind<string>(INJECTABLES.GpioRootDir).toConstantValue(path.join(__dirname, "data", "gpio"));
+
+
 container.bind<IOverrideManager>(INJECTABLES.OverrideManager).to(OverrideManager).inSingletonScope();
 container.bind<MockControlStrategy>(INJECTABLES.ControlStrategy).to(MockControlStrategy).inSingletonScope();
 container.bind<IControllerSettings>(INJECTABLES.ControllerSettings).to(MockControllerSettings).inSingletonScope();
