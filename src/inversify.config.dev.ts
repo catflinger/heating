@@ -2,9 +2,6 @@ import { Container, interfaces } from "inversify";
 import * as path from "path";
 import "reflect-metadata";
 
-import { ControllerSettingsDev } from "./server/controller-settings-dev";
-import { EnvironmentSettingsDev } from "./server/environment-settings-dev";
-
 import {
     // the injectable interfaces
     IApi,
@@ -13,7 +10,6 @@ import {
     IController,
     IControllerSettings,
     IControlStrategy,
-    IDigitalOutput,
     IEnvironment,
     IEnvironmentSettings,
     ILogger,
@@ -47,17 +43,17 @@ import { ProgramConfigApi } from "./server/api/program-config-api";
 import { SensorApi } from "./server/api/sensor-api";
 import { StatusApi } from "./server/api/status-api";
 import { App } from "./server/app";
+import { ControllerSettings } from "./server/controller-settings";
+import { EnvironmentSettings } from "./server/environment-settings";
 
 export const container = new Container();
 
-// settings for running on a local machine with no GPIO or 1-wire
-container.bind<IControllerSettings>(INJECTABLES.ControllerSettings).to(ControllerSettingsDev).inSingletonScope();
-container.bind<IEnvironmentSettings>(INJECTABLES.EnvironmentSettings).to(EnvironmentSettingsDev).inSingletonScope();
-
 // constants
 container.bind<number>(INJECTABLES.SlotsPerDay).toConstantValue(6 * 24);
-container.bind<string>(INJECTABLES.AppRootDir).toConstantValue(path.join(__dirname, "..", "test", "data"));
-container.bind<string>(INJECTABLES.GpioRootDir).toConstantValue(path.join(__dirname, "..", "test", "data", "gpio"));
+// when this runs through "npm run start" on dev machine expect __dirname to be of the form your_project_dir/lib/src
+container.bind<string>(INJECTABLES.AppRootDir).toConstantValue(path.join(__dirname, "..", "..", "dev"));
+container.bind<string>(INJECTABLES.GpioRootDir).toConstantValue(path.join(__dirname, "..", "..", "dev", "gpio"));
+container.bind<string>(INJECTABLES.OneWireDir).toConstantValue(path.join(__dirname, "..", "..", "dev", "1wire"));
 
 // singletons
 container.bind<App>(INJECTABLES.App).to(App).inSingletonScope();
@@ -74,6 +70,8 @@ container.bind<ISwitchable>(INJECTABLES.CHPump).to(CHPump).inSingletonScope();
 container.bind<ISwitchable>(INJECTABLES.HWPump).to(HWPump).inSingletonScope();
 container.bind<Utils>(INJECTABLES.Utils).to(Utils).inSingletonScope();
 container.bind<ILogger>(INJECTABLES.Logger).to(Logger).inSingletonScope();
+container.bind<IEnvironmentSettings>(INJECTABLES.EnvironmentSettings).to(EnvironmentSettings).inSingletonScope();
+container.bind<IControllerSettings>(INJECTABLES.ControllerSettings).to(ControllerSettings).inSingletonScope();
 
 // server config
 container.bind<IApi>(INJECTABLES.ProgramConfigApi).to(ProgramConfigApi).inSingletonScope();

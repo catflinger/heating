@@ -9,10 +9,6 @@ export class EnvironmentSettings implements IEnvironmentSettings {
     @inject(INJECTABLES.AppRootDir)
     private appRootDir: string;
 
-    public get oneWireDirectory(): string {
-        return path.join(this.appRootDir, "gpio");
-    }
-
     public get sensorSettings(): any {
         return {
             sensors: [

@@ -1,6 +1,7 @@
 import * as Debug from "debug";
 import { readFileSync } from "fs";
 import { inject, injectable } from "inversify";
+import * as path from "path";
 
 import { IEnvironmentSettings, INJECTABLES, ISensor } from "./types";
 
@@ -11,7 +12,7 @@ export class Sensor implements ISensor {
 
     private lastReading: number;
 
-    constructor(private settings: IEnvironmentSettings,
+    constructor(private _oneWireDir: string,
                 private _id: string,
                 private _description: string,
                 private _role: string) {
@@ -25,10 +26,10 @@ export class Sensor implements ISensor {
         try {
             debug("Reading sensor " + this.id);
 
-            const path: string = this.settings.oneWireDirectory + "/" + this.id + "/temperature";
+            const deviceFile: string = path.join(this._oneWireDir, this.id, "temperature");
 
-            debug("Reading sensor path " + path);
-            const data: string = readFileSync(path, "utf8");
+            debug("Reading sensor path " + deviceFile);
+            const data: string = readFileSync(deviceFile, "utf8");
 
             result = Number.parseFloat(data);
 

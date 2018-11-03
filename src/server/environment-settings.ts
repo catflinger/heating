@@ -10,10 +10,6 @@ export class EnvironmentSettings implements IEnvironmentSettings {
     @inject(INJECTABLES.AppRootDir)
     private appRoot: string;
 
-    public get oneWireDirectory(): string {
-        return "/mnt/1wire";
-    }
-
     public get sensorSettings(): any {
         let result: any;
 
@@ -27,7 +23,7 @@ export class EnvironmentSettings implements IEnvironmentSettings {
                 sensors: [
                     {
                         description: "hot water",
-                        id: "28.8284600300003A",
+                        id: "28.0",
                         role: "hw",
                     },
                 ],

@@ -30,7 +30,7 @@ describe("Status API' get /api/status", () => {
             .then((res: any) => {
                 expect(res.body.items).not.to.be.undefined;
                 expect(Array.isArray(res.body.items)).to.be.true;;
-                expect(res.body.items.length).to.equal(5);
+                expect(res.body.items.length).to.equal(4);
             });
     });
 
@@ -39,13 +39,12 @@ describe("Status API' get /api/status", () => {
             .then((res: any) => {
                 expect(res.body.items).not.to.be.undefined;
                 expect(Array.isArray(res.body.items)).to.be.true;;
-                expect(res.body.items.length).to.equal(5);
+                expect(res.body.items.length).to.equal(4);
 
                 expect(res.body.items[0].id).to.equal("control");
                 expect(res.body.items[1].id).to.equal("device");
                 expect(res.body.items[2].id).to.equal("activeProgram");
                 expect(res.body.items[3].id).to.equal("overrides");
-                expect(res.body.items[4].id).to.equal("env");
             });
     });
 });

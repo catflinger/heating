@@ -44,10 +44,6 @@ export class ControllerSettings implements IControllerSettings {
         return path.join(this.gpioRootDir, "gpio21", "value");
     }
 
-    public get slotsPerDay(): number {
-        return 6 * 24;
-    }
-
     public get maxOverrideDuration(): number {
         return 10;
     }

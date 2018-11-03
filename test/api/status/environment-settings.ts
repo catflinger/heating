@@ -5,10 +5,6 @@ import { IEnvironmentSettings } from "../../../src/controller/types";
 @injectable()
 export class EnvironmentSettings implements IEnvironmentSettings {
 
-    public get oneWireDirectory(): string {
-        throw new Error("method not implemented");
-    }
-
     public get sensorSettings(): any {
         return {
             sensors: [

@@ -64,7 +64,7 @@ export class App {
         this.express.use("/api/", router);
 
         // tell express to use the wwwroot folder for serving staic files
-        const wwwroot: string = path.join(this.appRootDir, "..", "..", "wwwroot");
+        const wwwroot: string = path.join(this.appRootDir, "wwwroot");
         this.express.use(express.static(wwwroot));
         debug("Serving static content from " + wwwroot);
 

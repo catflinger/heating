@@ -51,8 +51,9 @@ export const container = new Container();
 
 // constants
 container.bind<number>(INJECTABLES.SlotsPerDay).toConstantValue(6 * 24);
-container.bind<string>(INJECTABLES.AppRootDir).toConstantValue(path.join(__dirname, "..", ".."));
-container.bind<string>(INJECTABLES.GpioRootDir).toConstantValue(path.join("/sys/class/gpio"));
+container.bind<string>(INJECTABLES.AppRootDir).toConstantValue(path.join(__dirname, ".."));
+container.bind<string>(INJECTABLES.GpioRootDir).toConstantValue("/sys/class/gpio");
+container.bind<string>(INJECTABLES.OneWireDir).toConstantValue("/mnt/1wire");
 
 // singletons
 container.bind<App>(INJECTABLES.App).to(App).inSingletonScope();

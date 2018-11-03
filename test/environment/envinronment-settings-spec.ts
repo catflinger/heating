@@ -26,7 +26,7 @@ describe("Environment Settings", () => {
         const data = settings.sensorSettings;
         expect(Array.isArray(data.sensors)).to.be.true;
         expect(data.sensors.length).to.equal(1);
-        expect(data.sensors[0].id).to.equal("28.8284600300003A");
+        expect(data.sensors[0].id).to.equal("28.0");
         expect(data.sensors[0].role).to.equal("hw");
     });
 

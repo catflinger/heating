@@ -8,7 +8,7 @@ import { Logger } from "../../src/logger/logger";
 export const container = new Container();
 
 container.bind<string>(INJECTABLES.AppRootDir).toConstantValue(path.join(__dirname, "data"));
-
+container.bind<string>(INJECTABLES.OneWireDir).toConstantValue(path.join(__dirname, "data", "1wire"));
 // testing modules
 container.bind<IControllerSettings>(INJECTABLES.ControllerSettings).to(MockControllerSettings).inSingletonScope();
 container.bind<IEnvironment>(INJECTABLES.Environment).to(MockEnvironment).inSingletonScope();

@@ -26,6 +26,7 @@ export const INJECTABLES = {
     HWPump: Symbol("HWPump"),
     LogApi: Symbol("LogApi"),
     Logger: Symbol("Logger"),
+    OneWireDir: Symbol("OneWireDir"),
     OverrideApi: Symbol("OverrideApi"),
     OverrideManager: Symbol("OverrideManager"),
     Program: Symbol("Program"),
@@ -98,7 +99,6 @@ export interface IControlStrategy {
  * rather than program settings (eg hw threshold)
  */
 export interface IControllerSettings {
-    // slotsPerDay: number;
     maxOverrideDuration: number;
     boilerPath: string;
     debugDir: string;
@@ -254,7 +254,6 @@ export interface IEnvironment {
  * Settings specific to the operation of the environmental sensors
  */
 export interface IEnvironmentSettings {
-    oneWireDirectory: string;
     sensorSettings: any;
 }
 

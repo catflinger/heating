@@ -88,10 +88,10 @@ export class StatusApi implements IApi {
                             id: "overrides",
                             snapshot: this.ovManager.getSnapshot(),
                         },
-                        {
-                            id: "env",
-                            snapshot: this.env.getSnapshot(),
-                        },
+                        // {
+                        //     id: "env",
+                        //     snapshot: this.env.getSnapshot(),
+                        // },
                     ],
                     setup: {
                         currentSlot: this.clock.currentSlot,

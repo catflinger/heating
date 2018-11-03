@@ -1,0 +1,10 @@
+{
+    "sensors": [
+        {"id": "28.0", "description": "hot water" , "role": "hw" },
+        {"id": "28.1", "description": "bedroom" , "role": "bedroom"},
+        {"id": "28.2", "description": "garage" },
+        {"id": "28.3", "description": "loft" },
+        {"id": "28.4", "description": "unknown 1" },
+        {"id": "28.5", "description": "unknown 2" }
+    ]
+}

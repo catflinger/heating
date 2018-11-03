@@ -45,6 +45,7 @@ export const container = new Container();
 // constants
 container.bind<number>(INJECTABLES.SlotsPerDay).toConstantValue(10);
 container.bind<string>(INJECTABLES.AppRootDir).toConstantValue(path.join(__dirname, "data"));
+container.bind<string>(INJECTABLES.OneWireDir).toConstantValue(path.join(__dirname, "data", "1wire"));
 
 // singletons
 container.bind<App>(INJECTABLES.App).to(App).inSingletonScope();

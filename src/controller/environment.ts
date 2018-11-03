@@ -9,9 +9,11 @@ export class Environment implements IEnvironment {
 
     private sensors: ISensor[] = [];
 
-    constructor(@inject(INJECTABLES.EnvironmentSettings) private settings: IEnvironmentSettings) {
+    constructor(
+        @inject(INJECTABLES.OneWireDir) private oneWireDir: string,
+        @inject(INJECTABLES.EnvironmentSettings) private settings: IEnvironmentSettings) {
         this.settings.sensorSettings.sensors.forEach((sensor: any) => {
-            this.sensors.push(new Sensor(settings, sensor.id, sensor.description, sensor.role));
+            this.sensors.push(new Sensor(oneWireDir, sensor.id, sensor.description, sensor.role));
         });
     }
 
