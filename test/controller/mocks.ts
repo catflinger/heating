@@ -3,14 +3,16 @@ import "reflect-metadata";
 
 import { 
     IEnvironment, 
-    IControlStrategy, 
+    IControlStrategy,
+    IOneWireListCallback, 
     IProgram, 
     ISwitchable, 
     ISensor,
     ControlStateSnapshot,
     OverrideSnapshot,
     ProgramSnapshot ,
-    SensorSnapshot} from "../../src/controller/types";
+    SensorSnapshot,
+} from "../../src/controller/types";
 
 @injectable()
 export class MockControlStrategy implements IControlStrategy {
@@ -40,6 +42,10 @@ class MockSensor implements ISensor {
 
 @injectable()
 export class MockEnvironment implements IEnvironment {
+
+    public findOneWireDevices(callback: IOneWireListCallback): void {
+        throw new Error("Method not implemented.");
+    }
     private hwSensor: MockSensor = new MockSensor();
 
     refresh(): void {

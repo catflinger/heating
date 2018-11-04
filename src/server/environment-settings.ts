@@ -34,6 +34,6 @@ export class EnvironmentSettings implements IEnvironmentSettings {
     }
 
     private get configFile(): string {
-        return path.join(this.appRoot, "data", "sensor-config.json");
+        return path.join(this.appRoot, "settings", "sensor-config.json");
     }
 }

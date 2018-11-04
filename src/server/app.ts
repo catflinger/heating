@@ -26,6 +26,7 @@ export class App {
         @inject(INJECTABLES.OverrideApi) private overrideApi: IApi,
         @inject(INJECTABLES.SensorApi) private sensorApi: IApi,
         @inject(INJECTABLES.LogApi) private loggerApi: IApi,
+        @inject(INJECTABLES.OneWireApi) private oneWireApi: IApi,
         @inject(INJECTABLES.AppRootDir) private appRootDir: string,
     ) {}
 
@@ -42,6 +43,7 @@ export class App {
         this.overrideApi.addRoutes(router);
         this.sensorApi.addRoutes(router);
         this.loggerApi.addRoutes(router);
+        this.oneWireApi.addRoutes(router);
 
         // start the controller: this initialises digital outputpins and starts the environment polling
         this.controller.start();

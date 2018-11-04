@@ -1,8 +1,8 @@
-import { readFileSync } from "fs";
+import * as fs from "fs";
 import { inject, injectable } from "inversify";
 
 import { Sensor } from "./sensor";
-import { IEnvironment, IEnvironmentSettings, INJECTABLES, ISensor, SensorSnapshot } from "./types";
+import { IEnvironment, IEnvironmentSettings, INJECTABLES, IOneWireListCallback, ISensor, SensorSnapshot } from "./types";
 
 @injectable()
 export class Environment implements IEnvironment {
@@ -23,6 +23,22 @@ export class Environment implements IEnvironment {
             snaps.push(new SensorSnapshot(s.id, s.description, s.reading, s.role)));
 
         return snaps;
+    }
+
+    public findOneWireDevices(callback: IOneWireListCallback): void {
+        fs.readdir(this.oneWireDir, (err, files) => {
+            if (err) {
+                throw new Error("Could not read 1-wire directory");
+            }
+            const devices: string[] = [];
+            files.forEach((f: string) => {
+                // temperature sensor device files are named 28.xxxxxxxxxxx
+                if (f.startsWith("28.")) {
+                    devices.push(f);
+                }
+            });
+            callback(null, devices);
+        });
     }
 
     public refresh(): void {

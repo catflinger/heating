@@ -21,7 +21,7 @@ export class ControllerSettings implements IControllerSettings {
     }
 
     public get programStoreDir(): string {
-        return path.join(this.appRoot, "data");
+        return path.join(this.appRoot, "settings");
     }
 
     public get debugDir(): string {

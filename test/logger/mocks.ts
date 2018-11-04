@@ -9,7 +9,8 @@ import {
     SensorSnapshot,
     IControllerSettings,
     IProgramManager,
-    INJECTABLES} from "../../src/controller/types";
+    INJECTABLES,
+    IOneWireListCallback} from "../../src/controller/types";
 
 @injectable()
 export class MockController implements IController {
@@ -48,6 +49,10 @@ export class MockEnvironment implements IEnvironment {
     }    
     
     refresh(): void {
+        throw new Error("Method not implemented.");
+    }
+
+    findOneWireDevices(callback: IOneWireListCallback): void {
         throw new Error("Method not implemented.");
     }
 }

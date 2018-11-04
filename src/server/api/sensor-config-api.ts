@@ -42,6 +42,9 @@ export class SensorConfigApi implements IApi {
 
             try {
                 throw new Error("sensor-config:PUT api not implemented yet!");
+
+                // const data: any = req.body;
+
             } catch (e) {
                 return res.status(500).send("could not process this request " + e);
             }

@@ -37,6 +37,7 @@ import { ProgramStore } from "./controller/program-store";
 import { System } from "./controller/system";
 import { Logger } from "./logger/logger";
 import { LoggerApi } from "./server/api/logger-api";
+import { OneWireApi } from "./server/api/one-wire-api";
 import { OverrideApi } from "./server/api/override-api";
 import { ProgramApi } from "./server/api/program-api";
 import { ProgramConfigApi } from "./server/api/program-config-api";
@@ -80,6 +81,7 @@ container.bind<IApi>(INJECTABLES.StatusApi).to(StatusApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.OverrideApi).to(OverrideApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.SensorApi).to(SensorApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.LogApi).to(LoggerApi).inSingletonScope();
+container.bind<IApi>(INJECTABLES.OneWireApi).to(OneWireApi).inSingletonScope();
 
 // discrete instances
 container.bind<IProgram>(INJECTABLES.Program).to(Program);

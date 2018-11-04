@@ -2,9 +2,6 @@ import { Container, interfaces } from "inversify";
 import * as path from "path";
 import "reflect-metadata";
 
-import { ControllerSettings } from "./controller-settings";
-import { EnvironmentSettings } from "./environment-settings";
-
 import {
     // the injectable interfaces
     IApi,
@@ -39,6 +36,7 @@ import { Program } from "../../../src/controller/program";
 import { ProgramManager } from "../../../src/controller/program-manager";
 import { ProgramStore } from "../../../src/controller/program-store";
 import { System } from "../../../src/controller/system";
+import { OneWireApi } from "../../../src/server/api/one-wire-api";
 import { OverrideApi } from "../../../src/server/api/override-api";
 import { ProgramApi } from "../../../src/server/api/program-api";
 import { ProgramConfigApi } from "../../../src/server/api/program-config-api";
@@ -49,7 +47,8 @@ import { Clean } from "../../common/clean";
 import { SensorApi } from "../../../src/server/api/sensor-api";
 import { LoggerApi } from "../../../src/server/api/logger-api";
 import { Logger } from "../../../src/logger/logger";
-import { OneWireApi } from "../../../src/server/api/one-wire-api";
+import { ControllerSettings } from "../../../src/server/controller-settings";
+import { EnvironmentSettings } from "../../../src/server/environment-settings";
 
 export const container = new Container();
 
@@ -61,7 +60,6 @@ container.bind<number>(INJECTABLES.SlotsPerDay).toConstantValue(10);
 container.bind<string>(INJECTABLES.AppRootDir).toConstantValue(path.join(__dirname, "data"));
 container.bind<string>(INJECTABLES.GpioRootDir).toConstantValue(path.join(__dirname, "data", "gpio"));
 container.bind<string>(INJECTABLES.OneWireDir).toConstantValue(path.join(__dirname, "data", "1wire"));
-
 // singletons
 container.bind<App>(INJECTABLES.App).to(App).inSingletonScope();
 container.bind<IController>(INJECTABLES.Controller).to(Controller).inSingletonScope();

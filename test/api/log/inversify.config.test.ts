@@ -39,6 +39,8 @@ import { CHPump } from "../../../src/controller/devices/ch-pump";
 import { HWPump } from "../../../src/controller/devices/hw-pump";
 import { Program } from "../../../src/controller/program";
 import { LoggerApi } from "../../../src/server/api/logger-api";
+import { Environment } from "../../../src/controller/environment";
+import { OneWireApi } from "../../../src/server/api/one-wire-api";
 
 export const container = new Container();
 
@@ -51,6 +53,7 @@ container.bind<string>(INJECTABLES.OneWireDir).toConstantValue(path.join(__dirna
 container.bind<App>(INJECTABLES.App).to(App).inSingletonScope();
 container.bind<IControlStrategy>(INJECTABLES.ControlStrategy).to(BasicControlStrategy).inSingletonScope();
 container.bind<IEnvironmentSettings>(INJECTABLES.EnvironmentSettings).to(EnvironmentSettings).inSingletonScope();
+container.bind<IEnvironment>(INJECTABLES.Environment).to(Environment).inSingletonScope();
 container.bind<IProgramStore>(INJECTABLES.ProgramStore).to(ProgramStore).inSingletonScope();
 container.bind<IProgramManager>(INJECTABLES.ProgramManager).to(ProgramManager).inSingletonScope();
 container.bind<IClock>(INJECTABLES.Clock).to(Clock).inSingletonScope();
@@ -69,7 +72,7 @@ container.bind<IApi>(INJECTABLES.StatusApi).to(StatusApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.OverrideApi).to(OverrideApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.SensorApi).to(SensorApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.LogApi).to(LoggerApi).inSingletonScope();
-
+container.bind<IApi>(INJECTABLES.OneWireApi).to(OneWireApi).inSingletonScope();
 
 // discrete instances
 container.bind<IProgram>(INJECTABLES.Program).to(Program);
@@ -85,6 +88,5 @@ container.bind<interfaces.Factory<IProgram>>(INJECTABLES.ProgramFactory)
 
 // testing modules
 container.bind<IControllerSettings>(INJECTABLES.ControllerSettings).to(MockControllerSettings).inSingletonScope();
-container.bind<IEnvironment>(INJECTABLES.Environment).to(MockEnvironment).inSingletonScope();
 container.bind<IController>(INJECTABLES.Controller).to(MockController).inSingletonScope();
 container.bind<Logger>(INJECTABLES.Logger).to(Logger).inSingletonScope();

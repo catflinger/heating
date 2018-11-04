@@ -26,6 +26,7 @@ export const INJECTABLES = {
     HWPump: Symbol("HWPump"),
     LogApi: Symbol("LogApi"),
     Logger: Symbol("Logger"),
+    OneWireApi: Symbol("OneWireApi"),
     OneWireDir: Symbol("OneWireDir"),
     OverrideApi: Symbol("OverrideApi"),
     OverrideManager: Symbol("OverrideManager"),
@@ -242,12 +243,17 @@ export interface ISwitchable {
 /**
  * Container to access environmental sensors
  */
+export type IOneWireListCallback = (err: Error, list: string[]) => void;
+
 export interface IEnvironment {
     // return the current environment readings
     getSnapshot(): SensorSnapshot[];
 
     // refresh the sensor readings
     refresh(): void;
+
+    // finds current 1-wire devices
+    findOneWireDevices(callback: IOneWireListCallback): void;
 }
 
 /**
