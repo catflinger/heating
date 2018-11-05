@@ -50,5 +50,18 @@ export class SensorApi implements IApi {
                 return res.status(500).send("could not process this request " + e);
             }
         });
+
+        router.put("/sensor", (req, res, next) => {
+            debug("PUT: sensor");
+
+            try {
+                throw new Error("sensor-config:PUT api not implemented yet!");
+
+                // const data: any = req.body;
+
+            } catch (e) {
+                return res.status(500).send("could not process this request " + e);
+            }
+        });
     }
 }
