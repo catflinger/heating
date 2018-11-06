@@ -25,6 +25,7 @@ export class App {
         @inject(INJECTABLES.ProgramApi) private programApi: IApi,
         @inject(INJECTABLES.OverrideApi) private overrideApi: IApi,
         @inject(INJECTABLES.SensorApi) private sensorApi: IApi,
+        @inject(INJECTABLES.SensorConfigApi) private sensorConfigApi: IApi,
         @inject(INJECTABLES.LogApi) private loggerApi: IApi,
         @inject(INJECTABLES.OneWireApi) private oneWireApi: IApi,
         @inject(INJECTABLES.AppRootDir) private appRootDir: string,
@@ -42,6 +43,7 @@ export class App {
         this.programApi.addRoutes(router);
         this.overrideApi.addRoutes(router);
         this.sensorApi.addRoutes(router);
+        this.sensorConfigApi.addRoutes(router);
         this.loggerApi.addRoutes(router);
         this.oneWireApi.addRoutes(router);
 

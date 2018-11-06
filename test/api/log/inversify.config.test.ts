@@ -28,7 +28,7 @@ import { OverrideApi } from "../../../src/server/api/override-api";
 import { SensorApi } from "../../../src/server/api/sensor-api";
 import { Utils } from "../../../src/common/utils";
 import { BasicControlStrategy } from "../../../src/controller/basic-control-strategy";
-import { EnvironmentSettings } from "../../../src/server/environment-settings";
+import { EnvironmentSettings } from "../../../src/controller/environment-settings";
 import { ProgramStore } from "../../../src/controller/program-store";
 import { ProgramManager } from "../../../src/controller/program-manager";
 import { Clock } from "../../../src/controller/clock";
@@ -41,6 +41,7 @@ import { Program } from "../../../src/controller/program";
 import { LoggerApi } from "../../../src/server/api/logger-api";
 import { Environment } from "../../../src/controller/environment";
 import { OneWireApi } from "../../../src/server/api/one-wire-api";
+import { SensorConfigApi } from "../../../src/server/api/sensor-config-api";
 
 export const container = new Container();
 
@@ -71,6 +72,7 @@ container.bind<IApi>(INJECTABLES.ProgramApi).to(ProgramApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.StatusApi).to(StatusApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.OverrideApi).to(OverrideApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.SensorApi).to(SensorApi).inSingletonScope();
+container.bind<IApi>(INJECTABLES.SensorConfigApi).to(SensorConfigApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.LogApi).to(LoggerApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.OneWireApi).to(OneWireApi).inSingletonScope();
 

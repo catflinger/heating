@@ -1,1 +1,1 @@
-{"items":[{"id":"28.0","description":"hot water","reading":54,"role":"hw"},{"id":"28.1","description":"bedroom","reading":21.2,"role":"bedroom"},{"id":"28.2","description":"garage","reading":17.1},{"id":"28.3","description":"loft","reading":99}]}
+{"items":[{"id":"28.0","description":"hot water","reading":null,"role":"hw"},{"id":"28.1","description":"new bedroom","reading":null,"role":"bedroom"},{"id":"28.2","description":"garage","reading":null},{"id":"28.3","description":"loft","reading":null}]}

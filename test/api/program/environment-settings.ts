@@ -1,11 +1,21 @@
 import { injectable } from "inversify";
-import { IEnvironmentSettings } from "../../../src/controller/types";
+import { IEnvironmentSettings, ISensor } from "../../../src/controller/types";
 
 
 @injectable()
 export class EnvironmentSettings implements IEnvironmentSettings {
+    getSensorSetting(id: string) {
+        throw new Error("Method not implemented.");
+    }
 
-    public get sensorSettings(): any {
+    updateSensorSetting(sensor: ISensor): void {
+        throw new Error("Method not implemented.");
+    }
+    removeSensorSetting(id: string): void {
+        throw new Error("Method not implemented.");
+    }
+
+    public getSensorSettings(): any {
         return {
             sensors: [
                 {description: "hw", id: "28.60418F060000", role: "hw"},

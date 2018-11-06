@@ -46,6 +46,13 @@ describe("BasicControlStrategy", () => {
             clock.setSlotNumber(0);
         });
 
+        it("should not heat the water if hw sensor is missing", () => {
+            let result: ControlStateSnapshot = runTest(snapshot_NoHwSensor);
+            // boiler should be off
+            expect(result.hotWater).to.be.false;
+        });
+
+
         it("should heat the water when at startup defaults", () => {
             let result: ControlStateSnapshot = runTest(snapshot_Default);
             // temp is too low so boiler should be on
@@ -186,6 +193,14 @@ describe("BasicControlStrategy", () => {
 const hwTempBelowThreshold = 30;
 const hwTempInsideThreshold = 45;
 const hwTempAboveThreshold = 55;
+
+// case when HW sensor is not available
+const snapshot_NoHwSensor: any = {
+    control: { heating: false, hotWater: true },
+    device: { boiler: true, hwPump: true, chPump: false },
+    sensors: [],
+    overrides: []
+}
 
 // everything at or returned to starting values
 // note: this state should only exist temporarily at start-up

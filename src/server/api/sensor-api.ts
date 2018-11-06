@@ -11,6 +11,9 @@ import {
 
 const debug = Debug("app");
 
+// this API is a front for the Environment class - reading temperature sensor values
+// for getting and setting sensor configuration use the sensor-config API and the EnvironmentSettings class
+
 @injectable()
 export class SensorApi implements IApi {
 
@@ -41,27 +44,14 @@ export class SensorApi implements IApi {
         router.get("/sensor/:sensor_id", (req, res, next) => {
             debug("GET: sensor/:sensor_id");
 
-            const programId: string = req.params.sensor_id;
+            const sensorId: string = req.params.sensor_id;
 
             try {
-                throw new Error("api not implemented yet!");
-
+                res.json(this.environment.getSensor(sensorId));
             } catch (e) {
                 return res.status(500).send("could not process this request " + e);
             }
         });
 
-        router.put("/sensor", (req, res, next) => {
-            debug("PUT: sensor");
-
-            try {
-                throw new Error("sensor-config:PUT api not implemented yet!");
-
-                // const data: any = req.body;
-
-            } catch (e) {
-                return res.status(500).send("could not process this request " + e);
-            }
-        });
     }
 }

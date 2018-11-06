@@ -8,6 +8,7 @@ import {
     ProgramSnapshot,
     SensorSnapshot,
 } from "./types";
+import { ISensor } from "./types/injectable.interfaces";
 
 @injectable()
 export class BasicControlStrategy implements IControlStrategy {
@@ -27,15 +28,22 @@ export class BasicControlStrategy implements IControlStrategy {
         let water: boolean = false;
         const currentSlot: number = this.clock.currentSlot;
 
-        // First set the hot water.
-        // If the temp is too low, keep trying to raise the temmperature.   If the temperature is over the minimum
-        // already then keep the boiler on until it is over the maximum.  This hysteresis avoids cycling on/offf around
-        // the minimum temp
-        const hwTemperature: number = env.find((s) => s.role === "hw").reading;
+        // First set the hot water, skip this if no hw sensor configured
+        const hwSensor: SensorSnapshot = env.find((s) => s.role === "hw");
 
-        if (hwTemperature < program.minHWTemp ||
-            (hwTemperature < program.maxHWTemp && current.hotWater)) {
-            water = true;
+        if (hwSensor) {
+            // If the temp is too low, keep trying to raise the temmperature.   If the temperature is over the minimum
+            // already then keep the boiler on until it is over the maximum.  This hysteresis avoids cycling on/offf around
+            // the minimum temp
+            const hwTemperature: number = hwSensor.reading;
+
+            if (hwTemperature < program.minHWTemp ||
+                (hwTemperature < program.maxHWTemp && current.hotWater)) {
+                water = true;
+            }
+
+        } else {
+            water = false;
         }
 
         // now set the heating, simple and straightforward

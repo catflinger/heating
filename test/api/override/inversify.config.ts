@@ -50,6 +50,7 @@ import { SensorApi } from "../../../src/server/api/sensor-api";
 import { LoggerApi } from "../../../src/server/api/logger-api";
 import { Logger } from "../../../src/logger/logger";
 import { OneWireApi } from "../../../src/server/api/one-wire-api";
+import { SensorConfigApi } from "../../../src/server/api/sensor-config-api";
 
 export const container = new Container();
 
@@ -88,6 +89,7 @@ container.bind<IApi>(INJECTABLES.OverrideApi).to(OverrideApi).inSingletonScope()
 container.bind<IApi>(INJECTABLES.SensorApi).to(SensorApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.LogApi).to(LoggerApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.OneWireApi).to(OneWireApi).inSingletonScope();
+container.bind<IApi>(INJECTABLES.SensorConfigApi).to(SensorConfigApi).inSingletonScope();
 
 // discrete instances
 container.bind<IProgram>(INJECTABLES.Program).to(Program);

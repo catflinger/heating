@@ -26,10 +26,12 @@ import { Utils } from "./common/utils";
 import { BasicControlStrategy } from "./controller/basic-control-strategy";
 import { Clock } from "./controller/clock";
 import { Controller } from "./controller/controller";
+import { ControllerSettings } from "./controller/controller-settings";
 import { Boiler } from "./controller/devices/boiler";
 import { CHPump } from "./controller/devices/ch-pump";
 import { HWPump } from "./controller/devices/hw-pump";
 import { Environment } from "./controller/environment";
+import { EnvironmentSettings } from "./controller/environment-settings";
 import { OverrideManager } from "./controller/override-manager";
 import { Program } from "./controller/program";
 import { ProgramManager } from "./controller/program-manager";
@@ -42,10 +44,9 @@ import { OverrideApi } from "./server/api/override-api";
 import { ProgramApi } from "./server/api/program-api";
 import { ProgramConfigApi } from "./server/api/program-config-api";
 import { SensorApi } from "./server/api/sensor-api";
+import { SensorConfigApi } from "./server/api/sensor-config-api";
 import { StatusApi } from "./server/api/status-api";
 import { App } from "./server/app";
-import { ControllerSettings } from "./server/controller-settings";
-import { EnvironmentSettings } from "./server/environment-settings";
 
 export const container = new Container();
 
@@ -80,6 +81,7 @@ container.bind<IApi>(INJECTABLES.ProgramApi).to(ProgramApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.StatusApi).to(StatusApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.OverrideApi).to(OverrideApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.SensorApi).to(SensorApi).inSingletonScope();
+container.bind<IApi>(INJECTABLES.SensorConfigApi).to(SensorConfigApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.LogApi).to(LoggerApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.OneWireApi).to(OneWireApi).inSingletonScope();
 

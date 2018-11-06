@@ -7,15 +7,13 @@ import { IEnvironment, IEnvironmentSettings, INJECTABLES, IOneWireListCallback, 
 @injectable()
 export class Environment implements IEnvironment {
 
-    private sensors: ISensor[] = [];
+    private sensors: ISensor[];
 
     constructor(
         @inject(INJECTABLES.OneWireDir) private oneWireDir: string,
         @inject(INJECTABLES.EnvironmentSettings) private settings: IEnvironmentSettings) {
-        this.settings.sensorSettings.sensors.forEach((sensor: any) => {
-            this.sensors.push(new Sensor(oneWireDir, sensor.id, sensor.description, sensor.role));
-        });
-    }
+            this.reloadSensors();
+        }
 
     public getSnapshot(): SensorSnapshot[] {
         const snaps: SensorSnapshot[] = [];
@@ -23,6 +21,14 @@ export class Environment implements IEnvironment {
             snaps.push(new SensorSnapshot(s.id, s.description, s.reading, s.role)));
 
         return snaps;
+    }
+
+    public getSensor(id: string): SensorSnapshot {
+        const sensor = this.sensors.find((s) => s.id === id);
+        if (sensor) {
+            return new SensorSnapshot(sensor.id, sensor.description, sensor.reading, sensor.role);
+        }
+        return  null;
     }
 
     public findOneWireDevices(callback: IOneWireListCallback): void {
@@ -43,5 +49,12 @@ export class Environment implements IEnvironment {
 
     public refresh(): void {
         this.sensors.forEach((s) => s.read());
+    }
+
+    public reloadSensors(): void {
+        this.sensors = [];
+        this.settings.getSensorSettings().sensors.forEach((sensor: any) => {
+            this.sensors.push(new Sensor(this.oneWireDir, sensor.id, sensor.description, sensor.role));
+        });
     }
 }

@@ -37,6 +37,7 @@ export const INJECTABLES = {
     ProgramManager: Symbol("ProgramManager"),
     ProgramStore: Symbol("ProgramStore"),
     SensorApi: Symbol("SensorApi"),
+    SensorConfigApi: Symbol("SensorConfigApi"),
     SlotsPerDay: Symbol("SlotsPerDay"),
     StatusApi: Symbol("StatusApi"),
     System: Symbol("System"),
@@ -249,8 +250,12 @@ export interface IEnvironment {
     // return the current environment readings
     getSnapshot(): SensorSnapshot[];
 
+    getSensor(id: string): SensorSnapshot;
+
     // refresh the sensor readings
     refresh(): void;
+
+    reloadSensors(): void;
 
     // finds current 1-wire devices
     findOneWireDevices(callback: IOneWireListCallback): void;
@@ -260,7 +265,10 @@ export interface IEnvironment {
  * Settings specific to the operation of the environmental sensors
  */
 export interface IEnvironmentSettings {
-    sensorSettings: any;
+    getSensorSettings(): any;
+    getSensorSetting(id: string): any;
+    updateSensorSetting(sensor: ISensor): void;
+    removeSensorSetting(id: string): void;
 }
 
 export interface ISensor {

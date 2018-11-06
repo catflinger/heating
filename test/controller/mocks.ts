@@ -42,6 +42,12 @@ class MockSensor implements ISensor {
 
 @injectable()
 export class MockEnvironment implements IEnvironment {
+    reloadSensors(): void {
+        throw new Error("Method not implemented.");
+    }
+    getSensor(id: string): SensorSnapshot {
+        throw new Error("Method not implemented.");
+    }
 
     public findOneWireDevices(callback: IOneWireListCallback): void {
         throw new Error("Method not implemented.");

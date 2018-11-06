@@ -4,15 +4,15 @@
    "id": "control",
    "snapshot": {
     "heating": false,
-    "hotWater": true
+    "hotWater": false
    }
   },
   {
    "id": "device",
    "snapshot": {
-    "boiler": true,
+    "boiler": false,
     "chPump": false,
-    "hwPump": true
+    "hwPump": false
    }
   },
   {
@@ -176,8 +176,8 @@
   }
  ],
  "setup": {
-  "currentSlot": 60,
-  "datetime": 1541412287096,
+  "currentSlot": 85,
+  "datetime": 1541513615460,
   "slotsPerDay": 144
  }
 }

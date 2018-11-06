@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
 // import { INJECT_TAG } from "inversify/dts/constants/metadata_keys";
 import * as path from "path";
-import { IControllerSettings, INJECTABLES } from "../controller/types";
+import { IControllerSettings, INJECTABLES } from "./types";
 
 @injectable()
 export class ControllerSettings implements IControllerSettings {

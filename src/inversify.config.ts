@@ -2,8 +2,8 @@ import { Container, interfaces } from "inversify";
 import * as path from "path";
 import "reflect-metadata";
 
-import { ControllerSettings } from "./server/controller-settings";
-import { EnvironmentSettings } from "./server/environment-settings";
+import { ControllerSettings } from "./controller/controller-settings";
+import { EnvironmentSettings } from "./controller/environment-settings";
 
 import {
     // the injectable interfaces
@@ -45,6 +45,7 @@ import { OverrideApi } from "./server/api/override-api";
 import { ProgramApi } from "./server/api/program-api";
 import { ProgramConfigApi } from "./server/api/program-config-api";
 import { SensorApi } from "./server/api/sensor-api";
+import { SensorConfigApi } from "./server/api/sensor-config-api";
 import { StatusApi } from "./server/api/status-api";
 import { App } from "./server/app";
 
@@ -80,6 +81,7 @@ container.bind<IApi>(INJECTABLES.ProgramApi).to(ProgramApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.StatusApi).to(StatusApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.OverrideApi).to(OverrideApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.SensorApi).to(SensorApi).inSingletonScope();
+container.bind<IApi>(INJECTABLES.SensorConfigApi).to(SensorConfigApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.LogApi).to(LoggerApi).inSingletonScope();
 container.bind<IApi>(INJECTABLES.OneWireApi).to(OneWireApi).inSingletonScope();
 
