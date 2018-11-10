@@ -1,1 +1,32 @@
-{"sensors":[{"id":"28.0","description":"hot water","role":"hw"},{"id":"28.1","description":"new bedroom","role":"bedroom"},{"id":"28.2","description":"garage"},{"id":"28.3","description":"loft"}]}
+{
+    "sensors": [
+        {
+            "id": "28.0",
+            "description": "hot water",
+            "role": "hw",
+            "position": 0,
+            "deleted": false
+        },
+        {
+            "id": "28.1",
+            "description": "bedroom",
+            "role": "bedroom",
+            "position": 1,
+            "deleted": false
+        },
+        {
+            "id": "28.2",
+            "description": "deleted",
+            "role": "",
+            "position": 2,
+            "deleted": true
+        },
+        {
+            "id": "28.3",
+            "description": "cinema",
+            "role": "",
+            "position": 3,
+            "deleted": false
+        }
+    ]
+}

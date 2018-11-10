@@ -2,7 +2,7 @@ import * as fs from "fs";
 import { inject, injectable } from "inversify";
 
 import { Sensor } from "./sensor";
-import { IEnvironment, IEnvironmentSettings, INJECTABLES, IOneWireListCallback, ISensor, SensorSnapshot } from "./types";
+import { IEnvironment, IEnvironmentSettings, INJECTABLES, IOneWireListCallback, ISensor, SensorSetting, SensorSnapshot } from "./types";
 
 @injectable()
 export class Environment implements IEnvironment {
@@ -53,8 +53,8 @@ export class Environment implements IEnvironment {
 
     public reloadSensors(): void {
         this.sensors = [];
-        this.settings.getSensorSettings().sensors.forEach((sensor: any) => {
-            this.sensors.push(new Sensor(this.oneWireDir, sensor.id, sensor.description, sensor.role));
+        this.settings.getSensorSettings().forEach((s: SensorSetting) => {
+            this.sensors.push(new Sensor(this.oneWireDir, s.id, s.description, s.role));
         });
     }
 }

@@ -2,7 +2,7 @@ import * as Debug from "debug";
 import * as http from "http";
 
 import { INJECTABLES } from "./controller/types";
-import { container } from "./inversify.config.dev";
+import { container } from "./inversify.config";
 import { App } from "./server/app";
 
 // const port = normalizePort(process.env.PORT || 3000);

@@ -5,6 +5,7 @@ import {
     DeviceStateSnapshot,
     OverrideSnapshot,
     ProgramSnapshot,
+    SensorSetting,
     SensorSnapshot } from "../types";
 
 /**
@@ -265,9 +266,9 @@ export interface IEnvironment {
  * Settings specific to the operation of the environmental sensors
  */
 export interface IEnvironmentSettings {
-    getSensorSettings(): any;
-    getSensorSetting(id: string): any;
-    updateSensorSetting(sensor: ISensor): void;
+    getSensorSettings(includeDeleted?: boolean): SensorSetting[];
+    getSensorSetting(id: string): SensorSetting;
+    updateSensorSetting(sensor: SensorSetting): void;
     removeSensorSetting(id: string): void;
 }
 

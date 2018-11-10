@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import { inject, injectable } from "inversify";
+import { List } from "linqts";
 import * as moment from "moment";
 import { Job, scheduleJob } from "node-schedule";
 import * as path from "path";
@@ -11,9 +12,15 @@ import {
     IController,
     IControllerSettings,
     IEnvironment,
+    IEnvironmentSettings,
     ILogger,
     INJECTABLES,
-    SensorSnapshot } from "../controller/types";
+    ISensor,
+    SensorSetting,
+    SensorSnapshot,
+} from "../controller/types";
+
+type Callback = (err: boolean) => void;
 
 @injectable()
 export class Logger implements ILogger {
@@ -25,7 +32,8 @@ export class Logger implements ILogger {
     constructor(
         @inject(INJECTABLES.Controller) private controller: IController,
         @inject(INJECTABLES.ControllerSettings) private settings: IControllerSettings,
-        @inject(INJECTABLES.Environment) private envController: IEnvironment) {
+        @inject(INJECTABLES.Environment) private environment: IEnvironment,
+        @inject(INJECTABLES.EnvironmentSettings) private environmentSettings: IEnvironmentSettings) {
 
         this.logFileName = path.join(this.settings.logDir, "heatinglog-current.csv");
     }
@@ -81,35 +89,20 @@ export class Logger implements ILogger {
     }
 
     public writeLogEntry(): void {
+        const data: string = this.makeLogEntry();
 
-        try {
-            const control: ControlStateSnapshot = this.controller.getSnapshot();
-            const env: SensorSnapshot[] = this.envController.getSnapshot();
-
-            const data: string[] = [];
-
-            data.push(moment().format("YYYY-MM-DD HH:mm:ss"));
-            data.push(control.heating ? "1" : "0");
-            data.push(control.hotWater ? "1" : "0");
-            data.push(env.find((s) => s.id === "hw").reading.toFixed(1));
-            data.push(env.find((s) => s.id === "bedroom").reading.toFixed(1));
-            data.push(env.find((s) => s.id === "loft").reading.toFixed(1));
-            data.push(env.find((s) => s.id === "garage").reading.toFixed(1));
-
-            const entry: string = data.join(",") + "\n";
-
-            fs.appendFile(
-                this.getLogfileName(),
-                entry,
-                "utf-8",
-                (err) => {
-                    if (err) {
-                        // should this be reported somewhere?
-                    }
-                });
-        } catch {
-            // TO DO: where to report this?
-        }
+        fs.exists(this.getLogfileName(), (exists) => {
+            if (exists) {
+                if (data) {
+                    this.writeToLog(data, null);
+                }
+            } else {
+                const headings: string = this.makeHeadings();
+                if (headings && data) {
+                    this.writeToLog(headings + data, null);
+                }
+            }
+        });
     }
 
     public housekeep(): void {
@@ -133,5 +126,80 @@ export class Logger implements ILogger {
         } catch {
             // TO DO: where to report this?
         }
+    }
+
+    private makeLogEntry(): string {
+        let result: string = null;
+
+        try {
+            const control: ControlStateSnapshot = this.controller.getSnapshot();
+            const sensors: SensorSnapshot[] = this.environment.getSnapshot();
+            const sensorSettings: SensorSetting[] = this.environmentSettings.getSensorSettings(true);
+
+            const data: string[] = [];
+
+            data.push(moment().format("YYYY-MM-DD HH:mm:ss"));
+            data.push(control.heating ? "1" : "0");
+            data.push(control.hotWater ? "1" : "0");
+
+            // find the number of sensor columns to display
+            const maxSensorPosition = new List<SensorSetting>(sensorSettings).Max((s) => s.position);
+
+            // write the number of columns required, adding a value if we have one
+            for (let i: number = 0; i <= maxSensorPosition && i < 30; i++) {
+                let reading: string = "0";
+                const sensorSetting: SensorSetting = sensorSettings.find((s) => s.position === i);
+
+                if (sensorSetting) {
+                    const sensor: SensorSnapshot = sensors.find((s) => s.id === sensorSetting.id);
+                    if (sensor) {
+                        reading = sensor.reading.toFixed(1);
+                    }
+                }
+                data.push(reading);
+            }
+
+            result = data.join(",") + "\n";
+        } catch {
+            // TO DO: where to report this?
+        }
+
+        return result;
+    }
+
+    private makeHeadings(): string {
+        let result: string = null;
+
+        try {
+            const sensorSettings: List<SensorSetting> = new List<SensorSetting>(this.environmentSettings.getSensorSettings(true));
+            const data: string[] = [];
+
+            data.push("time");
+            data.push("heating");
+            data.push("water");
+
+            sensorSettings.OrderBy((s) => s.position).ForEach((s) => {
+                data.push(s.description);
+            });
+
+            result = data.join(",") + "\n";
+
+        } catch {
+            // TO DO: where to report this?
+        }
+        return result;
+    }
+
+    private writeToLog(data: string, callback: Callback) {
+        fs.appendFile(
+            this.getLogfileName(),
+            data,
+            "utf-8",
+            (err) => {
+                if (callback) {
+                    callback(err as any);
+                }
+            });
+
     }
 }

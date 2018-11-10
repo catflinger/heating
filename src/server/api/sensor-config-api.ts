@@ -9,6 +9,7 @@ import {
     IEnvironment,
     IEnvironmentSettings,
     INJECTABLES,
+    SensorSetting,
 } from "../../controller/types";
 
 const debug = Debug("app");
@@ -34,7 +35,9 @@ export class SensorConfigApi implements IApi {
             debug("GET: sensor-config");
 
             try {
-                const result = this.environmentSettings.getSensorSettings();
+                const result: any = {
+                    sensors: this.environmentSettings.getSensorSettings(),
+                };
 
                 this.utils.dumpTextFile("sensor-config.json", JSON.stringify(result));
                 return res.json(result);
@@ -48,7 +51,7 @@ export class SensorConfigApi implements IApi {
             debug("GET: sensor-config/:id");
 
             try {
-                const result = this.environmentSettings.getSensorSetting(req.params.id);
+                const result: any = this.environmentSettings.getSensorSetting(req.params.id);
 
                 if (result) {
                     this.utils.dumpTextFile("sensor-config-id.json", JSON.stringify(result));
@@ -84,7 +87,7 @@ export class SensorConfigApi implements IApi {
                     return res.status(400).send("sensor role missing in request ");
                 }
 
-                this.environmentSettings.updateSensorSetting(new Sensor("", data.id, data.description, data.role));
+                this.environmentSettings.updateSensorSetting(new SensorSetting(data.id, data.description, data.role));
                 this.environment.reloadSensors();
 
                 return res.status(200).send(true);

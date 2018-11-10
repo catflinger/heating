@@ -10,7 +10,9 @@ import {
     IControllerSettings,
     IProgramManager,
     INJECTABLES,
-    IOneWireListCallback} from "../../src/controller/types";
+    IOneWireListCallback,
+    IEnvironmentSettings,
+    SensorSetting} from "../../src/controller/types";
 
 @injectable()
 export class MockController implements IController {
@@ -35,6 +37,34 @@ export class MockController implements IController {
 }
 
 @injectable()
+export class MockEnvironmentSettings implements IEnvironmentSettings {
+
+    getSensorSettings(): SensorSetting[] {
+        return [
+            new SensorSetting("28.0", "A","B", 0, false),
+            new SensorSetting("28.1", "B","B", 1, false),
+            new SensorSetting("28.x", "C","B", 2, true), // this should still be logged
+            new SensorSetting("28.2", "D","B", 3, false),
+            new SensorSetting("28.3", "E","B", 4, false),
+        ];
+    }    
+    
+    getSensorSetting(id: string): SensorSetting {
+        throw new Error("Method not implemented.");
+    }
+    
+    updateSensorSetting(sensor: SensorSetting): void {
+        throw new Error("Method not implemented.");
+    }
+    
+    removeSensorSetting(id: string): void {
+        throw new Error("Method not implemented.");
+    }
+
+
+}
+
+@injectable()
 export class MockEnvironment implements IEnvironment {
     reloadSensors(): void {
         throw new Error("Method not implemented.");
@@ -45,10 +75,10 @@ export class MockEnvironment implements IEnvironment {
     
     getSnapshot(): SensorSnapshot[] {
         const snapshots: SensorSnapshot[] = [
-            new SensorSnapshot("hw", "", 54.1, "hw"),
-            new SensorSnapshot("bedroom", "", 18, null),
-            new SensorSnapshot("loft", "", 12, null),
-            new SensorSnapshot("garage", "", 13, null),
+            new SensorSnapshot("28.0", "", 54.1, "hw"),
+            new SensorSnapshot("28.1", "", 18, null),
+            new SensorSnapshot("28.2", "", 12, null),
+            new SensorSnapshot("28.3", "", 13, null),
         ];
 
         return snapshots;
