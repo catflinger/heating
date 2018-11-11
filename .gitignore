@@ -11,3 +11,5 @@ lib/
 
 wwwroot/
 !wwwroot/test.html
+/dev/debug/
+/dev/log/
