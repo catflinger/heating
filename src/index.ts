@@ -1,9 +1,17 @@
 import * as Debug from "debug";
 import * as http from "http";
+import { Container } from "inversify";
 
 import { INJECTABLES } from "./controller/types";
-import { container } from "./inversify.config";
 import { App } from "./server/app";
+
+let container: Container;
+
+if (process.env.NODE_ENV === "production"){
+    container = require("./inversify.config").container;
+} else {
+    container = require("./inversify.config.dev").container;
+}
 
 // const port = normalizePort(process.env.PORT || 3000);
 const port = 3000;
