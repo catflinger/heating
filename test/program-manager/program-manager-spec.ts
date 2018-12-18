@@ -10,10 +10,12 @@ container.get<IClean>(TestingInjectables.Clean).clean({});
 
 import * as chai from "chai";
 import "mocha";
+import { MockClock } from "../common/mock-clock";
 
 const expect = chai.expect;
 
 let settings: IControllerSettings = container.get<IControllerSettings>(INJECTABLES.ControllerSettings);
+let clock: MockClock = container.get<MockClock>(INJECTABLES.Clock);
 
 let slotsPerDay = container.get<number>(INJECTABLES.SlotsPerDay);
 
@@ -93,9 +95,10 @@ describe("program-manager", () => {
         });
     });
 
-    describe("general", () => {
+    describe("programs", () => {
 
         before(() => {
+            clock.setDate(new Date("2018-14-20T13:00:00")); // a Friday
         });
 
         it("should list programs", () => {
@@ -117,6 +120,20 @@ describe("program-manager", () => {
             expect(id0 === id1).to.be.false;
             expect(id1 === id2).to.be.false;
             expect(id0 === id2).to.be.false;
+        });
+    });
+
+    describe("cruuent program", () => {
+
+        before(() => {
+            clock.setDate(new Date("2018-14-20T13:00:00")); // a Friday
+            // create the program manager
+            programManager = container.get<IProgramManager>(INJECTABLES.ProgramManager);
+            programManager.init();
+        });
+
+        it("should get the current program", () => {
+            expect
         });
     });
 

@@ -18,4 +18,8 @@ export class MockClock extends Clock {
         this.now = this.now
             .add(duration * 24 * 60 / this.slotsPerDay, "minutes");
     }
+
+    public setDate(date: Date): void {
+        this.now = moment(date);
+    }
 }

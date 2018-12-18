@@ -1,7 +1,9 @@
 import { inject, injectable } from "inversify";
-import { Program } from "./program";
+
+import { DatedProgram } from "./dated-program";
+import { ProgramConfig } from "./program-config";
 import { ProgramSnapshot } from "./snapshots/program-snapshot";
-import { IClock, IControllerSettings, INJECTABLES, IProgram, IProgramManager, IProgramStore, ProgramConfig, ProgramMode } from "./types";
+import { IClock, IControllerSettings, INJECTABLES, IProgram, IProgramManager, IProgramStore } from "./types";
 
 @injectable()
 export class ProgramManager implements IProgramManager {
@@ -63,6 +65,13 @@ export class ProgramManager implements IProgramManager {
                 break;
         }
 
+        // now see if there are any dated overrides to the basic config
+        this._config.datedPrograms.forEach((dp: DatedProgram) => {
+            if (this.clock.isToday(dp.activationDate)) {
+                id = dp.programId;
+            }
+        });
+
         return this.getProgram(id);
     }
 
@@ -89,7 +98,8 @@ export class ProgramManager implements IProgramManager {
     }
 
     public getProgram(id: string): ProgramSnapshot {
-        return this._programs.find((p) => p.id === id).getSnapshot();
+        const program: IProgram = this._programs.find((p) => p.id === id);
+        return program ? program.getSnapshot() : null;
     }
 
     public createProgram(src: ProgramSnapshot): ProgramSnapshot {
@@ -134,6 +144,12 @@ export class ProgramManager implements IProgramManager {
             id === this._config.weekdayProgramId) {
             throw new Error("Cannot remove program as it is still in use");
         }
+
+        this._config.datedPrograms.forEach((dp: DatedProgram) => {
+            if (dp.programId === id) {
+                throw new Error("Cannot remove program as it is still in use");
+            }
+        });
 
         // remove from the program array
         const idx = this._programs.findIndex((p) => p.id === id);

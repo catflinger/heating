@@ -1,5 +1,5 @@
 
-import { IControllerSettings, IProgram, IProgramStore, ProgramConfig, INJECTABLES, ProgramMode } from "../../src/controller/types";
+import { IControllerSettings, IProgram, IProgramStore, INJECTABLES, ProgramMode } from "../../src/controller/types";
 import { Program } from "../../src/controller/program";
 import { ProgramStore } from "../../src/controller/program-store";
 import { container } from "./inversify.config.test";
@@ -13,6 +13,7 @@ import * as Path from "path";
 
 import * as chai from "chai";
 import "mocha";
+import { ProgramConfig } from "../../src/controller/program-config";
 
 const expect = chai.expect;
 
@@ -50,7 +51,10 @@ describe("program-store", () => {
                     saturdayId: program.id,
                     sundayId: program.id,
                     weekdayId: program.id,
-                }
+                },
+                datedPrograms: [
+                    { programId: "doobie-do", activationDate: new Date().toDateString() }
+                ],
             };
             fs.writeFileSync(latestFilePath, JSON.stringify(defaultConfig), "utf-8");
             fs.writeFileSync(Path.join(programsDir, program.id + ".json"), program.getSnapshot().toJson(), "utf-8");
@@ -67,6 +71,10 @@ describe("program-store", () => {
             expect(config.saturdayProgramId).to.equal(program.id);
             expect(config.sundayProgramId).to.equal(program.id);
             expect(config.weekdayProgramId).to.equal(program.id);
+            
+            expect(Array.isArray(config.datedPrograms)).to.be.true;
+            expect(config.datedPrograms.length).to.equal(1);
+            expect(config.datedPrograms[0].activationDate.toDateString()).to.equal(new Date().toDateString());
 
             let programs: IProgram[] = programStore.getPrograms();
 

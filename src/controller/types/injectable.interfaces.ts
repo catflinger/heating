@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { ILogLogstCallback } from "../../logger/log-info";
+import { ProgramConfig } from "../program-config";
 import {
     ControlStateSnapshot,
     DeviceStateSnapshot,
@@ -23,6 +24,7 @@ export const INJECTABLES = {
     DigitalOutput: Symbol("DigitalOutput"),
     Environment: Symbol("Environment"),
     EnvironmentSettings: Symbol("EnvironmentSettings"),
+    ExpressPortNumber: Symbol("ExpressPortNumber"),
     GpioRootDir: Symbol("GpioRootDir"),
     HWPump: Symbol("HWPump"),
     LogApi: Symbol("LogApi"),
@@ -193,12 +195,6 @@ export interface IProgramManager {
     removeProgram(id: string): void;
     setConfig(config: ProgramConfig): void;
     updateProgram(program: ProgramSnapshot): void;
-}
-
-export class ProgramConfig {
-    public saturdayProgramId: string;
-    public sundayProgramId: string;
-    public weekdayProgramId: string;
 }
 
 export interface IProgramStore {

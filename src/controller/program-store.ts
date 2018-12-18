@@ -2,7 +2,9 @@ import * as fs from "fs";
 import { inject, injectable } from "inversify";
 import * as path from "path";
 
-import { IClock, IControllerSettings, INJECTABLES, IProgram, IProgramStore, ProgramConfig, ProgramSnapshot } from "./types";
+import { DatedProgram } from "./dated-program";
+import { ProgramConfig } from "./program-config";
+import { IControllerSettings, INJECTABLES, IProgram, IProgramStore, ProgramSnapshot } from "./types";
 
 @injectable()
 export class ProgramStore implements IProgramStore {
@@ -50,6 +52,14 @@ export class ProgramStore implements IProgramStore {
         result.sundayProgramId = data.activeProgramIds.sundayId;
         result.weekdayProgramId = data.activeProgramIds.weekdayId;
 
+        if (data.datedPrograms && Array.isArray(data.datedPrograms)) {
+            data.datedPrograms.forEach((d: any) => {
+                if (d.programId && d.activationDate) {
+                    result.datedPrograms.push(new DatedProgram(d.programId, d.activationDate));
+                }
+            });
+        }
+
         return result;
     }
 
@@ -79,12 +89,20 @@ export class ProgramStore implements IProgramStore {
                 sundayId: config.sundayProgramId,
                 weekdayId: config.weekdayProgramId,
             },
+            datedPrograms: [],
         };
+        config.datedPrograms.forEach((p: DatedProgram) => {
+            data.datedPrograms.push({
+                activationDate: p.activationDate.toDateString(),
+                programId: p.programId,
+            });
+        });
+
         fs.writeFileSync(this.configPath, JSON.stringify(data));
     }
 
     public savePrograms(programs: IProgram[]): void {
-        // remove any existing programs
+        // remove any existing programs first
         fs.readdirSync(path.join(this.settings.programStoreDir, "programs"))
             .forEach((f: string) => {
                 if (f.endsWith(this._ext)) {

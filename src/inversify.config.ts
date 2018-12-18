@@ -56,6 +56,7 @@ container.bind<number>(INJECTABLES.SlotsPerDay).toConstantValue(6 * 24);
 container.bind<string>(INJECTABLES.AppRootDir).toConstantValue(path.join(__dirname, ".."));
 container.bind<string>(INJECTABLES.GpioRootDir).toConstantValue("/sys/class/gpio");
 container.bind<string>(INJECTABLES.OneWireDir).toConstantValue("/mnt/1wire");
+container.bind<number>(INJECTABLES.ExpressPortNumber).toConstantValue(80);
 
 // singletons
 container.bind<App>(INJECTABLES.App).to(App).inSingletonScope();

@@ -3,10 +3,9 @@ import { Router } from "express";
 import { inject, injectable } from "inversify";
 
 import { Utils } from "../../common/utils";
-import { Validate } from "../../common/validate";
-import { IApi, IController, INJECTABLES, ProgramConfig } from "../../controller/types";
-import { ApiResponse } from "./api-response";
-import { ApiResponseItem } from "./api-response-item";
+import { DatedProgram } from "../../controller/dated-program";
+import { ProgramConfig } from "../../controller/program-config";
+import { IApi, IController, INJECTABLES } from "../../controller/types";
 
 const debug = Debug("app");
 
@@ -42,6 +41,12 @@ export class ProgramConfigApi implements IApi {
                 config.saturdayProgramId = req.body.saturdayProgramId;
                 config.sundayProgramId = req.body.sundayProgramId;
                 config.weekdayProgramId = req.body.weekdayProgramId;
+
+                req.body.datedPrograms.forEach((dp: any) => {
+                    if (dp.programId && dp.activationDate) {
+                        config.datedPrograms.push(new DatedProgram(dp.programId, dp.activationDate));
+                    }
+                });
 
                 if (!this.controller.programManager.configIsValid(config)) {
                     return res.status(422).send("program config invalid");

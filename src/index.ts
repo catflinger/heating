@@ -7,14 +7,11 @@ import { App } from "./server/app";
 
 let container: Container;
 
-if (process.env.NODE_ENV === "production"){
-    container = require("./inversify.config").container;
-} else {
-    container = require("./inversify.config.dev").container;
-}
+container = (process.env.NODE_ENV === "production") ?
+     require("./inversify.config").container :
+     require("./inversify.config.dev").container;
 
-// const port = normalizePort(process.env.PORT || 3000);
-const port = 3000;
+const port = container.get<number>(INJECTABLES.ExpressPortNumber);
 const debug = Debug("app");
 
 const expressApp = container.get<App>(INJECTABLES.App).start();
@@ -47,13 +44,5 @@ function onError(error: NodeJS.ErrnoException): void {
 
 function onListening(): void {
     const addr = server.address();
-    const bind = (typeof addr === "string") ? `pipe ${addr}` : `port ${addr.port}`;
-    debug("Listening on port 3000");
+    debug("Listening on port " + port);
 }
-
-// function normalizePort(val: number|string): number|string|boolean {
-//   let port: number = (typeof val === "string") ? parseInt(val, 10) : val;
-//   if (isNaN(port)) return val;
-//   else if (port >= 0) return port;
-//   else return false;
-// }
